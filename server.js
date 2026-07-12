@@ -2,6 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 
 const { sendSuccess, sendError } = require("./utils/responseHandler");
+const errorHandler = require("./middleware/errorMiddleware");
+const authRoutes = require("./routes/authRoutes");
 
 // Load Environment Variables
 dotenv.config();
@@ -14,6 +16,9 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Authentication Routes
+app.use("/api/auth", authRoutes);
 
 // Port
 const PORT = process.env.PORT || 3000;
@@ -53,6 +58,7 @@ app.get("/health", (req, res) => {
     });
 });
 
+// Project Information Route
 app.get("/api/project", (req, res) => {
     sendSuccess(
         res,
@@ -64,6 +70,31 @@ app.get("/api/project", (req, res) => {
         }
     );
 });
+
+// Crash Test Route
+app.get("/api/crash", (req, res, next) => {
+
+    const error = new Error("This is a sample server error");
+
+    error.statusCode = 500;
+
+    next(error);
+
+});
+
+// 404 Route
+app.use((req, res, next) => {
+
+    const error = new Error("Route Not Found");
+
+    error.statusCode = 404;
+
+    next(error);
+
+});
+
+// Error Handling Middleware
+app.use(errorHandler);
 
 // Start Server
 app.listen(PORT, () => {
