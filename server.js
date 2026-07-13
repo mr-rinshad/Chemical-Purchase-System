@@ -4,6 +4,8 @@ const dotenv = require("dotenv");
 const { sendSuccess, sendError } = require("./utils/responseHandler");
 const errorHandler = require("./middleware/errorMiddleware");
 const authRoutes = require("./routes/authRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 // Load Environment Variables
 dotenv.config();
@@ -19,6 +21,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // Authentication Routes
 app.use("/api/auth", authRoutes);
+
+// Admin Routes
+app.use("/api/admin", adminRoutes);
+
+// Dashboard Routes
+app.use("/api/dashboard", dashboardRoutes);
 
 // Port
 const PORT = process.env.PORT || 3000;
