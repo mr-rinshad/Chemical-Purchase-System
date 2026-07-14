@@ -6,6 +6,7 @@ const errorHandler = require("./middleware/errorMiddleware");
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const laboratoryRoutes = require("./routes/laboratoryRoutes");
 
 // Load Environment Variables
 dotenv.config();
@@ -27,6 +28,9 @@ app.use("/api/admin", adminRoutes);
 
 // Dashboard Routes
 app.use("/api/dashboard", dashboardRoutes);
+
+// Laboratory Routes
+app.use("/api/laboratory", laboratoryRoutes);
 
 // Port
 const PORT = process.env.PORT || 3000;
