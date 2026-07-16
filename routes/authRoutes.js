@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const authMiddleware = require("../middleware/authMiddleware");
+const authorize = require("../middleware/authorize");
 
 const {
 
@@ -16,7 +17,11 @@ const {
 
     updateProfile,
 
-    changePassword
+    changePassword,
+
+    requestAuthorization,
+
+    getMyAuthorizationRequests
 
 } = require("../controllers/authController");
 
@@ -56,4 +61,27 @@ router.put(
 
 );
 
+router.post(
+
+    "/authorization-request",
+
+    authMiddleware,
+
+    authorize("user"),
+
+    requestAuthorization
+
+);
+
+router.get(
+
+    "/authorization-requests",
+
+    authMiddleware,
+
+    authorize("user"),
+
+    getMyAuthorizationRequests
+
+);
 module.exports = router;

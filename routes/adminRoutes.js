@@ -23,7 +23,13 @@ const {
 
     suspendLaboratory,
 
-    reactivateLaboratory
+    reactivateLaboratory,
+
+    getPendingAuthorizationRequests,
+
+    approveAuthorizationRequest,
+
+    rejectAuthorizationRequest
 
 } = require("../controllers/adminController");
 
@@ -128,6 +134,42 @@ router.put(
     authorize("admin"),
 
     reactivateLaboratory
+
+);
+
+router.get(
+
+    "/authorizations/pending",
+
+    authenticate,
+
+    authorize("admin"),
+
+    getPendingAuthorizationRequests
+
+);
+
+router.put(
+
+    "/authorizations/:id/approve",
+
+    authenticate,
+
+    authorize("admin"),
+
+    approveAuthorizationRequest
+
+);
+
+router.put(
+
+    "/authorizations/:id/reject",
+
+    authenticate,
+
+    authorize("admin"),
+
+    rejectAuthorizationRequest
 
 );
 module.exports = router;

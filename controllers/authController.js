@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt");
 
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
+const ChemicalAuthorization = require("../models/ChemicalAuthorization");
+const generateAuthorizationCode = require("../utils/generateAuthorizationCode");
 
 const {
     sendSuccess,
@@ -180,7 +182,15 @@ const login = async (req, res, next) => {
 
         }
 
-        const token = generateToken(user);
+        const token = generateToken({
+
+            id: user.user_id,
+
+            email: user.email,
+
+            account_type: "user"
+
+        });
 
         delete user.password;
 
@@ -209,7 +219,6 @@ const login = async (req, res, next) => {
     }
 
 };
-
 const profile = async (req, res, next) => {
 
     try {
@@ -490,6 +499,104 @@ const changePassword = async (req, res, next) => {
 
 };
 
+const requestAuthorization = async (req, res, next) => {
+
+    try {
+
+        const {
+
+            purpose,
+
+            proof_document
+
+        } = req.body;
+
+        if (!purpose || !proof_document) {
+
+            return sendError(
+
+                res,
+
+                "Purpose and proof document are required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const authorization_code = generateAuthorizationCode();
+
+        await ChemicalAuthorization.create({
+
+            user_id: req.user.id,
+
+            authorization_code,
+
+            purpose,
+
+            proof_document
+
+        });
+
+        sendSuccess(
+
+            res,
+
+            "Authorization request submitted successfully",
+
+            {
+
+                authorization_code,
+
+                status: "Pending"
+
+            }
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getMyAuthorizationRequests = async (req, res, next) => {
+
+    try {
+
+        const authorizations = await ChemicalAuthorization.findByUserId(
+
+            req.user.id
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Authorization requests fetched successfully",
+
+            authorizations
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
 module.exports = {
 
     testAuth,
@@ -502,6 +609,10 @@ module.exports = {
 
     updateProfile,
 
-    changePassword
+    changePassword,
+
+    requestAuthorization,
+
+    getMyAuthorizationRequests
 
 };

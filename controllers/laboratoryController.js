@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 
 const Laboratory = require("../models/Laboratory");
+const ChemicalAuthorization = require("../models/ChemicalAuthorization");
 const generateToken = require("../utils/generateToken");
 
 const {
@@ -319,6 +320,108 @@ const getProfile = async (req, res, next) => {
 
 };
 
+const verifyAuthorization = async (req, res, next) => {
+
+    try {
+
+        const { authorization_code } = req.body;
+
+        if (!authorization_code) {
+
+            return sendError(
+
+                res,
+
+                "Authorization code is required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const authorization = await ChemicalAuthorization.findByAuthorizationCode(
+
+            authorization_code
+
+        );
+
+        if (!authorization) {
+
+            return sendError(
+
+                res,
+
+                "Invalid authorization code",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        if (authorization.status !== "Approved") {
+
+            return sendError(
+
+                res,
+
+                `Authorization is ${authorization.status}`,
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        if (new Date() > new Date(authorization.expiry_date)) {
+
+            await ChemicalAuthorization.expireAuthorization(
+
+                authorization.authorization_id
+
+            );
+
+            return sendError(
+
+                res,
+
+                "Authorization has expired",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        sendSuccess(
+
+            res,
+
+            "Authorization verified successfully",
+
+            authorization
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
 module.exports = {
 
     testLaboratory,
@@ -327,6 +430,8 @@ module.exports = {
 
     login,
 
-    getProfile
+    getProfile,
+
+    verifyAuthorization
 
 };

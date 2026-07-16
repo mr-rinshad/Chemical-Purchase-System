@@ -13,7 +13,9 @@ const {
 
     login,
 
-    getProfile
+    getProfile,
+
+    verifyAuthorization
 
 } = require("../controllers/laboratoryController");
 
@@ -61,4 +63,15 @@ router.get(
 
 );
 
+router.post(
+
+    "/verify-authorization",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    verifyAuthorization
+
+);
 module.exports = router;
