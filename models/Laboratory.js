@@ -309,6 +309,165 @@ static async findApprovedById(labId) {
 
 }
 
+// Laboratory Dashboard Statistics
+static async getDashboardStatistics(labId) {
+
+    const [rows] = await db.execute(
+
+        `SELECT
+
+            (SELECT COUNT(*)
+
+                FROM chemicals
+
+                WHERE lab_id = ?) AS total_chemicals,
+
+            (SELECT COUNT(*)
+
+                FROM chemicals
+
+                WHERE lab_id = ?
+
+                AND status = 'Available') AS available_chemicals,
+
+            (SELECT COUNT(*)
+
+                FROM chemicals
+
+                WHERE lab_id = ?
+
+                AND status = 'Out of Stock') AS out_of_stock,
+
+            (SELECT IFNULL(SUM(total_stock),0)
+
+                FROM chemicals
+
+                WHERE lab_id = ?) AS total_stock,
+
+            (SELECT IFNULL(SUM(reserved_stock),0)
+
+                FROM chemicals
+
+                WHERE lab_id = ?) AS reserved_stock,
+
+            (SELECT COUNT(*)
+
+                FROM purchase_requests
+
+                WHERE lab_id = ?
+
+                AND request_status = 'Submitted') AS pending_requests,
+
+            (SELECT COUNT(*)
+
+                FROM purchase_requests
+
+                WHERE lab_id = ?
+
+                AND request_status = 'Approved') AS approved_requests,
+
+            (SELECT COUNT(*)
+
+                FROM purchase_requests
+
+                WHERE lab_id = ?
+
+                AND request_status = 'Reserved') AS reserved_requests,
+
+            (SELECT COUNT(*)
+
+                FROM purchase_requests
+
+                WHERE lab_id = ?
+
+                AND request_status = 'Completed') AS completed_purchases,
+
+            (SELECT COUNT(*)
+
+                FROM purchase_requests
+
+                WHERE lab_id = ?
+
+                AND request_status = 'Expired') AS expired_reservations`,
+
+        [
+
+            labId,
+            labId,
+            labId,
+            labId,
+            labId,
+            labId,
+            labId,
+            labId,
+            labId,
+            labId
+
+        ]
+
+    );
+
+    return rows[0];
+
+}
+// Laboratory Purchase Report
+static async getPurchaseReport(labId) {
+
+    const [rows] = await db.execute(
+
+        `SELECT
+
+            pr.request_id,
+
+            u.full_name AS user_name,
+
+            c.chemical_name,
+
+            pr.quantity,
+
+            c.unit,
+
+            pr.purchase_mode,
+
+            pr.purchase_code,
+
+            pr.request_status,
+
+            pr.reservation_status,
+
+            pr.request_date,
+
+            pr.completed_at
+
+        FROM purchase_requests pr
+
+        INNER JOIN users u
+
+            ON pr.user_id = u.user_id
+
+        INNER JOIN chemicals c
+
+            ON pr.chemical_id = c.chemical_id
+
+        WHERE
+
+            pr.lab_id = ?
+
+        ORDER BY
+
+            pr.request_date DESC`,
+
+        [
+
+            labId
+
+        ]
+
+    );
+
+    return rows;
+
+}
 }
 
 module.exports = Laboratory;

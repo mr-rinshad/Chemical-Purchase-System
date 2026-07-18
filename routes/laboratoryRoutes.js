@@ -43,8 +43,11 @@ const {
 
     completePurchase,
 
-    expireReservations
+    expireReservations,
 
+    dashboard,
+
+    getPurchaseReport,
 
 } = require("../controllers/laboratoryController");
 
@@ -154,7 +157,7 @@ router.get(
 
 router.get(
 
-    "/dashboard",
+    "/inventory-dashboard",
 
     authenticate,
 
@@ -271,4 +274,30 @@ router.put(
     expireReservations
 
 );
+
+router.get(
+
+    "/dashboard",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    dashboard
+
+);
+
+router.get(
+
+    "/reports/purchases",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    getPurchaseReport
+
+);
+
+
 module.exports = router;

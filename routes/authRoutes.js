@@ -31,7 +31,11 @@ const {
 
     getMyPurchaseRequests,
 
-    getPurchaseCode
+    getPurchaseCode,
+
+    dashboard,
+
+    getPurchaseHistory
 
 } = require("../controllers/authController");
 
@@ -152,6 +156,30 @@ router.get(
     authorize("user"),
 
     getPurchaseCode
+
+);
+
+router.get(
+
+    "/dashboard",
+
+    authMiddleware,
+
+    authorize("user"),
+
+    dashboard
+
+);
+
+router.get(
+
+    "/purchase-history",
+
+    authMiddleware,
+
+    authorize("user"),
+
+    getPurchaseHistory
 
 );
 module.exports = router;

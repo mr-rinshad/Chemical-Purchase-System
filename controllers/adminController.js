@@ -690,6 +690,57 @@ const rejectAuthorizationRequest = async (req, res, next) => {
 
 };
 
+const dashboard = async (req, res, next) => {
+
+    try {
+
+        const statistics = await Admin.getDashboardStatistics();
+
+        sendSuccess(
+
+            res,
+
+            "Dashboard loaded successfully",
+
+            statistics
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getPurchaseReport = async (req, res, next) => {
+
+    try {
+
+        const report = await Admin.getPurchaseReport();
+
+        sendSuccess(
+
+            res,
+
+            "Purchase report fetched successfully",
+
+            report
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
 module.exports = {
 
     testAdmin,
@@ -714,6 +765,10 @@ module.exports = {
 
     approveAuthorizationRequest,
 
-    rejectAuthorizationRequest
+    rejectAuthorizationRequest,
+
+    dashboard,
+
+    getPurchaseReport
 
 };

@@ -1470,6 +1470,66 @@ const expireReservations = async (req, res, next) => {
 
 };
 
+const dashboard = async (req, res, next) => {
+
+    try {
+
+        const statistics = await Laboratory.getDashboardStatistics(
+
+            req.user.id
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Laboratory dashboard loaded successfully",
+
+            statistics
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getPurchaseReport = async (req, res, next) => {
+
+    try {
+
+        const report = await Laboratory.getPurchaseReport(
+
+            req.user.id
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Purchase report fetched successfully",
+
+            report
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
 module.exports = {
 
     testLaboratory,
@@ -1508,6 +1568,11 @@ module.exports = {
 
     completePurchase,
 
-    expireReservations
+    expireReservations,
+
+    dashboard,
+
+    getPurchaseReport,
+
 
 };

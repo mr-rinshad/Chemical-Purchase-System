@@ -29,7 +29,11 @@ const {
 
     approveAuthorizationRequest,
 
-    rejectAuthorizationRequest
+    rejectAuthorizationRequest,
+
+    dashboard,
+
+    getPurchaseReport
 
 } = require("../controllers/adminController");
 
@@ -50,6 +54,17 @@ router.post(
     "/login",
 
     login
+
+);
+router.get(
+
+    "/dashboard",
+
+    authenticate,
+
+    authorize("admin"),
+
+    dashboard
 
 );
 
@@ -172,4 +187,18 @@ router.put(
     rejectAuthorizationRequest
 
 );
+
+router.get(
+
+    "/reports/purchases",
+
+    authenticate,
+
+    authorize("admin"),
+
+    getPurchaseReport
+
+);
+
+
 module.exports = router;

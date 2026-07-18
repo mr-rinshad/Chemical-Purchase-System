@@ -676,6 +676,38 @@ const submitPurchaseRequest = async (req, res, next) => {
 
         } = req.body;
 
+        if (!quantity) {
+
+            return sendError(
+
+                res,
+
+                "Quantity is required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        if (Number(quantity) <= 0) {
+
+            return sendError(
+
+                res,
+
+                "Quantity must be greater than zero",
+
+                [],
+
+                400
+
+            );
+
+        }
+
         if (
 
             !authorization_id ||
@@ -683,8 +715,6 @@ const submitPurchaseRequest = async (req, res, next) => {
             !lab_id ||
 
             !chemical_id ||
-
-            !quantity ||
 
             !purchase_mode
 
@@ -927,6 +957,65 @@ const getPurchaseCode = async (req, res, next) => {
 
 };
 
+const dashboard = async (req, res, next) => {
+
+    try {
+
+        const statistics = await User.getDashboardStatistics(
+
+            req.user.id
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "User dashboard loaded successfully",
+
+            statistics
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+const getPurchaseHistory = async (req, res, next) => {
+
+    try {
+
+        const history = await User.getPurchaseHistory(
+
+            req.user.id
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Purchase history fetched successfully",
+
+            history
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
 module.exports = {
 
     testAuth,
@@ -953,6 +1042,10 @@ module.exports = {
 
     getMyPurchaseRequests,
 
-    getPurchaseCode
+    getPurchaseCode,
+
+    dashboard,
+
+    getPurchaseHistory
 
 };
