@@ -249,6 +249,66 @@ static async reactivateLab(labId) {
 
 }
 
+// Get Approved Laboratories
+static async getApprovedLaboratories() {
+
+    const [rows] = await db.execute(
+
+        `SELECT
+
+            lab_id,
+
+            lab_name,
+
+            email,
+
+            phone,
+
+            address,
+
+            city,
+
+            state,
+
+            pincode
+
+        FROM laboratories
+
+        WHERE status = 'Approved'
+
+        ORDER BY lab_name ASC`
+
+    );
+
+    return rows;
+
+}
+
+// Find Approved Laboratory
+static async findApprovedById(labId) {
+
+    const [rows] = await db.execute(
+
+        `SELECT *
+
+        FROM laboratories
+
+        WHERE lab_id = ?
+
+        AND status = 'Approved'`,
+
+        [
+
+            labId
+
+        ]
+
+    );
+
+    return rows[0];
+
+}
+
 }
 
 module.exports = Laboratory;

@@ -21,7 +21,17 @@ const {
 
     requestAuthorization,
 
-    getMyAuthorizationRequests
+    getMyAuthorizationRequests,
+
+    getApprovedLaboratories,
+
+    getLaboratoryChemicals,
+
+    submitPurchaseRequest,
+
+    getMyPurchaseRequests,
+
+    getPurchaseCode
 
 } = require("../controllers/authController");
 
@@ -30,6 +40,30 @@ router.get("/test", testAuth);
 router.post("/register", register);
 
 router.post("/login", login);
+
+router.get(
+
+    "/laboratories",
+
+    authMiddleware,
+
+    authorize("user"),
+
+    getApprovedLaboratories
+
+);
+
+router.get(
+
+    "/laboratories/:labId/chemicals",
+
+    authMiddleware,
+
+    authorize("user"),
+
+    getLaboratoryChemicals
+
+);
 
 router.get(
 
@@ -82,6 +116,42 @@ router.get(
     authorize("user"),
 
     getMyAuthorizationRequests
+
+);
+
+router.post(
+
+    "/purchase-request",
+
+    authMiddleware,
+
+    authorize("user"),
+
+    submitPurchaseRequest
+
+);
+
+router.get(
+
+    "/purchase-requests",
+
+    authMiddleware,
+
+    authorize("user"),
+
+    getMyPurchaseRequests
+
+);
+
+router.get(
+
+    "/purchase-requests/:id/purchase-code",
+
+    authMiddleware,
+
+    authorize("user"),
+
+    getPurchaseCode
 
 );
 module.exports = router;

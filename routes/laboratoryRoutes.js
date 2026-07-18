@@ -33,7 +33,18 @@ const {
 
     filterChemicals,
 
-    inventoryDashboard
+    inventoryDashboard,
+
+    getPurchaseRequests,
+
+    approvePurchaseRequest,
+
+    reservePurchaseRequest,
+
+    completePurchase,
+
+    expireReservations
+
 
 } = require("../controllers/laboratoryController");
 
@@ -155,6 +166,42 @@ router.get(
 
 router.get(
 
+    "/purchase-requests",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    getPurchaseRequests
+
+);
+
+router.put(
+
+    "/purchase-requests/:id/approve",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    approvePurchaseRequest
+
+);
+
+router.put(
+
+    "/purchase-requests/:id/reserve",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    reservePurchaseRequest
+
+);
+
+router.get(
+
     "/chemicals/:id",
 
     authenticate,
@@ -198,6 +245,30 @@ router.put(
     authorize("laboratory"),
 
     updateChemicalStock
+
+);
+
+router.put(
+
+    "/complete-purchase",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    completePurchase
+
+);
+
+router.put(
+
+    "/expire-reservations",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    expireReservations
 
 );
 module.exports = router;

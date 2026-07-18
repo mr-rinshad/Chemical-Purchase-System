@@ -4,6 +4,9 @@ const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
 const ChemicalAuthorization = require("../models/ChemicalAuthorization");
 const generateAuthorizationCode = require("../utils/generateAuthorizationCode");
+const Laboratory = require("../models/Laboratory");
+const Chemical = require("../models/Chemical");
+const PurchaseRequest = require("../models/PurchaseRequest");
 
 const {
     sendSuccess,
@@ -597,6 +600,333 @@ const getMyAuthorizationRequests = async (req, res, next) => {
 
 };
 
+const getApprovedLaboratories = async (req, res, next) => {
+
+    try {
+
+        const laboratories = await Laboratory.getApprovedLaboratories();
+
+        sendSuccess(
+
+            res,
+
+            "Approved laboratories fetched successfully",
+
+            laboratories
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getLaboratoryChemicals = async (req, res, next) => {
+
+    try {
+
+        const { labId } = req.params;
+
+        const chemicals = await Chemical.getAvailableByLaboratory(
+
+            labId
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Laboratory chemicals fetched successfully",
+
+            chemicals
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const submitPurchaseRequest = async (req, res, next) => {
+
+    try {
+
+        const {
+
+            authorization_id,
+
+            lab_id,
+
+            chemical_id,
+
+            quantity,
+
+            purchase_mode
+
+        } = req.body;
+
+        if (
+
+            !authorization_id ||
+
+            !lab_id ||
+
+            !chemical_id ||
+
+            !quantity ||
+
+            !purchase_mode
+
+        ) {
+
+            return sendError(
+
+                res,
+
+                "All fields are required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const authorization = await ChemicalAuthorization.findApprovedById(
+
+            authorization_id,
+
+            req.user.id
+
+        );
+
+        if (!authorization) {
+
+            return sendError(
+
+                res,
+
+                "Valid authorization not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        const laboratory = await Laboratory.findApprovedById(
+
+            lab_id
+
+        );
+
+        if (!laboratory) {
+
+            return sendError(
+
+                res,
+
+                "Laboratory not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        const chemical = await Chemical.findAvailableChemical(
+
+            chemical_id,
+
+            lab_id
+
+        );
+
+        if (!chemical) {
+
+            return sendError(
+
+                res,
+
+                "Chemical not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        if (Number(quantity) > Number(chemical.total_stock)) {
+
+            return sendError(
+
+                res,
+
+                "Insufficient stock available",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const requestId = await PurchaseRequest.create({
+
+            user_id: req.user.id,
+
+            lab_id,
+
+            chemical_id,
+
+            authorization_id,
+
+            quantity,
+
+            purchase_mode
+
+        });
+
+        sendSuccess(
+
+            res,
+
+            "Purchase request submitted successfully",
+
+            {
+
+                request_id: requestId,
+
+                status: "Submitted"
+
+            }
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getMyPurchaseRequests = async (req, res, next) => {
+
+    try {
+
+        const requests = await PurchaseRequest.getUserRequests(
+
+            req.user.id
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Purchase requests fetched successfully",
+
+            requests
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+const getPurchaseCode = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const request = await PurchaseRequest.getPurchaseCode(
+
+            id,
+
+            req.user.id
+
+        );
+
+        if (!request) {
+
+            return sendError(
+
+                res,
+
+                "Purchase request not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        if (!request.purchase_code) {
+
+            return sendError(
+
+                res,
+
+                "Purchase code has not been generated yet",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        sendSuccess(
+
+            res,
+
+            "Purchase code fetched successfully",
+
+            request
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
 module.exports = {
 
     testAuth,
@@ -613,6 +943,16 @@ module.exports = {
 
     requestAuthorization,
 
-    getMyAuthorizationRequests
+    getMyAuthorizationRequests,
+
+    getApprovedLaboratories,
+
+    getLaboratoryChemicals,
+
+    submitPurchaseRequest,
+
+    getMyPurchaseRequests,
+
+    getPurchaseCode
 
 };

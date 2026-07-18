@@ -3,7 +3,9 @@ const bcrypt = require("bcrypt");
 const Laboratory = require("../models/Laboratory");
 const ChemicalAuthorization = require("../models/ChemicalAuthorization");
 const Chemical = require("../models/Chemical");
+const PurchaseRequest = require("../models/PurchaseRequest");
 const generateToken = require("../utils/generateToken");
+const generatePurchaseCode = require("../utils/generatePurchaseCode");
 
 const {
     sendSuccess,
@@ -1007,6 +1009,467 @@ const inventoryDashboard = async (req, res, next) => {
 
 };
 
+const getPurchaseRequests = async (req, res, next) => {
+
+    try {
+
+        const requests = await PurchaseRequest.getLaboratoryRequests(
+
+            req.user.id
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Purchase requests fetched successfully",
+
+            requests
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const approvePurchaseRequest = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const request = await PurchaseRequest.findById(id);
+
+        if (!request) {
+
+            return sendError(
+
+                res,
+
+                "Purchase request not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        if (request.lab_id !== req.user.id) {
+
+            return sendError(
+
+                res,
+
+                "You are not authorized to approve this request",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        if (request.request_status !== "Submitted") {
+
+            return sendError(
+
+                res,
+
+                "Only submitted requests can be approved",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const authorization = await ChemicalAuthorization.findValidAuthorization(
+
+            request.authorization_id
+
+        );
+
+        if (!authorization) {
+
+            return sendError(
+
+                res,
+
+                "Authorization is invalid or has expired",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        await PurchaseRequest.approve(
+
+            id,
+
+            req.user.id
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Purchase request approved successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const reservePurchaseRequest = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const request = await PurchaseRequest.findById(id);
+
+        if (!request) {
+
+            return sendError(
+
+                res,
+
+                "Purchase request not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        if (request.lab_id !== req.user.id) {
+
+            return sendError(
+
+                res,
+
+                "Unauthorized request",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        if (request.request_status !== "Approved") {
+
+            return sendError(
+
+                res,
+
+                "Request must be approved first",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const chemical = await Chemical.findById(
+
+            request.chemical_id
+
+        );
+
+        if (!chemical) {
+
+            return sendError(
+
+                res,
+
+                "Chemical not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        if (
+
+            Number(chemical.total_stock)
+
+            <
+
+            Number(request.quantity)
+
+        ) {
+
+            return sendError(
+
+                res,
+
+                "Insufficient stock",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        await Chemical.reserveStock(
+
+            request.chemical_id,
+
+            request.quantity
+
+        );
+
+        const purchaseCode = generatePurchaseCode();
+
+        await PurchaseRequest.reserve(
+
+            request.request_id,
+
+            purchaseCode,
+
+            process.env.RESERVATION_VALID_DAYS
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Stock reserved successfully",
+
+            {
+
+                purchase_code: purchaseCode,
+
+                reservation_days:
+
+                    process.env.RESERVATION_VALID_DAYS
+
+            }
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+const completePurchase = async (req, res, next) => {
+
+    try {
+
+        const { purchase_code } = req.body;
+
+        if (!purchase_code) {
+
+            return sendError(
+
+                res,
+
+                "Purchase code is required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const request = await PurchaseRequest.findByPurchaseCode(
+
+            purchase_code
+
+        );
+
+        if (!request) {
+
+            return sendError(
+
+                res,
+
+                "Invalid purchase code",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        if (request.lab_id !== req.user.id) {
+
+            return sendError(
+
+                res,
+
+                "Unauthorized purchase code",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        if (request.request_status !== "Reserved") {
+
+            return sendError(
+
+                res,
+
+                "Purchase has already been completed or is not reserved",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        if (
+
+            new Date(request.reservation_expiry)
+
+            <
+
+            new Date()
+
+        ) {
+
+            return sendError(
+
+                res,
+
+                "Reservation has expired",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        await PurchaseRequest.completePurchase(
+
+            request.request_id
+
+        );
+
+        await Chemical.completeReservedStock(
+
+            request.chemical_id,
+
+            request.quantity
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Purchase completed successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const expireReservations = async (req, res, next) => {
+
+    try {
+
+        const reservations = await PurchaseRequest.getExpiredReservations();
+
+        let expiredCount = 0;
+
+        for (const reservation of reservations) {
+
+            await Chemical.returnReservedStock(
+
+                reservation.chemical_id,
+
+                reservation.quantity
+
+            );
+
+            await PurchaseRequest.expireReservation(
+
+                reservation.request_id
+
+            );
+
+            expiredCount++;
+
+        }
+
+        sendSuccess(
+
+            res,
+
+            `${expiredCount} reservation(s) expired successfully`
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
 module.exports = {
 
     testLaboratory,
@@ -1035,6 +1498,16 @@ module.exports = {
 
     filterChemicals,
 
-    inventoryDashboard
+    inventoryDashboard,
+
+    getPurchaseRequests,
+
+    approvePurchaseRequest,
+
+    reservePurchaseRequest,
+
+    completePurchase,
+
+    expireReservations
 
 };

@@ -239,6 +239,58 @@ static async reject(authorizationId, reason) {
     return result;
 
 }
+
+// Find Approved Authorization
+static async findApprovedById(id, userId) {
+
+    const [rows] = await db.execute(
+
+        `SELECT *
+
+        FROM chemical_authorizations
+
+        WHERE authorization_id = ?
+
+        AND user_id = ?
+
+        AND status = 'Approved'
+
+        AND expiry_date > NOW()`,
+
+        [
+
+            id,
+
+            userId
+
+        ]
+
+    );
+
+    return rows[0];
+
+}
+// Find Valid Authorization By ID
+static async findValidAuthorization(authorizationId) {
+
+    const [rows] = await db.execute(
+
+        `SELECT *
+
+        FROM chemical_authorizations
+
+        WHERE authorization_id = ?
+
+        AND status = 'Approved'
+        AND expiry_date > NOW()`,
+
+        [authorizationId]
+
+    );
+
+    return rows[0];
+
+}
 }
 
 module.exports = ChemicalAuthorization;

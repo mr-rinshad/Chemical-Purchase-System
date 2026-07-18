@@ -318,6 +318,186 @@ static async getInventorySummary(labId) {
 
 }
 
+// Get Available Chemicals By Laboratory
+static async getAvailableByLaboratory(labId) {
+
+    const [rows] = await db.execute(
+
+        `SELECT
+
+            chemical_id,
+
+            chemical_code,
+
+            chemical_name,
+
+            formula,
+
+            category,
+
+            unit,
+
+            price_per_unit,
+
+            total_stock
+
+        FROM chemicals
+
+        WHERE lab_id = ?
+
+        AND status = 'Available'
+
+        AND total_stock > 0
+
+        ORDER BY chemical_name ASC`,
+
+        [labId]
+
+    );
+
+    return rows;
+
+}
+
+// Find Available Chemical
+static async findAvailableChemical(chemicalId, labId) {
+
+    const [rows] = await db.execute(
+
+        `SELECT *
+
+        FROM chemicals
+
+        WHERE chemical_id = ?
+
+        AND lab_id = ?
+
+        AND status = 'Available'`,
+
+        [
+
+            chemicalId,
+
+            labId
+
+        ]
+
+    );
+
+    return rows[0];
+
+}
+
+// Reserve Stock
+static async reserveStock(chemicalId, quantity) {
+
+    const [result] = await db.execute(
+
+        `UPDATE chemicals
+
+        SET
+
+            reserved_stock = reserved_stock + ?,
+
+            total_stock = total_stock - ?
+
+        WHERE
+
+            chemical_id = ?
+
+        AND
+
+            total_stock >= ?`,
+
+        [
+
+            quantity,
+
+            quantity,
+
+            chemicalId,
+
+            quantity
+
+        ]
+
+    );
+
+    return result.affectedRows;
+
+}
+// Release Reserved Stock After Delivery
+static async completeReservedStock(
+
+    chemicalId,
+
+    quantity
+
+) {
+
+    const [result] = await db.execute(
+
+        `UPDATE chemicals
+
+        SET
+
+            reserved_stock = reserved_stock - ?
+
+        WHERE
+
+            chemical_id = ?`,
+
+        [
+
+            quantity,
+
+            chemicalId
+
+        ]
+
+    );
+
+    return result.affectedRows;
+
+}
+
+// Return Reserved Stock
+static async returnReservedStock(
+
+    chemicalId,
+
+    quantity
+
+) {
+
+    const [result] = await db.execute(
+
+        `UPDATE chemicals
+
+        SET
+
+            reserved_stock = reserved_stock - ?,
+
+            total_stock = total_stock + ?
+
+        WHERE chemical_id = ?`,
+
+        [
+
+            quantity,
+
+            quantity,
+
+            chemicalId
+
+        ]
+
+    );
+
+    return result.affectedRows;
+
+}
+
 }
 
 module.exports = Chemical;
