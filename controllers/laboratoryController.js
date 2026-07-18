@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 
 const Laboratory = require("../models/Laboratory");
 const ChemicalAuthorization = require("../models/ChemicalAuthorization");
+const Chemical = require("../models/Chemical");
 const generateToken = require("../utils/generateToken");
 
 const {
@@ -422,6 +423,590 @@ const verifyAuthorization = async (req, res, next) => {
 
 };
 
+const addChemical = async (req, res, next) => {
+
+    try {
+
+        const {
+
+            chemical_code,
+
+            chemical_name,
+
+            formula,
+
+            category,
+
+            unit,
+
+            price_per_unit,
+
+            total_stock
+
+        } = req.body;
+
+        if (
+
+            !chemical_code ||
+
+            !chemical_name ||
+
+            !category ||
+
+            !unit ||
+
+            !price_per_unit ||
+
+            !total_stock
+
+        ) {
+
+            return sendError(
+
+                res,
+
+                "All required fields must be provided",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const existingChemical = await Chemical.findByCode(
+
+            chemical_code
+
+        );
+
+        if (existingChemical) {
+
+            return sendError(
+
+                res,
+
+                "Chemical code already exists",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        await Chemical.create({
+
+            lab_id: req.user.id,
+
+            chemical_code,
+
+            chemical_name,
+
+            formula,
+
+            category,
+
+            unit,
+
+            price_per_unit,
+
+            total_stock
+
+        });
+
+        sendSuccess(
+
+            res,
+
+            "Chemical added successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getMyChemicals = async (req, res, next) => {
+
+    try {
+
+        const chemicals = await Chemical.findByLaboratory(
+
+            req.user.id
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Chemicals fetched successfully",
+
+            chemicals
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getChemicalDetails = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const chemical = await Chemical.findById(id);
+
+        if (!chemical) {
+
+            return sendError(
+
+                res,
+
+                "Chemical not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        if (chemical.lab_id !== req.user.id) {
+
+            return sendError(
+
+                res,
+
+                "You are not authorized to access this chemical",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        sendSuccess(
+
+            res,
+
+            "Chemical details fetched successfully",
+
+            chemical
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const updateChemical = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const chemical = await Chemical.findById(id);
+
+        if (!chemical) {
+
+            return sendError(
+
+                res,
+
+                "Chemical not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        if (chemical.lab_id !== req.user.id) {
+
+            return sendError(
+
+                res,
+
+                "You are not authorized to update this chemical",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        const {
+
+            chemical_name,
+
+            formula,
+
+            category,
+
+            unit,
+
+            price_per_unit,
+
+            total_stock,
+
+            status
+
+        } = req.body;
+
+        await Chemical.update(
+
+            id,
+
+            {
+
+                chemical_name,
+
+                formula,
+
+                category,
+
+                unit,
+
+                price_per_unit,
+
+                total_stock,
+
+                status
+
+            }
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Chemical updated successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const deleteChemical = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const chemical = await Chemical.findById(id);
+
+        if (!chemical) {
+
+            return sendError(
+
+                res,
+
+                "Chemical not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        if (chemical.lab_id !== req.user.id) {
+
+            return sendError(
+
+                res,
+
+                "You are not authorized to delete this chemical",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        if (Number(chemical.reserved_stock) > 0) {
+
+            return sendError(
+
+                res,
+
+                "Cannot delete a chemical with reserved stock",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        await Chemical.delete(id);
+
+        sendSuccess(
+
+            res,
+
+            "Chemical deleted successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const updateChemicalStock = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const { total_stock } = req.body;
+
+        if (total_stock === undefined || Number(total_stock) < 0) {
+
+            return sendError(
+
+                res,
+
+                "Valid stock quantity is required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const chemical = await Chemical.findById(id);
+
+        if (!chemical) {
+
+            return sendError(
+
+                res,
+
+                "Chemical not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        if (chemical.lab_id !== req.user.id) {
+
+            return sendError(
+
+                res,
+
+                "You are not authorized to update this chemical",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        await Chemical.updateStock(
+
+            id,
+
+            total_stock
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Chemical stock updated successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const searchChemicals = async (req, res, next) => {
+
+    try {
+
+        const { keyword } = req.query;
+
+        if (!keyword) {
+
+            return sendError(
+
+                res,
+
+                "Search keyword is required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const chemicals = await Chemical.search(
+
+            req.user.id,
+
+            keyword
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Search completed successfully",
+
+            chemicals
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const filterChemicals = async (req, res, next) => {
+
+    try {
+
+        const {
+
+            category,
+
+            status
+
+        } = req.query;
+
+        const chemicals = await Chemical.filter(
+
+            req.user.id,
+
+            category,
+
+            status
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Chemicals filtered successfully",
+
+            chemicals
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const inventoryDashboard = async (req, res, next) => {
+
+    try {
+
+        const summary = await Chemical.getInventorySummary(
+
+            req.user.id
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Inventory dashboard fetched successfully",
+
+            summary
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
 module.exports = {
 
     testLaboratory,
@@ -432,6 +1017,24 @@ module.exports = {
 
     getProfile,
 
-    verifyAuthorization
+    verifyAuthorization,
+
+    addChemical,
+
+    getMyChemicals,
+
+    getChemicalDetails,
+
+    updateChemical,
+
+    deleteChemical,
+
+    updateChemicalStock,
+
+    searchChemicals,
+
+    filterChemicals,
+
+    inventoryDashboard
 
 };

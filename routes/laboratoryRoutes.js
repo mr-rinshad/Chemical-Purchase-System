@@ -15,7 +15,25 @@ const {
 
     getProfile,
 
-    verifyAuthorization
+    verifyAuthorization,
+
+    addChemical,
+
+    getMyChemicals,
+
+    getChemicalDetails,
+
+    updateChemical,
+
+    deleteChemical,
+
+    updateChemicalStock,
+
+    searchChemicals,
+
+    filterChemicals,
+
+    inventoryDashboard
 
 } = require("../controllers/laboratoryController");
 
@@ -72,6 +90,114 @@ router.post(
     authorize("laboratory"),
 
     verifyAuthorization
+
+);
+
+router.post(
+
+    "/chemicals",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    addChemical
+
+);
+
+router.get(
+
+    "/chemicals",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    getMyChemicals
+
+);
+
+router.get(
+
+    "/chemicals/search",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    searchChemicals
+
+);
+
+router.get(
+
+    "/chemicals/filter",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    filterChemicals
+
+);
+
+router.get(
+
+    "/dashboard",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    inventoryDashboard
+
+);
+
+router.get(
+
+    "/chemicals/:id",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    getChemicalDetails
+
+);
+
+router.put(
+
+    "/chemicals/:id",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    updateChemical
+
+);
+
+router.delete(
+
+    "/chemicals/:id",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    deleteChemical
+
+);
+
+router.put(
+
+    "/chemicals/:id/stock",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    updateChemicalStock
 
 );
 module.exports = router;
