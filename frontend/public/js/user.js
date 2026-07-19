@@ -682,6 +682,289 @@ async function loadPurchaseHistory() {
     }
 
 }
+
+async function loadProfile() {
+
+    const token = getToken();
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL + "/auth/profile",
+
+            {
+
+                headers: {
+
+                    Authorization: "Bearer " + token
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+
+                data.message,
+
+                "danger"
+
+            );
+
+            return;
+
+        }
+
+        document.getElementById("full_name").value =
+            data.data.full_name;
+
+        document.getElementById("email").value =
+            data.data.email;
+
+        document.getElementById("phone").value =
+            data.data.phone;
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+async function updateProfile(event) {
+
+    event.preventDefault();
+
+    const token = getToken();
+
+    const full_name = document
+        .getElementById("full_name")
+        .value
+        .trim();
+
+    const email = document
+        .getElementById("email")
+        .value
+        .trim();
+
+    const phone = document
+        .getElementById("phone")
+        .value
+        .trim();
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL + "/auth/profile",
+
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    "Content-Type": "application/json",
+
+                    Authorization:
+
+                        "Bearer " + token
+
+                },
+
+                body: JSON.stringify({
+
+                    full_name,
+
+                    email,
+
+                    phone
+
+                })
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+
+                data.message,
+
+                "danger"
+
+            );
+
+            return;
+
+        }
+
+        showMessage(
+
+            data.message,
+
+            "success"
+
+        );
+
+        // Update localStorage so all pages show the latest user information
+
+        const loggedUser = getLoggedUser();
+
+        loggedUser.user.full_name = full_name;
+        loggedUser.user.email = email;
+        loggedUser.user.phone = phone;
+
+        localStorage.setItem(
+
+            "user",
+
+            JSON.stringify(loggedUser)
+
+        );
+
+        // Reload the profile from the server
+
+        loadProfile();
+
+    }
+
+    catch (error) {
+
+        showMessage(
+
+            "Unable to connect to server.",
+
+            "danger"
+
+        );
+
+    }
+
+}
+async function changePassword(event) {
+
+    event.preventDefault();
+
+    const current_password = document
+        .getElementById("current_password")
+        .value
+        .trim();
+
+    const new_password = document
+        .getElementById("new_password")
+        .value
+        .trim();
+
+    const confirm_password = document
+        .getElementById("confirm_password")
+        .value
+        .trim();
+
+    if (new_password !== confirm_password) {
+
+        showMessage(
+
+            "New passwords do not match.",
+
+            "danger"
+
+        );
+
+        return;
+
+    }
+
+    const token = getToken();
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL + "/auth/change-password",
+
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    "Content-Type": "application/json",
+
+                    Authorization:
+
+                        "Bearer " + token
+
+                },
+
+                body: JSON.stringify({
+
+                    current_password,
+
+                    new_password
+
+                })
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+
+                data.message,
+
+                "danger"
+
+            );
+
+            return;
+
+        }
+
+        showMessage(
+
+            data.message,
+
+            "success"
+
+        );
+
+        document
+
+            .getElementById("passwordForm")
+
+            .reset();
+
+    }
+
+    catch (error) {
+
+        showMessage(
+
+            "Unable to connect to server.",
+
+            "danger"
+
+        );
+
+    }
+
+}
 // Load Purchase History for User Dashboard
 const purchaseHistoryTable =
     document.getElementById("purchaseHistoryTable");
@@ -698,5 +981,33 @@ const purchaseRequestTable =
 if (purchaseRequestTable) {
 
     loadPurchaseRequests();
+
+}
+const profileForm = document.getElementById("profileForm");
+
+if (profileForm) {
+
+    loadProfile();
+
+    profileForm.addEventListener(
+
+        "submit",
+
+        updateProfile
+
+    );
+
+}
+const passwordForm = document.getElementById("passwordForm");
+
+if (passwordForm) {
+
+    passwordForm.addEventListener(
+
+        "submit",
+
+        changePassword
+
+    );
 
 }

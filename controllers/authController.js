@@ -227,7 +227,7 @@ const profile = async (req, res, next) => {
     try {
 
         const user = await User.findById(
-            req.user.user_id
+            req.user.id
         );
 
         if (!user) {
@@ -270,7 +270,7 @@ const updateProfile = async (req, res, next) => {
 
     try {
 
-        const userId = req.user.user_id;
+        const userId = req.user.id;
 
         const {
 
@@ -394,7 +394,7 @@ const changePassword = async (req, res, next) => {
 
     try {
 
-        const userId = req.user.user_id;
+        const userId = req.user.id;
 
         const {
 
