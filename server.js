@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const path = require("path");
 
 const { sendSuccess, sendError } = require("./utils/responseHandler");
 const errorHandler = require("./middleware/errorMiddleware");
@@ -20,6 +21,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve Frontend
+app.use(express.static(path.join(__dirname, "frontend")));
+
 // Authentication Routes
 app.use("/api/auth", authRoutes);
 
@@ -34,11 +38,6 @@ app.use("/api/laboratory", laboratoryRoutes);
 
 // Port
 const PORT = process.env.PORT || 3000;
-
-// Home Route
-app.get("/", (req, res) => {
-    res.send("Welcome to Chemical Purchase System API");
-});
 
 // Test API
 app.get("/api/test", (req, res) => {
@@ -91,6 +90,13 @@ app.get("/api/crash", (req, res, next) => {
     error.statusCode = 500;
 
     next(error);
+
+});
+
+// Serve Frontend Home Page
+app.get("/", (req, res) => {
+
+    res.sendFile(path.join(__dirname, "frontend", "index.html"));
 
 });
 
