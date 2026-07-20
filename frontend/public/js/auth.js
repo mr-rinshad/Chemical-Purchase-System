@@ -108,7 +108,7 @@ async function login(event) {
 
             case "laboratory":
 
-                window.location.href = "laboratory/dashboard.html";
+                window.location.href = "laboratory/main-dashboard.html";
 
                 break;
 
