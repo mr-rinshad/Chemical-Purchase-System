@@ -363,6 +363,520 @@ async function loadChemicals() {
 
 }
 
+async function loadPurchaseRequests() {
+
+    const token = getToken();
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/laboratory/purchase-requests",
+
+            {
+
+                headers: {
+
+                    Authorization:
+
+                        "Bearer " + token
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+
+                data.message,
+
+                "danger"
+
+            );
+
+            return;
+
+        }
+
+        displayPurchaseRequests(
+
+            data.data
+
+        );
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+        showMessage(
+
+            "Unable to load purchase requests.",
+
+            "danger"
+
+        );
+
+    }
+
+}
+
+function displayPurchaseRequests(requests) {
+
+    const tbody =
+        document.getElementById(
+            "purchaseRequestTable"
+        );
+
+    tbody.innerHTML = "";
+
+    requests.forEach(function (request) {
+
+        let action = "-";
+
+        if (request.request_status === "Submitted") {
+
+            action = `
+                <button
+                    class="btn btn-success btn-sm"
+                    onclick="approveRequest(${request.request_id})">
+
+                    Approve
+
+                </button>
+            `;
+
+        }
+
+        else if (request.request_status === "Approved") {
+
+            action = `
+                <button
+                    class="btn btn-warning btn-sm"
+                    onclick="reserveRequest(${request.request_id})">
+
+                    Reserve
+
+                </button>
+            `;
+
+        }
+
+        else if (request.request_status === "Reserved") {
+
+            action = `
+                <span class="badge bg-primary">
+
+                    Reserved
+
+                </span>
+            `;
+
+        }
+
+        else if (request.request_status === "Completed") {
+
+            action = `
+                <span class="badge bg-success">
+
+                    Completed
+
+                </span>
+            `;
+
+        }
+
+        else if (request.request_status === "Expired") {
+
+            action = `
+                <span class="badge bg-danger">
+
+                    Expired
+
+                </span>
+            `;
+
+        }
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>
+
+                <strong>${request.full_name}</strong><br>
+
+                ${request.email}<br>
+
+                ${request.phone}
+
+            </td>
+
+            <td>
+
+                ${request.chemical_name}<br>
+
+                <small>${request.formula}</small>
+
+            </td>
+
+            <td>
+
+                ${request.quantity}
+                ${request.unit}
+
+            </td>
+
+            <td>
+
+                ${request.authorization_code}
+
+            </td>
+
+            <td>
+
+                ${request.purpose}
+
+            </td>
+
+            <td>
+
+               ${
+                  request.expiry_date
+                    ? new Date(request.expiry_date).toLocaleDateString()
+                    : "-"
+                }
+
+            </td>
+
+            <td>
+
+                ${request.purchase_mode}
+
+            </td>
+
+            <td>
+
+                ${request.request_status}
+
+            </td>
+
+            <td>
+
+    ${
+        request.purchase_code
+            ? `<span class="badge bg-success">${request.purchase_code}</span>`
+            : "-"
+    }
+
+        </td>
+
+            <td>
+
+                ${new Date(
+                    request.request_date
+                ).toLocaleDateString()}
+
+            </td>
+
+            <td>
+
+                ${action}
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+async function approveRequest(id) {
+
+    if (!confirm("Approve this purchase request?")) {
+
+        return;
+
+    }
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/laboratory/purchase-requests/" +
+
+            id +
+
+            "/approve",
+
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    Authorization: "Bearer " + getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        showMessage(data.message, data.success);
+
+        if (data.success) {
+
+            loadPurchaseRequests();
+
+        }
+
+    }
+
+    catch (error) {
+
+        showMessage("Unable to approve request.");
+
+    }
+
+}
+async function reserveRequest(id) {
+
+    if (!confirm("Reserve stock for this purchase request?")) {
+
+        return;
+
+    }
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+            "/laboratory/purchase-requests/" +
+            id +
+            "/reserve",
+
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    Authorization:
+                        "Bearer " + getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+
+                data.message,
+
+                "danger"
+
+            );
+
+            return;
+
+        }
+
+        showMessage(
+
+            data.message,
+
+            "success"
+
+        );
+
+        loadPurchaseRequests();
+
+    }
+
+    catch (error) {
+
+        showMessage(
+
+            "Unable to reserve stock.",
+
+            "danger"
+
+        );
+
+    }
+
+}
+async function updateReservations() {
+
+    if (!confirm("Check and expire old reservations?")) {
+
+        return;
+
+    }
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+            "/laboratory/expire-reservations",
+
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    Authorization:
+                        "Bearer " + getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        showMessage(
+
+            data.message,
+
+            data.success
+                ? "success"
+                : "danger"
+
+        );
+
+        if (data.success) {
+
+    loadPurchaseRequests();
+
+    if (document.getElementById("total_chemicals")) {
+
+        loadDashboard();
+
+    }
+}
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+        showMessage(
+
+            "Unable to update reservations.",
+
+            "danger"
+
+        );
+
+    }
+
+}
+async function completePurchase(event) {
+
+    event.preventDefault();
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+            "/laboratory/complete-purchase",
+
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    Authorization:
+                        "Bearer " + getToken(),
+
+                    "Content-Type":
+                        "application/json"
+
+                },
+
+                body: JSON.stringify({
+
+                    purchase_code:
+
+                    document
+                        .getElementById("purchase_code")
+                        .value
+
+                })
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        showMessage(
+
+            data.message,
+
+            data.success
+                ? "success"
+                : "danger"
+
+        );
+
+        if (data.success) {
+
+            document
+                .getElementById("completePurchaseForm")
+                .reset();
+
+            loadPurchaseRequests();
+
+    
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+        showMessage(
+
+            "Unable to complete purchase.",
+
+            "danger"
+
+        );
+
+    }
+
+}
+
 function displayChemicals(chemicals) {
 
     const tbody =
@@ -1113,9 +1627,44 @@ if (filterStatus) {
     );
 
 }
+const completePurchaseForm =
+    document.getElementById(
+        "completePurchaseForm"
+    );
+
+if (completePurchaseForm) {
+
+    completePurchaseForm.addEventListener(
+
+        "submit",
+
+        completePurchase
+
+    );
+
+}
+const updateReservationsBtn =
+    document.getElementById("updateReservationsBtn");
+
+if (updateReservationsBtn) {
+
+    updateReservationsBtn.addEventListener(
+
+        "click",
+
+        updateReservations
+
+    );
+
+}
 
 if (window.location.pathname.includes("chemicals.html")) {
 
     loadChemicals();
+
+}
+if (window.location.pathname.includes("purchase-requests.html")) {
+
+    loadPurchaseRequests();
 
 }

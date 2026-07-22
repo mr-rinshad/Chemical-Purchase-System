@@ -149,6 +149,8 @@ static async getLaboratoryRequests(labId) {
 
             pr.request_status,
 
+            pr.purchase_code,
+
             pr.request_date
 
         FROM purchase_requests pr
