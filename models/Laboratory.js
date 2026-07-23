@@ -468,6 +468,139 @@ static async getPurchaseReport(labId) {
     return rows;
 
 }
+// Filter Purchase Report
+
+static async filterPurchaseReport(labId, filters) {
+
+    let query = `
+
+        SELECT
+
+            pr.request_id,
+
+            u.full_name AS user_name,
+
+            c.chemical_name,
+
+            pr.quantity,
+
+            c.unit,
+
+            pr.purchase_mode,
+
+            pr.purchase_code,
+
+            pr.request_status,
+
+            pr.reservation_status,
+
+            pr.request_date,
+
+            pr.completed_at
+
+        FROM purchase_requests pr
+
+        INNER JOIN users u
+
+            ON pr.user_id = u.user_id
+
+        INNER JOIN chemicals c
+
+            ON pr.chemical_id = c.chemical_id
+
+        WHERE pr.lab_id = ?
+
+    `;
+
+    const values = [
+
+        labId
+
+    ];
+
+    if (filters.status) {
+
+        query += `
+
+            AND pr.request_status = ?
+
+        `;
+
+        values.push(
+
+            filters.status
+
+        );
+
+    }
+
+    if (filters.mode) {
+
+        query += `
+
+            AND pr.purchase_mode = ?
+
+        `;
+
+        values.push(
+
+            filters.mode
+
+        );
+
+    }
+
+    if (filters.from) {
+
+        query += `
+
+            AND DATE(pr.request_date) >= ?
+
+        `;
+
+        values.push(
+
+            filters.from
+
+        );
+
+    }
+
+    if (filters.to) {
+
+        query += `
+
+            AND DATE(pr.request_date) <= ?
+
+        `;
+
+        values.push(
+
+            filters.to
+
+        );
+
+    }
+
+    query += `
+
+        ORDER BY
+
+            pr.request_date DESC
+
+    `;
+
+    const [rows] = await db.execute(
+
+        query,
+
+        values
+
+    );
+
+    return rows;
+
+}
 }
 
 module.exports = Laboratory;

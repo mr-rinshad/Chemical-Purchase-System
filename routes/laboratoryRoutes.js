@@ -49,6 +49,8 @@ const {
 
     getPurchaseReport,
 
+    filterPurchaseReport
+
 } = require("../controllers/laboratoryController");
 
 // Public Routes
@@ -298,6 +300,11 @@ router.get(
     getPurchaseReport
 
 );
-
+router.get(
+    "/reports/purchases/filter",
+    authenticate,
+    authorize("laboratory"),
+    filterPurchaseReport
+);
 
 module.exports = router;

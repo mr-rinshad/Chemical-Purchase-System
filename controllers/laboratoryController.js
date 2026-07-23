@@ -1530,6 +1530,38 @@ const getPurchaseReport = async (req, res, next) => {
 
 };
 
+const filterPurchaseReport = async (req, res, next) => {
+
+    try {
+
+        const report = await Laboratory.filterPurchaseReport(
+
+            req.user.id,
+
+            req.query
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Purchase report filtered successfully",
+
+            report
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
 module.exports = {
 
     testLaboratory,
@@ -1573,6 +1605,8 @@ module.exports = {
     dashboard,
 
     getPurchaseReport,
+
+    filterPurchaseReport
 
 
 };

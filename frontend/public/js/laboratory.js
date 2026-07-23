@@ -1,5 +1,6 @@
 protectPage("laboratory");
 
+let purchaseReport = [];
 const laboratory = getLoggedUser();
 
 if (document.getElementById("welcome")) {
@@ -600,6 +601,35 @@ function displayPurchaseRequests(requests) {
     });
 
 }
+function downloadPurchaseReport() {
+
+    const workbook = XLSX.utils.book_new();
+
+    const worksheet = XLSX.utils.json_to_sheet(
+
+        purchaseReport
+
+    );
+
+    XLSX.utils.book_append_sheet(
+
+        workbook,
+
+        worksheet,
+
+        "Purchase Report"
+
+    );
+
+    XLSX.writeFile(
+
+        workbook,
+
+        "Purchase_Report.xlsx"
+
+    );
+
+}
 async function approveRequest(id) {
 
     if (!confirm("Approve this purchase request?")) {
@@ -876,7 +906,246 @@ async function completePurchase(event) {
     }
 
 }
+async function loadPurchaseReport() {
 
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+            "/laboratory/reports/purchases",
+
+            {
+
+                headers: {
+
+                    Authorization:
+                    "Bearer " + getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+
+                data.message,
+
+                "danger"
+
+            );
+
+            return;
+
+        }
+
+        purchaseReport = data.data;
+
+        displayPurchaseReport();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+function displayPurchaseReport() {
+
+    const tbody = document.getElementById(
+
+        "reportTable"
+
+    );
+
+    tbody.innerHTML = "";
+
+    purchaseReport.forEach(function (item) {
+
+        tbody.innerHTML += `
+
+        <tr>
+
+        <td>${item.request_id}</td>
+
+        <td>${item.user_name}</td>
+
+        <td>${item.chemical_name}</td>
+
+        <td>
+
+        ${item.quantity}
+
+        ${item.unit}
+
+        </td>
+
+        <td>${item.purchase_mode}</td>
+
+        <td>${item.purchase_code ?? "-"}</td>
+
+        <td>${item.request_status}</td>
+
+        <td>${item.reservation_status}</td>
+
+        <td>
+
+        ${new Date(
+
+            item.request_date
+
+        ).toLocaleDateString()}
+
+        </td>
+
+        <td>
+
+        ${
+
+            item.completed_at
+
+            ?
+
+            new Date(
+
+                item.completed_at
+
+            ).toLocaleDateString()
+
+            :
+
+            "-"
+
+        }
+
+        </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+async function filterPurchaseReport() {
+
+    const status =
+
+        document
+            .getElementById("filterStatus")
+            .value;
+
+    const mode =
+
+        document
+            .getElementById("filterMode")
+            .value;
+
+    const from =
+
+        document
+            .getElementById("fromDate")
+            .value;
+
+    const to =
+
+        document
+            .getElementById("toDate")
+            .value;
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/laboratory/reports/purchases/filter?" +
+
+            new URLSearchParams({
+
+                status,
+
+                mode,
+
+                from,
+
+                to
+
+            }),
+
+            {
+
+                headers: {
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+
+                data.message,
+
+                "danger"
+
+            );
+
+            return;
+
+        }
+
+        purchaseReport = data.data;
+
+        displayPurchaseReport();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+function clearPurchaseFilters() {
+
+    document
+        .getElementById("filterStatus")
+        .value = "";
+
+    document
+        .getElementById("filterMode")
+        .value = "";
+
+    document
+        .getElementById("fromDate")
+        .value = "";
+
+    document
+        .getElementById("toDate")
+        .value = "";
+
+    loadPurchaseReport();
+
+}
 function displayChemicals(chemicals) {
 
     const tbody =
@@ -1657,6 +1926,24 @@ if (updateReservationsBtn) {
     );
 
 }
+const downloadBtn = document.getElementById(
+
+    "downloadExcelBtn"
+
+);
+
+if (downloadBtn) {
+
+    downloadBtn.addEventListener(
+
+        "click",
+
+        downloadPurchaseReport
+
+    );
+
+}
+
 
 if (window.location.pathname.includes("chemicals.html")) {
 
@@ -1666,5 +1953,14 @@ if (window.location.pathname.includes("chemicals.html")) {
 if (window.location.pathname.includes("purchase-requests.html")) {
 
     loadPurchaseRequests();
+
+}
+if (
+
+    window.location.pathname.includes("reports.html")
+
+) {
+
+    loadPurchaseReport();
 
 }
