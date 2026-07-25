@@ -606,6 +606,155 @@ static async filterPurchaseReport(labId, filters) {
     return rows;
 
 }
+
+// =============================================
+// LAB LICENSE REGISTRATION (ADMIN)
+// =============================================
+
+// Register New License
+static async registerLicense(data) {
+
+    const {
+        license_number,
+        laboratory_name,
+        issued_by,
+        issue_date,
+        expiry_date,
+        status
+    } = data;
+
+    const [result] = await db.execute(
+
+        `INSERT INTO lab_licenses
+        (
+            license_number,
+            laboratory_name,
+            issued_by,
+            issue_date,
+            expiry_date,
+            status
+        )
+        VALUES (?, ?, ?, ?, ?, ?)`,
+
+        [
+            license_number,
+            laboratory_name,
+            issued_by,
+            issue_date,
+            expiry_date,
+            status
+        ]
+
+    );
+
+    return result;
+
+}
+
+
+// Get All Licenses
+static async getAllLicenses() {
+
+    const [rows] = await db.execute(
+
+        `SELECT *
+
+        FROM lab_licenses
+
+        ORDER BY created_at DESC`
+
+    );
+
+    return rows;
+
+}
+
+
+// Get License By ID
+static async getLicenseById(id) {
+
+    const [rows] = await db.execute(
+
+        `SELECT *
+
+        FROM lab_licenses
+
+        WHERE license_id = ?`,
+
+        [id]
+
+    );
+
+    return rows[0];
+
+}
+
+
+// Check License Number Exists
+static async findLicenseNumber(number) {
+
+    const [rows] = await db.execute(
+
+        `SELECT *
+
+        FROM lab_licenses
+
+        WHERE license_number = ?`,
+
+        [number]
+
+    );
+
+    return rows[0];
+
+}
+static async updateLicense(id, license) {
+
+    const [result] = await db.execute(
+
+        `UPDATE lab_licenses
+         SET
+            license_number = ?,
+            laboratory_name = ?,
+            issued_by = ?,
+            issue_date = ?,
+            expiry_date = ?,
+            status = ?
+         WHERE license_id = ?`,
+
+        [
+
+            license.license_number,
+            license.laboratory_name,
+            license.issued_by,
+            license.issue_date,
+            license.expiry_date,
+            license.status,
+            id
+
+        ]
+
+    );
+
+    return result;
+
+}
+
+static async deleteLicense(id) {
+
+    const [result] = await db.execute(
+
+        `DELETE FROM lab_licenses
+         WHERE license_id = ?`,
+
+        [id]
+
+    );
+
+    return result;
+
+}
+
 }
 
 module.exports = Laboratory;

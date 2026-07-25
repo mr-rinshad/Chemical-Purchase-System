@@ -39,7 +39,18 @@ const {
 
     searchUsers,
 
-    getUserDetails
+    getUserDetails,
+
+    registerLicense,
+
+    getAllLicenses,
+
+    getLicenseDetails,
+
+    updateLicense,
+
+    deleteLicense
+
 
 } = require("../controllers/adminController");
 
@@ -242,5 +253,71 @@ router.get(
 
 );
 
+// ===========================================
+// LAB LICENSE REGISTRATION
+// ===========================================
+
+// Register New License
+router.post(
+
+    "/licenses",
+
+    authenticate,
+
+    authorize("admin"),
+
+    registerLicense
+
+);
+
+// Get All Licenses
+router.get(
+
+    "/licenses",
+
+    authenticate,
+
+    authorize("admin"),
+
+    getAllLicenses
+
+);
+
+// Get License Details
+router.get(
+
+    "/licenses/:id",
+
+    authenticate,
+
+    authorize("admin"),
+
+    getLicenseDetails
+
+);
+
+router.put(
+
+    "/licenses/:id",
+
+    authenticate,
+
+    authorize("admin"),
+
+    updateLicense
+
+);
+
+router.delete(
+
+    "/licenses/:id",
+
+    authenticate,
+
+    authorize("admin"),
+
+    deleteLicense
+
+);
 
 module.exports = router;

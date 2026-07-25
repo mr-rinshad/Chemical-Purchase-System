@@ -843,6 +843,244 @@ const getPurchaseReport = async (req, res, next) => {
     }
 
 };
+const registerLicense = async (req, res, next) => {
+
+    try {
+
+        const {
+            license_number,
+            laboratory_name,
+            issued_by,
+            issue_date,
+            expiry_date,
+            status
+        } = req.body;
+
+        if (
+            !license_number ||
+            !laboratory_name ||
+            !issued_by ||
+            !issue_date ||
+            !expiry_date
+        ) {
+
+            return sendError(
+                res,
+                "All fields are required",
+                [],
+                400
+            );
+
+        }
+
+        const existingLicense =
+            await Laboratory.findLicenseNumber(license_number);
+
+        if (existingLicense) {
+
+            return sendError(
+                res,
+                "License number already exists",
+                [],
+                400
+            );
+
+        }
+
+        await Laboratory.registerLicense({
+
+            license_number,
+            laboratory_name,
+            issued_by,
+            issue_date,
+            expiry_date,
+            status
+
+        });
+
+        sendSuccess(
+
+            res,
+
+            "License registered successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getAllLicenses = async (req, res, next) => {
+
+    try {
+
+        const licenses =
+            await Laboratory.getAllLicenses();
+
+        sendSuccess(
+
+            res,
+
+            "Licenses fetched successfully",
+
+            licenses
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getLicenseDetails = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const license =
+            await Laboratory.getLicenseById(id);
+
+        if (!license) {
+
+            return sendError(
+
+                res,
+
+                "License not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        sendSuccess(
+
+            res,
+
+            "License details fetched successfully",
+
+            license
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const updateLicense = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const license = await Laboratory.getLicenseById(id);
+
+        if (!license) {
+
+            return sendError(
+
+                res,
+
+                "License not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        await Laboratory.updateLicense(
+
+            id,
+
+            req.body
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "License updated successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const deleteLicense = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const license = await Laboratory.getLicenseById(id);
+
+        if (!license) {
+
+            return sendError(
+
+                res,
+
+                "License not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        await Laboratory.deleteLicense(id);
+
+        sendSuccess(
+
+            res,
+
+            "License deleted successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
 module.exports = {
 
     testAdmin,
@@ -877,6 +1115,16 @@ module.exports = {
 
     searchUsers,
 
-    getUserDetails
+    getUserDetails,
+
+    registerLicense,
+
+    getAllLicenses,
+
+    getLicenseDetails,
+
+    updateLicense,
+
+    deleteLicense
 
 };

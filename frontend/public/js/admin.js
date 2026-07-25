@@ -2,6 +2,7 @@ protectPage("admin");
 
 let users = [];
 let laboratories = [];
+let licenses = [];
 
 const admin = getLoggedUser();
 
@@ -1110,6 +1111,637 @@ async function reactivateLaboratory(id) {
 
 }
 
+async function loadLicenses() {
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/licenses",
+
+            {
+
+                headers: {
+
+                    Authorization:
+
+                    "Bearer " +
+
+                    getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+
+                data.message,
+
+                "danger"
+
+            );
+
+            return;
+
+        }
+
+        licenses = data.data;
+
+        displayLicenses();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+function displayLicenses() {
+
+    const tbody =
+
+        document.getElementById(
+
+            "licenseTableBody"
+
+        );
+
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+
+    licenses.forEach(function (license) {
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>${license.license_id}</td>
+
+            <td>${license.license_number}</td>
+
+            <td>${license.laboratory_name}</td>
+
+            <td>${license.issue_date}</td>
+
+            <td>${license.expiry_date}</td>
+
+            <td>${license.status}</td>
+
+            <td>
+
+                <button
+
+                    class="btn btn-info btn-sm"
+
+                    onclick="viewLicense(${license.license_id})">
+
+                    View
+
+                </button>
+
+                <button
+
+                    class="btn btn-warning btn-sm"
+
+                    onclick="editLicense(${license.license_id})">
+
+                    Edit
+
+                </button>
+
+                <button
+
+                    class="btn btn-danger btn-sm"
+
+                    onclick="deleteLicense(${license.license_id})">
+
+                    Delete
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+async function registerLicense(e) {
+
+    e.preventDefault();
+
+    const id =
+
+        document.getElementById(
+
+            "license_id"
+
+        ).value;
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            (
+
+                id
+
+                    ? "/admin/licenses/" + id
+
+                    : "/admin/licenses"
+
+            ),
+
+            {
+
+                method:
+
+                    id
+
+                        ? "PUT"
+
+                        : "POST",
+
+                headers: {
+
+                    "Content-Type": "application/json",
+
+                    Authorization: "Bearer " + getToken()
+
+                },
+
+                body: JSON.stringify({
+
+                    license_number:
+                        document.getElementById("license_number").value,
+
+                    laboratory_name:
+                        document.getElementById("laboratory_name").value,
+
+                    issued_by:
+                        document.getElementById("issued_by").value,
+
+                    issue_date:
+                        document.getElementById("issue_date").value,
+
+                    expiry_date:
+                        document.getElementById("expiry_date").value,
+
+                    status:
+                        document.getElementById("status").value
+
+                })
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        alert(data.message);
+
+        document.getElementById(
+
+            "license_id"
+
+        ).value = "";
+
+        document.querySelector(
+
+            "#licenseForm button"
+
+        ).innerHTML =
+
+            "Register License";
+
+        document.getElementById(
+
+            "licenseForm"
+
+        ).reset();
+
+        document.getElementById(
+
+            "issued_by"
+
+        ).value =
+
+            "Sub District Magistrate";
+
+        document.getElementById(
+
+            "status"
+
+        ).value =
+
+            "Active";
+
+        loadLicenses();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+async function viewLicense(id) {
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/licenses/" +
+
+            id,
+
+            {
+
+                headers: {
+
+                    Authorization:
+
+                    "Bearer " +
+
+                    getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        const license = data.data;
+
+        document.getElementById("licenseDetails").innerHTML = `
+
+        <table class="table table-bordered">
+
+        <tr>
+
+        <th>License Number</th>
+
+        <td>${license.license_number}</td>
+
+        </tr>
+
+        <tr>
+
+        <th>Laboratory</th>
+
+        <td>${license.laboratory_name}</td>
+
+        </tr>
+
+        <tr>
+
+        <th>Issued By</th>
+
+        <td>${license.issued_by}</td>
+
+        </tr>
+
+        <tr>
+
+        <th>Issue Date</th>
+
+        <td>${license.issue_date}</td>
+
+        </tr>
+
+        <tr>
+
+        <th>Expiry Date</th>
+
+        <td>${license.expiry_date}</td>
+
+        </tr>
+
+        <tr>
+
+        <th>Status</th>
+
+        <td>${license.status}</td>
+
+        </tr>
+
+        `;
+
+        new bootstrap.Modal(
+
+            document.getElementById(
+
+                "licenseModal"
+
+            )
+
+        ).show();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+function searchLicenses() {
+
+    const keyword =
+
+    document
+
+    .getElementById(
+
+        "licenseSearch"
+
+    )
+
+    .value
+
+    .toLowerCase();
+
+    const filtered = licenses.filter(
+
+        license =>
+
+        license.license_number
+
+        .toLowerCase()
+
+        .includes(keyword)
+
+        ||
+
+        license.laboratory_name
+
+        .toLowerCase()
+
+        .includes(keyword)
+
+    );
+
+    const tbody =
+
+    document.getElementById(
+
+        "licenseTableBody"
+
+    );
+
+    tbody.innerHTML = "";
+
+    filtered.forEach(function (license) {
+
+        tbody.innerHTML += `
+
+        <tr>
+
+        <td>${license.license_id}</td>
+
+        <td>${license.license_number}</td>
+
+        <td>${license.laboratory_name}</td>
+
+        <td>${license.issue_date}</td>
+
+        <td>${license.expiry_date}</td>
+
+        <td>${license.status}</td>
+
+        <td>
+
+        <button
+
+        class="btn btn-info btn-sm"
+
+        onclick="viewLicense(${license.license_id})">
+
+        View
+
+        </button>
+
+        </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+async function editLicense(id) {
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/licenses/" +
+
+            id,
+
+            {
+
+                headers: {
+
+                    Authorization:
+
+                    "Bearer " +
+
+                    getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        const license = data.data;
+
+        document.getElementById("license_id").value =
+            license.license_id;
+
+        document.getElementById("license_number").value =
+            license.license_number;
+
+        document.getElementById("laboratory_name").value =
+            license.laboratory_name;
+
+        document.getElementById("issued_by").value =
+            license.issued_by;
+
+        document.getElementById("issue_date").value =
+            license.issue_date.split("T")[0];
+
+        document.getElementById("expiry_date").value =
+            license.expiry_date.split("T")[0];
+
+        document.getElementById("status").value =
+            license.status;
+
+        document.querySelector(
+
+            "#licenseForm button"
+
+        ).innerHTML =
+
+        "Update License";
+
+        window.scrollTo({
+
+            top: 0,
+
+            behavior: "smooth"
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+    }
+
+}
+async function deleteLicense(id) {
+
+    const confirmDelete = confirm(
+
+        "Are you sure you want to delete this license?"
+
+    );
+
+    if (!confirmDelete) {
+
+        return;
+
+    }
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/licenses/" +
+
+            id,
+
+            {
+
+                method: "DELETE",
+
+                headers: {
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        alert(data.message);
+
+        loadLicenses();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+
+
+
+const licenseForm =
+document.getElementById("licenseForm");
+
+if (licenseForm) {
+
+    licenseForm.addEventListener(
+
+        "submit",
+
+        registerLicense
+
+    );
+
+}
+
 const searchBtn = document.getElementById(
 
     "searchBtn"
@@ -1212,5 +1844,18 @@ if(
 ){
 
     loadUsers();
+
+}
+if (
+
+window.location.pathname.includes(
+
+"license-registration.html"
+
+)
+
+) {
+
+    loadLicenses();
 
 }
