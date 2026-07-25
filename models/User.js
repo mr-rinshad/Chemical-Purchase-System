@@ -77,7 +77,107 @@ static async findByPhoneExceptUser(phone, userId) {
     return rows[0];
 
 }
+// Admin - Get All Users
+static async findAll() {
 
+    const [rows] = await db.execute(
+
+        `SELECT
+
+            user_id,
+
+            full_name,
+
+            email,
+
+            phone,
+
+            created_at
+
+        FROM users
+
+        ORDER BY created_at DESC`
+
+    );
+
+    return rows;
+
+}
+// Admin - Search Users
+static async search(keyword) {
+
+    const [rows] = await db.execute(
+
+        `SELECT
+
+            user_id,
+
+            full_name,
+
+            email,
+
+            phone,
+
+            created_at
+
+        FROM users
+
+        WHERE
+
+            full_name LIKE ?
+
+            OR email LIKE ?
+
+            OR phone LIKE ?
+
+        ORDER BY created_at DESC`,
+
+        [
+
+            `%${keyword}%`,
+            `%${keyword}%`,
+            `%${keyword}%`
+
+        ]
+
+    );
+
+    return rows;
+
+}
+
+// Admin - User Details
+static async findByIdAdmin(userId) {
+
+    const [rows] = await db.execute(
+
+        `SELECT
+
+            user_id,
+
+            full_name,
+
+            email,
+
+            phone,
+
+            created_at
+
+        FROM users
+
+        WHERE user_id = ?`,
+
+        [
+
+            userId
+
+        ]
+
+    );
+
+    return rows[0];
+
+}
 static async updateProfile(userId, data) {
 
     const {

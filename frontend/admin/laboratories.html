@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Manage Laboratories</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">
+
+        Manage Laboratories
+
+    </h2>
+
+    <div class="row mb-3">
+
+        <div class="col-md-5">
+
+            <input
+
+                type="text"
+
+                id="searchKeyword"
+
+                class="form-control"
+
+                placeholder="Search Laboratory"
+
+            >
+
+        </div>
+
+        <div class="col-md-2">
+
+            <button
+
+                class="btn btn-primary w-100"
+
+                id="searchBtn"
+
+            >
+
+                Search
+
+            </button>
+
+        </div>
+
+        <div class="col-md-2">
+
+            <button
+
+                class="btn btn-secondary w-100"
+
+                id="refreshBtn"
+
+            >
+
+                Refresh
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-striped">
+
+        <thead class="table-dark">
+
+        <tr>
+
+            <th>ID</th>
+
+            <th>Laboratory</th>
+
+            <th>Owner</th>
+
+            <th>Email</th>
+
+            <th>Phone</th>
+
+            <th>Status</th>
+
+            <th width="280">
+
+                Action
+
+            </th>
+
+        </tr>
+
+        </thead>
+
+        <tbody id="laboratoryTableBody">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- View Laboratory Modal -->
+
+<div
+
+class="modal fade"
+
+id="laboratoryModal"
+
+tabindex="-1"
+
+>
+
+<div class="modal-dialog modal-lg">
+
+<div class="modal-content">
+
+<div class="modal-header">
+
+<h5>
+
+Laboratory Details
+
+</h5>
+
+<button
+
+class="btn-close"
+
+data-bs-dismiss="modal"
+
+></button>
+
+</div>
+
+<div class="modal-body">
+
+<div class="row">
+
+<div class="col-md-6">
+
+<p>
+
+<strong>Laboratory Name</strong>
+
+<br>
+
+<span id="view_lab_name"></span>
+
+</p>
+
+</div>
+
+<div class="col-md-6">
+
+<p>
+
+<strong>Owner Name</strong>
+
+<br>
+
+<span id="view_owner_name"></span>
+
+</p>
+
+</div>
+
+<div class="col-md-6">
+
+<p>
+
+<strong>Email</strong>
+
+<br>
+
+<span id="view_email"></span>
+
+</p>
+
+</div>
+
+<div class="col-md-6">
+
+<p>
+
+<strong>Phone</strong>
+
+<br>
+
+<span id="view_phone"></span>
+
+</p>
+
+</div>
+
+<div class="col-md-12">
+
+<p>
+
+<strong>Address</strong>
+
+<br>
+
+<span id="view_address"></span>
+
+</p>
+
+</div>
+
+<div class="col-md-6">
+
+<p>
+
+<strong>Status</strong>
+
+<br>
+
+<span id="view_status"></span>
+
+</p>
+
+</div>
+
+<div class="col-md-6">
+
+<p>
+
+<strong>Registered On</strong>
+
+<br>
+
+<span id="view_created_at"></span>
+
+</p>
+
+</div>
+
+<div class="col-md-12">
+
+<p>
+
+<strong>Rejection Reason</strong>
+
+<br>
+
+<span id="view_rejection_reason">
+
+-
+
+</span>
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="../public/js/config.js"></script>
+
+<script src="../public/js/common.js"></script>
+
+<script src="../public/js/admin.js"></script>
+
+</body>
+
+</html>

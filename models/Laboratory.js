@@ -160,6 +160,7 @@ static async findByLabId(labId) {
             state,
             pincode,
             status,
+            rejection_reason,
             created_at,
             updated_at
          FROM laboratories
@@ -179,7 +180,9 @@ static async approveLab(labId) {
     const [result] = await db.execute(
 
         `UPDATE laboratories
-         SET status = 'Approved'
+         SET
+            status = 'Approved',
+            rejection_reason = NULL
          WHERE lab_id = ?`,
 
         [labId]
@@ -238,7 +241,9 @@ static async reactivateLab(labId) {
     const [result] = await db.execute(
 
         `UPDATE laboratories
-         SET status = 'Approved'
+         SET
+            status = 'Approved',
+            rejection_reason = NULL
          WHERE lab_id = ?`,
 
         [labId]

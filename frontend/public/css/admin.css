@@ -1,0 +1,51 @@
+body{
+
+    overflow-x:hidden;
+
+    background:#f5f6fa;
+
+}
+
+.list-group-item{
+
+    border:none;
+
+    margin-bottom:8px;
+
+    border-radius:8px;
+
+}
+
+.list-group-item:hover{
+
+    background:#0d6efd;
+
+    color:white;
+
+}
+
+.list-group-item.active{
+
+    background:#0d6efd;
+
+    color:white;
+
+}
+
+.card{
+
+    border-radius:12px;
+
+}
+
+.card-body h2{
+
+    font-weight:bold;
+
+}
+
+.navbar{
+
+    min-height:65px;
+
+}

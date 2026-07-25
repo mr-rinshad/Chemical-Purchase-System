@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Panel</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="../public/css/admin.css">
+
+</head>
+
+<body>
+
+<div class="d-flex">
+
+    <!-- Sidebar -->
+
+    <div class="bg-dark text-white p-3 vh-100"
+         style="width:260px;">
+
+        <h3 class="text-center mb-4">
+
+            Admin Panel
+
+        </h3>
+
+        <div class="list-group">
+
+            <a href="dashboard.html"
+               class="list-group-item list-group-item-action">
+
+                Dashboard
+
+            </a>
+
+            <a href="users.html"
+               class="list-group-item list-group-item-action">
+
+                Users
+
+            </a>
+
+            <a href="laboratories.html"
+               class="list-group-item list-group-item-action">
+
+                Laboratories
+
+            </a>
+
+            <a href="license-requests.html"
+               class="list-group-item list-group-item-action">
+
+                License Requests
+
+            </a>
+
+            <a href="authorizations.html"
+               class="list-group-item list-group-item-action">
+
+                Authorizations
+
+            </a>
+
+            <a href="purchase-monitor.html"
+               class="list-group-item list-group-item-action">
+
+                Purchase Monitor
+
+            </a>
+
+            <a href="reports.html"
+               class="list-group-item list-group-item-action">
+
+                Reports
+
+            </a>
+
+            <a href="profile.html"
+               class="list-group-item list-group-item-action">
+
+                Profile
+
+            </a>
+
+            <button
+                class="btn btn-danger mt-4"
+                onclick="logout()">
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Content -->
+
+    <div class="flex-grow-1">
+
+        <nav class="navbar navbar-light bg-light shadow-sm">
+
+            <div class="container-fluid">
+
+                <h4>
+
+                    Laboratory Chemical Inventory System
+
+                </h4>
+
+                <span>
+
+                    Administrator
+
+                </span>
+
+            </div>
+
+        </nav>
+
+        <div class="p-4">
+
+            <h2>
+
+                Welcome Administrator
+
+            </h2>
+
+            <p>
+
+                Select an option from the left menu.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="../public/js/config.js"></script>
+
+<script src="../public/js/common.js"></script>
+
+<script src="../public/js/admin.js"></script>
+
+</body>
+
+</html>

@@ -33,7 +33,13 @@ const {
 
     dashboard,
 
-    getPurchaseReport
+    getPurchaseReport,
+
+    getAllUsers,
+
+    searchUsers,
+
+    getUserDetails
 
 } = require("../controllers/adminController");
 
@@ -197,6 +203,42 @@ router.get(
     authorize("admin"),
 
     getPurchaseReport
+
+);
+
+router.get(
+
+    "/users",
+
+    authenticate,
+
+    authorize("admin"),
+
+    getAllUsers
+
+);
+
+router.get(
+
+    "/users/search",
+
+    authenticate,
+
+    authorize("admin"),
+
+    searchUsers
+
+);
+
+router.get(
+
+    "/users/:id",
+
+    authenticate,
+
+    authorize("admin"),
+
+    getUserDetails
 
 );
 

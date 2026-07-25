@@ -114,7 +114,7 @@ async function login(event) {
 
             case "admin":
 
-                window.location.href = "admin/dashboard.html";
+                window.location.href = "admin/main-dashboard.html";
 
                 break;
 

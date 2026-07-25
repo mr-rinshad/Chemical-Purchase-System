@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 
 const Admin = require("../models/Admin");
 const Laboratory = require("../models/Laboratory");
+const User = require("../models/User");
 const ChemicalAuthorization = require("../models/ChemicalAuthorization");
 
 const generateToken = require("../utils/generateToken");
@@ -689,6 +690,107 @@ const rejectAuthorizationRequest = async (req, res, next) => {
     }
 
 };
+const getAllUsers = async (req, res, next) => {
+
+    try {
+
+        const users = await User.findAll();
+
+        sendSuccess(
+
+            res,
+
+            "Users fetched successfully",
+
+            users
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const searchUsers = async (req, res, next) => {
+
+    try {
+
+        const { keyword } = req.query;
+
+        const users = await User.search(
+
+            keyword || ""
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Users fetched successfully",
+
+            users
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getUserDetails = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const user = await User.findByIdAdmin(id);
+
+        if (!user) {
+
+            return sendError(
+
+                res,
+
+                "User not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        sendSuccess(
+
+            res,
+
+            "User fetched successfully",
+
+            user
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
 
 const dashboard = async (req, res, next) => {
 
@@ -769,6 +871,12 @@ module.exports = {
 
     dashboard,
 
-    getPurchaseReport
+    getPurchaseReport,
+
+    getAllUsers,
+
+    searchUsers,
+
+    getUserDetails
 
 };
