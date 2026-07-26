@@ -3,6 +3,8 @@ protectPage("admin");
 let users = [];
 let laboratories = [];
 let licenses = [];
+let authorizations = [];
+let approvedAuthorizations = [];
 
 const admin = getLoggedUser();
 
@@ -1723,10 +1725,984 @@ async function deleteLicense(id) {
     }
 
 }
+async function loadPendingAuthorizations() {
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/authorizations/pending",
+
+            {
+
+                headers: {
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        authorizations = data.data;
+
+        displayAuthorizations();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+function displayAuthorizations() {
+
+    const tbody = document.getElementById(
+
+        "authorizationTableBody"
+
+    );
+
+    tbody.innerHTML = "";
+
+    authorizations.forEach(function (authorization) {
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>${authorization.authorization_id}</td>
+
+            <td>${authorization.full_name}</td>
+
+            <td>${authorization.authorization_code}</td>
+
+            <td>
+
+           <a href="${authorization.proof_document}"
+
+              target="_blank"
+
+              class="btn btn-sm btn-secondary">
+
+               View Proof
+
+             </a>
+
+            </td>
+
+            <td>
+
+                ${authorization.purpose}
+
+            </td>
+
+            <td>
+
+                ${authorization.status}
+
+            </td>
+
+            <td>
+
+                <button
+
+                class="btn btn-info btn-sm"
+
+                onclick="viewAuthorization(${authorization.authorization_id})">
+
+                View
+
+                </button>
+
+                <button
+
+                class="btn btn-success btn-sm"
+
+                onclick="approveAuthorization(${authorization.authorization_id})">
+
+                Approve
+
+                </button>
+
+                <button
+
+                class="btn btn-danger btn-sm"
+
+                onclick="rejectAuthorization(${authorization.authorization_id})">
+
+                Reject
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+function viewAuthorization(id) {
+
+    const authorization = authorizations.find(
+
+        item => item.authorization_id == id
+
+    );
+
+    if (!authorization) {
+
+        return;
+
+    }
+
+    document.getElementById("authorizationDetails").innerHTML = `
+
+        <table class="table table-bordered">
+
+            <tr>
+
+                <th width="35%">Authorization ID</th>
+
+                <td>${authorization.authorization_id}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Authorization Code</th>
+
+                <td>${authorization.authorization_code}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>User</th>
+
+                <td>${authorization.full_name}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Purpose</th>
+
+                <td>${authorization.purpose}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Proof Document</th>
+
+                <td>${authorization.proof_document}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Status</th>
+
+                <td>${authorization.status}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Issue Date</th>
+
+                <td>${authorization.issue_date || "-"}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Expiry Date</th>
+
+                <td>${authorization.expiry_date || "-"}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Rejection Reason</th>
+
+                <td>${authorization.rejection_reason || "N/A"}</td>
+
+            </tr>
+
+        </table>
+
+    `;
+
+    new bootstrap.Modal(
+
+        document.getElementById("authorizationModal")
+
+    ).show();
+
+}
+async function approveAuthorization(id) {
+
+    if (
+
+        !confirm(
+
+            "Approve this authorization request?"
+
+        )
+
+    ) {
+
+        return;
+
+    }
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/authorizations/" +
+
+            id +
+
+            "/approve",
+
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken(),
+
+                    "Content-Type":
+
+                        "application/json"
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        alert(data.message);
+
+        if (data.success) {
+
+            loadPendingAuthorizations();
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+        alert("Something went wrong.");
+
+    }
+
+}
+function rejectAuthorization(id) {
+
+    document.getElementById(
+
+        "rejectAuthorizationId"
+
+    ).value = id;
+
+    document.getElementById(
+
+        "rejectReason"
+
+    ).value = "";
+
+    new bootstrap.Modal(
+
+        document.getElementById(
+
+            "rejectAuthorizationModal"
+
+        )
+
+    ).show();
+
+}
+async function submitAuthorizationReject() {
+
+    const id = document.getElementById(
+
+        "rejectAuthorizationId"
+
+    ).value;
+
+    const reason = document.getElementById(
+
+        "rejectReason"
+
+    ).value.trim();
+
+    if (!reason) {
+
+        alert(
+
+            "Please enter rejection reason."
+
+        );
+
+        return;
+
+    }
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/authorizations/" +
+
+            id +
+
+            "/reject",
+
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken(),
+
+                    "Content-Type":
+
+                        "application/json"
+
+                },
+
+                body: JSON.stringify({
+
+                    reason
+
+                })
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        alert(data.message);
+
+        if (data.success) {
+
+            bootstrap.Modal.getInstance(
+
+                document.getElementById(
+
+                    "rejectAuthorizationModal"
+
+                )
+
+            ).hide();
+
+            loadPendingAuthorizations();
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+        alert("Something went wrong.");
+
+    }
+
+}
+function searchAuthorizations() {
+
+    const keyword = document
+        .getElementById("searchAuthorization")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const tbody = document.getElementById(
+        "authorizationTableBody"
+    );
+
+    tbody.innerHTML = "";
+
+    const filtered = authorizations.filter(function (authorization) {
+
+        return (
+
+            authorization.full_name
+                .toLowerCase()
+                .includes(keyword)
+
+            ||
+
+            authorization.authorization_code
+                .toLowerCase()
+                .includes(keyword)
+
+            ||
+
+            authorization.purpose
+                .toLowerCase()
+                .includes(keyword)
+
+        );
+
+    });
+
+    filtered.forEach(function (authorization) {
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>${authorization.authorization_id}</td>
+
+            <td>${authorization.full_name}</td>
+
+            <td>${authorization.authorization_code}</td>
+
+            <td>${authorization.proof_document}</td>
+
+            <td>${authorization.purpose}</td>
+
+            <td>${authorization.status}</td>
+
+            <td>
+
+                <button
+
+                    class="btn btn-info btn-sm"
+
+                    onclick="viewAuthorization(${authorization.authorization_id})">
+
+                    View
+
+                </button>
+
+                <button
+
+                    class="btn btn-success btn-sm"
+
+                    onclick="approveAuthorization(${authorization.authorization_id})">
+
+                    Approve
+
+                </button>
+
+                <button
+
+                    class="btn btn-danger btn-sm"
+
+                    onclick="rejectAuthorization(${authorization.authorization_id})">
+
+                    Reject
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+async function loadApprovedAuthorizations() {
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/authorizations/approved",
+
+            {
+
+                headers: {
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        approvedAuthorizations = data.data;
+
+        displayApprovedAuthorizations();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+function displayApprovedAuthorizations() {
+
+    const tbody = document.getElementById(
+
+        "approvedAuthorizationTableBody"
+
+    );
+
+    tbody.innerHTML = "";
+
+    approvedAuthorizations.forEach(function (authorization) {
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>${authorization.authorization_id}</td>
+
+            <td>${authorization.full_name}</td>
+
+            <td>${authorization.authorization_code}</td>
+
+            <td>${authorization.purpose}</td>
+
+            <td>
+
+                ${authorization.issue_date ?
+
+                new Date(
+
+                    authorization.issue_date
+
+                ).toLocaleDateString()
+
+                :
+
+                "-"}
+
+            </td>
+
+            <td>
+
+                ${authorization.expiry_date ?
+
+                new Date(
+
+                    authorization.expiry_date
+
+                ).toLocaleDateString()
+
+                :
+
+                "-"}
+
+            </td>
+
+            <td>
+
+                ${authorization.status}
+
+            </td>
+
+            <td>
+
+                <button
+
+                    class="btn btn-info btn-sm"
+
+                    onclick="viewApprovedAuthorization(${authorization.authorization_id})">
+
+                    View
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+function viewApprovedAuthorization(id) {
+
+    const authorization = approvedAuthorizations.find(
+
+        item => item.authorization_id == id
+
+    );
+
+    if (!authorization) {
+
+        return;
+
+    }
+
+    document.getElementById("authorizationDetails").innerHTML = `
+
+        <table class="table table-bordered">
+
+            <tr>
+
+                <th width="35%">
+
+                    Authorization ID
+
+                </th>
+
+                <td>
+
+                    ${authorization.authorization_id}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Authorization Code
+
+                </th>
+
+                <td>
+
+                    ${authorization.authorization_code}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    User
+
+                </th>
+
+                <td>
+
+                    ${authorization.full_name}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Purpose
+
+                </th>
+
+                <td>
+
+                    ${authorization.purpose}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Proof Document
+
+                </th>
+
+                <td>
+
+                    ${authorization.proof_document || "-"}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Status
+
+                </th>
+
+                <td>
+
+                    ${authorization.status}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Issue Date
+
+                </th>
+
+                <td>
+
+                    ${authorization.issue_date ?
+
+                        new Date(
+
+                            authorization.issue_date
+
+                        ).toLocaleDateString()
+
+                        :
+
+                        "-"}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Expiry Date
+
+                </th>
+
+                <td>
+
+                    ${authorization.expiry_date ?
+
+                        new Date(
+
+                            authorization.expiry_date
+
+                        ).toLocaleDateString()
+
+                        :
+
+                        "-"}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Rejection Reason
+
+                </th>
+
+                <td>
+
+                    ${authorization.rejection_reason || "N/A"}
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    `;
+
+    new bootstrap.Modal(
+
+        document.getElementById(
+
+            "authorizationModal"
+
+        )
+
+    ).show();
+
+}
+function searchApprovedAuthorizations() {
+
+    const keyword = document
+        .getElementById("approvedSearch")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const tbody = document.getElementById(
+        "approvedAuthorizationTableBody"
+    );
+
+    tbody.innerHTML = "";
+
+    const filtered = approvedAuthorizations.filter(function (authorization) {
+
+        return (
+
+            authorization.full_name
+                .toLowerCase()
+                .includes(keyword)
+
+            ||
+
+            authorization.authorization_code
+                .toLowerCase()
+                .includes(keyword)
+
+            ||
+
+            authorization.purpose
+                .toLowerCase()
+                .includes(keyword)
+
+        );
+
+    });
+
+    filtered.forEach(function (authorization) {
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>${authorization.authorization_id}</td>
+
+            <td>${authorization.full_name}</td>
+
+            <td>${authorization.authorization_code}</td>
+
+            <td>${authorization.purpose}</td>
+
+            <td>
+
+                ${authorization.issue_date
+                    ? new Date(authorization.issue_date).toLocaleDateString()
+                    : "-"}
+
+            </td>
+
+            <td>
+
+                ${authorization.expiry_date
+                    ? new Date(authorization.expiry_date).toLocaleDateString()
+                    : "-"}
+
+            </td>
+
+            <td>${authorization.status}</td>
+
+            <td>
+
+                <button
+
+                    class="btn btn-info btn-sm"
+
+                    onclick="viewApprovedAuthorization(${authorization.authorization_id})">
+
+                    View
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
 
 
+const pendingSearch = document.getElementById("searchAuthorization");
 
+if (pendingSearch) {
 
+    pendingSearch.addEventListener(
+
+        "keyup",
+
+        searchAuthorizations
+
+    );
+
+}
+
+const approvedSearch = document.getElementById("approvedSearch");
+
+if (approvedSearch) {
+
+    approvedSearch.addEventListener(
+
+        "keyup",
+
+        searchApprovedAuthorizations
+
+    );
+
+}
 const licenseForm =
 document.getElementById("licenseForm");
 
@@ -1857,5 +2833,19 @@ window.location.pathname.includes(
 ) {
 
     loadLicenses();
+
+}
+if (
+
+    window.location.pathname.includes(
+
+        "authorizations.html"
+
+    )
+
+) {
+
+    loadPendingAuthorizations();
+    loadApprovedAuthorizations();
 
 }

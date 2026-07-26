@@ -49,7 +49,9 @@ const {
 
     updateLicense,
 
-    deleteLicense
+    deleteLicense,
+
+    getApprovedAuthorizationRequests
 
 
 } = require("../controllers/adminController");
@@ -317,6 +319,18 @@ router.delete(
     authorize("admin"),
 
     deleteLicense
+
+);
+
+router.get(
+
+    "/authorizations/approved",
+
+    authenticate,
+
+    authorize("admin"),
+
+    getApprovedAuthorizationRequests
 
 );
 

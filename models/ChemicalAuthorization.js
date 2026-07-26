@@ -291,6 +291,36 @@ static async findValidAuthorization(authorizationId) {
     return rows[0];
 
 }
+static async findApproved() {
+
+    const [rows] = await db.query(
+
+        `SELECT
+            ca.authorization_id,
+            ca.authorization_code,
+            ca.purpose,
+            ca.proof_document,
+            ca.status,
+            ca.issue_date,
+            ca.expiry_date,
+
+            u.user_id,
+            u.full_name
+
+        FROM chemical_authorizations ca
+
+        INNER JOIN users u
+            ON ca.user_id = u.user_id
+
+        WHERE ca.status = 'Approved'
+
+        ORDER BY ca.authorization_id DESC`
+
+    );
+
+    return rows;
+
+}
 }
 
 module.exports = ChemicalAuthorization;

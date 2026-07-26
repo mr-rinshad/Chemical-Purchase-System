@@ -1081,6 +1081,32 @@ const deleteLicense = async (req, res, next) => {
     }
 
 };
+const getApprovedAuthorizationRequests = async (req, res, next) => {
+
+    try {
+
+        const authorizations =
+            await ChemicalAuthorization.findApproved();
+
+        sendSuccess(
+
+            res,
+
+            "Approved authorization requests fetched successfully",
+
+            authorizations
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
 module.exports = {
 
     testAdmin,
@@ -1125,6 +1151,8 @@ module.exports = {
 
     updateLicense,
 
-    deleteLicense
+    deleteLicense,
+
+    getApprovedAuthorizationRequests
 
 };
