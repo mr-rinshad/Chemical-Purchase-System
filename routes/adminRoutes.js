@@ -51,7 +51,9 @@ const {
 
     deleteLicense,
 
-    getApprovedAuthorizationRequests
+    getApprovedAuthorizationRequests,
+
+    getPurchaseMonitor
 
 
 } = require("../controllers/adminController");
@@ -252,6 +254,17 @@ router.get(
     authorize("admin"),
 
     getUserDetails
+
+);
+router.get(
+
+    "/purchase-monitor",
+
+    authenticate,
+
+    authorize("admin"),
+
+    getPurchaseMonitor
 
 );
 

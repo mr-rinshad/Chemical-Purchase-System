@@ -1107,6 +1107,31 @@ const getApprovedAuthorizationRequests = async (req, res, next) => {
     }
 
 };
+const getPurchaseMonitor = async (req, res, next) => {
+
+    try {
+
+        const purchases = await Admin.getPurchaseReport();
+
+        sendSuccess(
+
+            res,
+
+            "Purchase monitor loaded successfully",
+
+            purchases
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
 module.exports = {
 
     testAdmin,
@@ -1153,6 +1178,8 @@ module.exports = {
 
     deleteLicense,
 
-    getApprovedAuthorizationRequests
+    getApprovedAuthorizationRequests,
+
+    getPurchaseMonitor
 
 };

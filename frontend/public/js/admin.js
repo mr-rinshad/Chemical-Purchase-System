@@ -5,6 +5,9 @@ let laboratories = [];
 let licenses = [];
 let authorizations = [];
 let approvedAuthorizations = [];
+let purchaseMonitor = [];
+let reports = [];
+let filteredReports = [];
 
 const admin = getLoggedUser();
 
@@ -2674,8 +2677,851 @@ function searchApprovedAuthorizations() {
     });
 
 }
+async function loadPurchaseMonitor() {
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/purchase-monitor",
+
+            {
+
+                headers: {
+
+                    Authorization:
+
+                    "Bearer " +
+
+                    getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        purchaseMonitor = data.data;
+
+        displayPurchaseMonitor();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+function displayPurchaseMonitor() {
+
+    const tbody = document.getElementById(
+
+        "purchaseMonitorTableBody"
+
+    );
+
+    tbody.innerHTML = "";
+
+    purchaseMonitor.forEach(function (purchase) {
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>${purchase.request_id}</td>
+
+            <td>${purchase.user_name}</td>
+
+            <td>${purchase.lab_name}</td>
+
+            <td>${purchase.chemical_name}</td>
+
+            <td>
+
+                ${purchase.quantity}
+
+                ${purchase.unit}
+
+            </td>
+
+            <td>
+
+                ${purchase.purchase_code || "-"}
+
+            </td>
+
+            <td>
+
+                ${purchase.request_status}
+
+            </td>
+
+            <td>
+
+                ${purchase.reservation_status}
+
+            </td>
+
+            <td>
+
+                ${new Date(
+
+                    purchase.request_date
+
+                ).toLocaleDateString()}
+
+            </td>
+
+            <td>
+
+                <button
+
+                    class="btn btn-info btn-sm"
+
+                    onclick="viewPurchase(${purchase.request_id})">
+
+                    View
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+function viewPurchase(id) {
+
+    const purchase = purchaseMonitor.find(
+
+        item => item.request_id == id
+
+    );
+
+    if (!purchase) {
+
+        return;
+
+    }
+
+    document.getElementById("purchaseDetails").innerHTML = `
+
+        <table class="table table-bordered">
+
+            <tr>
+
+                <th width="35%">Request ID</th>
+
+                <td>${purchase.request_id}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>User</th>
+
+                <td>${purchase.user_name}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Laboratory</th>
+
+                <td>${purchase.lab_name}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Chemical</th>
+
+                <td>${purchase.chemical_name}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Quantity</th>
+
+                <td>${purchase.quantity} ${purchase.unit}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Purchase Mode</th>
+
+                <td>${purchase.purchase_mode}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Authorization Code</th>
+
+                <td>${purchase.authorization_code}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Purchase Code</th>
+
+                <td>${purchase.purchase_code || "-"}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Request Status</th>
+
+                <td>${purchase.request_status}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Reservation Status</th>
+
+                <td>${purchase.reservation_status}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Request Date</th>
+
+                <td>
+
+                    ${new Date(
+
+                        purchase.request_date
+
+                    ).toLocaleString()}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>Completed Date</th>
+
+                <td>
+
+                    ${purchase.completed_at
+
+                        ?
+
+                        new Date(
+
+                            purchase.completed_at
+
+                        ).toLocaleString()
+
+                        :
+
+                        "-"}
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    `;
+
+    new bootstrap.Modal(
+
+        document.getElementById(
+
+            "purchaseModal"
+
+        )
+
+    ).show();
+
+}
+function searchPurchases() {
+
+    const keyword = document
+
+        .getElementById("purchaseSearch")
+
+        .value
+
+        .toLowerCase()
+
+        .trim();
+
+    const status = document
+
+        .getElementById("statusFilter")
+
+        .value;
+
+    const reservation = document
+
+        .getElementById("reservationFilter")
+
+        .value;
+
+    const tbody = document.getElementById(
+
+        "purchaseMonitorTableBody"
+
+    );
+
+    tbody.innerHTML = "";
+
+    const filtered = purchaseMonitor.filter(function (purchase) {
+
+        const keywordMatch =
+
+            purchase.user_name.toLowerCase().includes(keyword)
+
+            ||
+
+            purchase.lab_name.toLowerCase().includes(keyword)
+
+            ||
+
+            purchase.chemical_name.toLowerCase().includes(keyword)
+
+            ||
+
+            (purchase.purchase_code || "")
+
+                .toLowerCase()
+
+                .includes(keyword);
+
+        const statusMatch =
+
+            status === ""
+
+            ||
+
+            purchase.request_status === status;
+
+        const reservationMatch =
+
+            reservation === ""
+
+            ||
+
+            purchase.reservation_status === reservation;
+
+        return (
+
+            keywordMatch
+
+            &&
+
+            statusMatch
+
+            &&
+
+            reservationMatch
+
+        );
+
+    });
+
+    filtered.forEach(function (purchase) {
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>${purchase.request_id}</td>
+
+            <td>${purchase.user_name}</td>
+
+            <td>${purchase.lab_name}</td>
+
+            <td>${purchase.chemical_name}</td>
+
+            <td>${purchase.quantity} ${purchase.unit}</td>
+
+            <td>${purchase.purchase_code || "-"}</td>
+
+            <td>${purchase.request_status}</td>
+
+            <td>${purchase.reservation_status}</td>
+
+            <td>${new Date(purchase.request_date).toLocaleDateString()}</td>
+
+            <td>
+
+                <button
+
+                    class="btn btn-info btn-sm"
+
+                    onclick="viewPurchase(${purchase.request_id})">
+
+                    View
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+async function loadReports() {
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/reports/purchases",
+
+            {
+
+                headers: {
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        reports = data.data;
+
+       filteredReports = [...reports];
+
+        displayReports(filteredReports);
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+function displayReports(data) {
+
+    const tbody = document.getElementById(
+        "reportTableBody"
+    );
+
+    tbody.innerHTML = "";
+
+    data.forEach(function(report) {
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>${report.request_id}</td>
+
+            <td>${report.user_name}</td>
+
+            <td>${report.lab_name}</td>
+
+            <td>${report.chemical_name}</td>
+
+            <td>${report.quantity} ${report.unit}</td>
+
+            <td>${report.purchase_code || "-"}</td>
+
+            <td>${report.request_status}</td>
+
+            <td>${report.reservation_status}</td>
+
+            <td>${new Date(report.request_date).toLocaleDateString()}</td>
+
+            <td>
+
+                <button
+
+                    class="btn btn-info btn-sm"
+
+                    onclick="viewReport(${report.request_id})">
+
+                    View
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+function viewReport(id) {
+
+    const report = reports.find(
+
+        item => item.request_id == id
+
+    );
+
+    if (!report) {
+
+        return;
+
+    }
+
+    document.getElementById("reportDetails").innerHTML = `
+
+        <table class="table table-bordered">
+
+            <tr>
+
+                <th width="35%">Request ID</th>
+
+                <td>${report.request_id}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>User</th>
+
+                <td>${report.user_name}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Laboratory</th>
+
+                <td>${report.lab_name}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Chemical</th>
+
+                <td>${report.chemical_name}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Quantity</th>
+
+                <td>${report.quantity} ${report.unit}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Purchase Mode</th>
+
+                <td>${report.purchase_mode}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Authorization Code</th>
+
+                <td>${report.authorization_code}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Purchase Code</th>
+
+                <td>${report.purchase_code || "-"}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Request Status</th>
+
+                <td>${report.request_status}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Reservation Status</th>
+
+                <td>${report.reservation_status}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Request Date</th>
+
+                <td>
+
+                    ${new Date(
+
+                        report.request_date
+
+                    ).toLocaleString()}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>Completed Date</th>
+
+                <td>
+
+                    ${report.completed_at ?
+
+                    new Date(
+
+                        report.completed_at
+
+                    ).toLocaleString()
+
+                    :
+
+                    "-"}
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    `;
+
+    new bootstrap.Modal(
+
+        document.getElementById(
+
+            "reportModal"
+
+        )
+
+    ).show();
+
+}
+function searchReports() {
+
+    const keyword = document
+        .getElementById("reportSearch")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const status = document
+        .getElementById("reportStatusFilter")
+        .value;
+
+    const reservation = document
+        .getElementById("reportReservationFilter")
+        .value;
+
+    filteredReports = reports.filter(function (report) {
+
+        const keywordMatch =
+
+            report.user_name.toLowerCase().includes(keyword)
+
+            ||
+
+            report.lab_name.toLowerCase().includes(keyword)
+
+            ||
+
+            report.chemical_name.toLowerCase().includes(keyword)
+
+            ||
+
+            (report.purchase_code || "")
+                .toLowerCase()
+                .includes(keyword);
+
+        const statusMatch =
+
+            status === ""
+
+            ||
+
+            report.request_status === status;
+
+        const reservationMatch =
+
+            reservation === ""
+
+            ||
+
+            report.reservation_status === reservation;
+
+        return (
+
+            keywordMatch
+
+            &&
+
+            statusMatch
+
+            &&
+
+            reservationMatch
+
+        );
+
+    });
+
+    displayReports(filteredReports);
+
+}
+
+function downloadReportExcel() {
+
+    const excelData = filteredReports.map(function(report) {
+
+        return {
+
+            "Request ID": report.request_id,
+
+            "User": report.user_name,
+
+            "Laboratory": report.lab_name,
+
+            "Chemical": report.chemical_name,
+
+            "Quantity": report.quantity,
+
+            "Unit": report.unit,
+
+            "Purchase Mode": report.purchase_mode,
+
+            "Authorization Code": report.authorization_code,
+
+            "Purchase Code": report.purchase_code,
+
+            "Request Status": report.request_status,
+
+            "Reservation Status": report.reservation_status,
+
+            "Request Date": report.request_date,
+
+            "Completed Date": report.completed_at
+
+        };
+
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+
+        workbook,
+
+        worksheet,
+
+        "Purchase Reports"
+
+    );
+
+    XLSX.writeFile(
+
+        workbook,
+
+        "Purchase_Reports.xlsx"
+
+    );
+
+}
 
 
+
+
+const purchaseSearch = document.getElementById("purchaseSearch");
+
+if (purchaseSearch) {
+
+    purchaseSearch.addEventListener(
+
+        "keyup",
+
+        searchPurchases
+
+    );
+
+}
+
+const statusFilter = document.getElementById("statusFilter");
+
+if (statusFilter) {
+
+    statusFilter.addEventListener(
+
+        "change",
+
+        searchPurchases
+
+    );
+
+}
+
+const reservationFilter = document.getElementById("reservationFilter");
+
+if (reservationFilter) {
+
+    reservationFilter.addEventListener(
+
+        "change",
+
+        searchPurchases
+
+    );
+
+}
 const pendingSearch = document.getElementById("searchAuthorization");
 
 if (pendingSearch) {
@@ -2847,5 +3693,31 @@ if (
 
     loadPendingAuthorizations();
     loadApprovedAuthorizations();
+
+}
+if (
+
+    window.location.pathname.includes(
+
+        "purchase-monitor.html"
+
+    )
+
+) {
+
+    loadPurchaseMonitor();
+
+}
+if (
+
+    window.location.pathname.includes(
+
+        "reports.html"
+
+    )
+
+) {
+
+    loadReports();
 
 }
