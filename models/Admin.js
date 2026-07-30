@@ -4,19 +4,359 @@ class Admin {
 
     static async findByEmail(email) {
 
-        const [rows] = await db.query(
+    const [rows] = await db.execute(
 
-            `SELECT *
-             FROM admins
-             WHERE email = ?`,
+        `SELECT
 
-            [email]
+            admin_id,
 
-        );
+            full_name,
 
-        return rows[0];
+            email,
 
-    }
+            password,
+
+            phone,
+
+            designation,
+
+            status,
+
+            is_super_admin
+
+        FROM admins
+
+        WHERE email = ?`,
+
+        [email]
+
+    );
+
+    return rows[0];
+
+}
+
+    // Get Admin Profile
+static async findById(id) {
+
+    const [rows] = await db.execute(
+
+        `SELECT
+
+            admin_id,
+
+            full_name,
+
+            email,
+
+            phone,
+
+            designation,
+
+            status,
+
+            is_super_admin,
+
+            created_at,
+
+            updated_at
+
+        FROM admins
+
+        WHERE admin_id = ?`,
+
+        [id]
+
+    );
+
+    return rows[0];
+
+}
+
+// Find Admin By Email Except Current Admin
+static async findByEmailExceptAdmin(email, adminId) {
+
+    const [rows] = await db.execute(
+
+        `SELECT admin_id
+
+         FROM admins
+
+         WHERE email = ?
+
+         AND admin_id != ?`,
+
+        [
+
+            email,
+
+            adminId
+
+        ]
+
+    );
+
+    return rows[0];
+
+}
+
+// Update Admin Profile
+static async updateProfile(adminId, fullName, phone) {
+
+    const [result] = await db.execute(
+
+        `UPDATE admins
+
+         SET
+
+            full_name = ?,
+
+            phone = ?
+
+         WHERE admin_id = ?`,
+
+        [
+
+            fullName,
+
+            phone,
+
+            adminId
+
+        ]
+
+    );
+
+    return result;
+
+}
+
+// Get Admin Password
+static async findPasswordById(adminId) {
+
+    const [rows] = await db.execute(
+
+        `SELECT password
+
+         FROM admins
+
+         WHERE admin_id = ?`,
+
+        [adminId]
+
+    );
+
+    return rows[0];
+
+}
+
+// Update Password
+static async updatePassword(adminId, password) {
+
+    const [result] = await db.execute(
+
+        `UPDATE admins
+
+         SET password = ?
+
+         WHERE admin_id = ?`,
+
+        [
+
+            password,
+
+            adminId
+
+        ]
+
+    );
+
+    return result;
+
+}
+
+// Create New Admin
+static async create(data) {
+
+    const [result] = await db.execute(
+
+        `INSERT INTO admins (
+
+            full_name,
+
+            email,
+
+            password,
+
+            phone
+
+        )
+
+        VALUES (?, ?, ?, ?)`,
+
+        [
+
+            data.full_name,
+
+            data.email,
+
+            data.password,
+
+            data.phone
+
+        ]
+
+    );
+
+    return result;
+
+}
+
+// Find Admin By Phone
+static async findByPhone(phone) {
+
+    const [rows] = await db.execute(
+
+        `SELECT *
+
+         FROM admins
+
+         WHERE phone = ?`,
+
+        [phone]
+
+    );
+
+    return rows[0];
+
+}
+
+
+// Get All Admins
+static async findAll() {
+
+    const [rows] = await db.execute(
+
+        `SELECT
+
+            admin_id,
+            full_name,
+            email,
+            phone,
+            designation,
+            status,
+            is_super_admin,
+            created_at
+
+         FROM admins
+
+         ORDER BY admin_id ASC`
+
+    );
+
+    return rows;
+
+}
+
+// Get Admin Details
+static async findAdminById(adminId) {
+
+    const [rows] = await db.execute(
+
+        `SELECT
+
+            admin_id,
+            full_name,
+            email,
+            phone,
+            designation,
+            status,
+            is_super_admin,
+            created_at,
+            updated_at
+
+         FROM admins
+
+         WHERE admin_id = ?`,
+
+        [adminId]
+
+    );
+
+    return rows[0];
+
+}
+
+// Update Admin
+static async updateAdmin(
+
+    adminId,
+
+    full_name,
+
+    email,
+
+    phone,
+
+    status
+
+) {
+
+    const [result] = await db.execute(
+
+        `UPDATE admins
+
+         SET
+
+            full_name = ?,
+            email = ?,
+            phone = ?,
+            status = ?
+
+         WHERE admin_id = ?`,
+
+        [
+
+            full_name,
+
+            email,
+
+            phone,
+
+            status,
+
+            adminId
+
+        ]
+
+    );
+
+    return result;
+
+}
+
+// Delete Admin
+static async deleteAdmin(adminId) {
+
+    const [result] = await db.execute(
+
+        `DELETE
+
+         FROM admins
+
+         WHERE admin_id = ?`,
+
+        [adminId]
+
+    );
+
+    return result;
+
+}
+
+
+
+
 
     // Dashboard Statistics
 static async getDashboardStatistics() {

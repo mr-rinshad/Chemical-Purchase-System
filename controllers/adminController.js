@@ -103,7 +103,9 @@ const login = async (req, res, next) => {
 
             email: admin.email,
 
-            account_type: "admin"
+            account_type: "admin",
+
+            is_super_admin: admin.is_super_admin
 
         });
 
@@ -129,11 +131,731 @@ const login = async (req, res, next) => {
 
                     designation: admin.designation,
 
-                    status: admin.status
+                    status: admin.status,
+
+                    is_super_admin: admin.is_super_admin
 
                 }
 
             }
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getProfile = async (req, res, next) => {
+
+    try {
+
+        const admin = await Admin.findById(
+
+            req.user.id
+
+        );
+
+        if (!admin) {
+
+            return sendError(
+
+                res,
+
+                "Admin not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        sendSuccess(
+
+            res,
+
+            "Profile fetched successfully",
+
+            admin
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const updateProfile = async (req, res, next) => {
+
+    try {
+
+        const {
+
+            full_name,
+
+            phone
+
+        } = req.body;
+
+        if (
+
+            !full_name ||
+
+            !phone
+
+        ) {
+
+            return sendError(
+
+                res,
+
+                "Full name and phone are required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        await Admin.updateProfile(
+
+            req.user.id,
+
+            full_name,
+
+            phone
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Profile updated successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const changePassword = async (req, res, next) => {
+
+    try {
+
+        const {
+
+            current_password,
+
+            new_password,
+
+            confirm_password
+
+        } = req.body;
+
+        if (
+
+            !current_password ||
+
+            !new_password ||
+
+            !confirm_password
+
+        ) {
+
+            return sendError(
+
+                res,
+
+                "All fields are required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        if (
+
+            new_password !== confirm_password
+
+        ) {
+
+            return sendError(
+
+                res,
+
+                "New passwords do not match",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const admin = await Admin.findPasswordById(
+
+            req.user.id
+
+        );
+
+        const isMatch = await bcrypt.compare(
+
+            current_password,
+
+            admin.password
+
+        );
+
+        if (!isMatch) {
+
+            return sendError(
+
+                res,
+
+                "Current password is incorrect",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const hashedPassword = await bcrypt.hash(
+
+            new_password,
+
+            10
+
+        );
+
+        await Admin.updatePassword(
+
+            req.user.id,
+
+            hashedPassword
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Password changed successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const createAdmin = async (req, res, next) => {
+
+    try {
+
+        if (!req.user.is_super_admin) {
+
+            return sendError(
+
+                res,
+
+                "Only Super Admin can create new admins.",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        const {
+
+            full_name,
+
+            email,
+
+            phone,
+
+            password
+
+        } = req.body;
+
+        if (
+
+            !full_name ||
+
+            !email ||
+
+            !phone ||
+
+            !password
+
+        ) {
+
+            return sendError(
+
+                res,
+
+                "All fields are required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const emailExists = await Admin.findByEmail(email);
+
+        if (emailExists) {
+
+            return sendError(
+
+                res,
+
+                "Email already exists",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const phoneExists = await Admin.findByPhone(phone);
+
+        if (phoneExists) {
+
+            return sendError(
+
+                res,
+
+                "Phone number already exists",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const hashedPassword = await bcrypt.hash(
+
+            password,
+
+            10
+
+        );
+
+        await Admin.create({
+
+            full_name,
+
+            email,
+
+            phone,
+
+            password: hashedPassword
+
+        });
+
+        sendSuccess(
+
+            res,
+
+            "New admin created successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getAllAdmins = async (req, res, next) => {
+
+    try {
+
+        if (!req.user.is_super_admin) {
+
+            return sendError(
+
+                res,
+
+                "Only Super Admin can access this feature.",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        const admins = await Admin.findAll();
+
+        sendSuccess(
+
+            res,
+
+            "Admins fetched successfully",
+
+            admins
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getAdmin = async (req, res, next) => {
+
+    try {
+
+        if (!req.user.is_super_admin) {
+
+            return sendError(
+
+                res,
+
+                "Only Super Admin can access this feature.",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        const { id } = req.params;
+
+        const admin = await Admin.findAdminById(id);
+
+        if (!admin) {
+
+            return sendError(
+
+                res,
+
+                "Admin not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        sendSuccess(
+
+            res,
+
+            "Admin details fetched successfully",
+
+            admin
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const updateAdmin = async (req, res, next) => {
+
+    try {
+
+        if (!req.user.is_super_admin) {
+
+            return sendError(
+
+                res,
+
+                "Only Super Admin can access this feature.",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        const { id } = req.params;
+
+        const {
+
+            full_name,
+
+            email,
+
+            phone,
+
+            status
+
+        } = req.body;
+
+        if (
+
+            !full_name ||
+
+            !email ||
+
+            !phone ||
+
+            !status
+
+        ) {
+
+            return sendError(
+
+                res,
+
+                "All fields are required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const admin = await Admin.findAdminById(id);
+
+        if (!admin) {
+
+            return sendError(
+
+                res,
+
+                "Admin not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        // Prevent editing Super Admin
+
+        if (admin.is_super_admin) {
+
+            return sendError(
+
+                res,
+
+                "Super Admin cannot be edited.",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        const emailExists = await Admin.findByEmail(email);
+
+        if (
+
+            emailExists &&
+
+            emailExists.admin_id != id
+
+        ) {
+
+            return sendError(
+
+                res,
+
+                "Email already exists",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const phoneExists = await Admin.findByPhone(phone);
+
+        if (
+
+            phoneExists &&
+
+            phoneExists.admin_id != id
+
+        ) {
+
+            return sendError(
+
+                res,
+
+                "Phone number already exists",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        await Admin.updateAdmin(
+
+            id,
+
+            full_name,
+
+            email,
+
+            phone,
+
+            status
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Admin updated successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const deleteAdmin = async (req, res, next) => {
+
+    try {
+
+        if (!req.user.is_super_admin) {
+
+            return sendError(
+
+                res,
+
+                "Only Super Admin can access this feature.",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        const { id } = req.params;
+
+        const admin = await Admin.findAdminById(id);
+
+        if (!admin) {
+
+            return sendError(
+
+                res,
+
+                "Admin not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        // Prevent deleting Super Admin
+
+        if (admin.is_super_admin) {
+
+            return sendError(
+
+                res,
+
+                "Super Admin cannot be deleted.",
+
+                [],
+
+                403
+
+            );
+
+        }
+
+        await Admin.deleteAdmin(id);
+
+        sendSuccess(
+
+            res,
+
+            "Admin deleted successfully"
 
         );
 
@@ -1180,6 +1902,22 @@ module.exports = {
 
     getApprovedAuthorizationRequests,
 
-    getPurchaseMonitor
+    getPurchaseMonitor,
+
+    getProfile,
+
+    updateProfile,
+
+    changePassword,
+
+    createAdmin,
+
+    getAllAdmins,
+
+    getAdmin,
+
+    updateAdmin,
+
+    deleteAdmin
 
 };

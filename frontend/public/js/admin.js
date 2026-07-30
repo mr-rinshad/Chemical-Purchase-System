@@ -8,6 +8,8 @@ let approvedAuthorizations = [];
 let purchaseMonitor = [];
 let reports = [];
 let filteredReports = [];
+let admins = [];
+let filteredAdmins = [];
 
 const admin = getLoggedUser();
 
@@ -24,6 +26,1107 @@ function logout() {
     window.location.href = "../index.html";
 
 }
+
+async function loadProfile() {
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/profile",
+
+            {
+
+                headers: {
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        const admin = data.data;
+
+        const createAdminCard =
+
+            document.getElementById(
+
+                "createAdminCard"
+
+            );
+
+        if (createAdminCard) {
+
+            if (admin.is_super_admin) {
+
+                createAdminCard.style.display = "block";
+                loadAdmins();
+
+            }
+
+            else {
+
+                createAdminCard.style.display = "none";
+
+            }
+
+        }
+
+        document.getElementById("adminFullName").value =
+            admin.full_name;
+
+        document.getElementById("adminEmail").value =
+            admin.email;
+
+        document.getElementById("adminPhone").value =
+            admin.phone;
+
+        document.getElementById("adminCreatedAt").value =
+            new Date(
+                admin.created_at
+            ).toLocaleString();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+async function updateProfile() {
+
+    try {
+
+        const full_name = document
+            .getElementById("adminFullName")
+            .value
+            .trim();
+
+        const phone = document
+            .getElementById("adminPhone")
+            .value
+            .trim();
+
+        if (!full_name || !phone) {
+
+            alert(
+
+                "Full Name and Phone are required."
+
+            );
+
+            return;
+
+        }
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/profile",
+
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    "Content-Type": "application/json",
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                },
+
+                body: JSON.stringify({
+
+                    full_name,
+
+                    phone
+
+                })
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        alert(
+
+            "Profile updated successfully."
+
+        );
+
+        loadProfile();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+async function changePassword() {
+
+    try {
+
+        const current_password = document
+
+            .getElementById("currentPassword")
+
+            .value;
+
+        const new_password = document
+
+            .getElementById("newPassword")
+
+            .value;
+
+        const confirm_password = document
+
+            .getElementById("confirmPassword")
+
+            .value;
+
+        if (
+
+            !current_password ||
+
+            !new_password ||
+
+            !confirm_password
+
+        ) {
+
+            alert("Please fill all fields.");
+
+            return;
+
+        }
+
+        if (
+
+            new_password !== confirm_password
+
+        ) {
+
+            alert("Passwords do not match.");
+
+            return;
+
+        }
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/change-password",
+
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    "Content-Type": "application/json",
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                },
+
+                body: JSON.stringify({
+
+                    current_password,
+
+                    new_password,
+
+                    confirm_password
+
+                })
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        alert("Password changed successfully.");
+
+        document.getElementById("currentPassword").value = "";
+
+        document.getElementById("newPassword").value = "";
+
+        document.getElementById("confirmPassword").value = "";
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+function togglePassword(inputId, button) {
+
+    const input = document.getElementById(inputId);
+
+    if (input.type === "password") {
+
+        input.type = "text";
+
+        button.textContent = "Hide";
+
+    } else {
+
+        input.type = "password";
+
+        button.textContent = "Show";
+
+    }
+
+}
+
+async function createAdmin() {
+
+    try {
+
+        const full_name = document
+
+            .getElementById("newAdminName")
+
+            .value
+
+            .trim();
+
+        const email = document
+
+            .getElementById("newAdminEmail")
+
+            .value
+
+            .trim();
+
+        const phone = document
+
+            .getElementById("newAdminPhone")
+
+            .value
+
+            .trim();
+
+        const password = document
+
+            .getElementById("newAdminPassword")
+
+            .value;
+
+        if (
+
+            !full_name ||
+
+            !email ||
+
+            !phone ||
+
+            !password
+
+        ) {
+
+            alert(
+
+                "Please fill all fields."
+
+            );
+
+            return;
+
+        }
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/create",
+
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type": "application/json",
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                },
+
+                body: JSON.stringify({
+
+                    full_name,
+
+                    email,
+
+                    phone,
+
+                    password
+
+                })
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        alert(
+
+            "New admin created successfully."
+
+        );
+
+        document.getElementById("newAdminName").value = "";
+
+        document.getElementById("newAdminEmail").value = "";
+
+        document.getElementById("newAdminPhone").value = "";
+
+        document.getElementById("newAdminPassword").value = "";
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+async function loadAdmins() {
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/admins",
+
+            {
+
+                headers: {
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        admins = data.data;
+
+        filteredAdmins = [...admins];
+
+        displayAdmins(filteredAdmins);
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+function displayAdmins(data) {
+
+    const tbody = document.getElementById(
+
+        "adminTableBody"
+
+    );
+
+    tbody.innerHTML = "";
+
+    data.forEach(function(admin) {
+
+        let actionButtons = `
+
+            <button
+
+                class="btn btn-info btn-sm"
+
+                onclick="viewAdmin(${admin.admin_id})">
+
+                View
+
+            </button>
+
+        `;
+
+        // Only normal admins can be edited/deleted
+        if (!admin.is_super_admin) {
+
+            actionButtons += `
+
+                <button
+
+                    class="btn btn-warning btn-sm"
+
+                    onclick="editAdmin(${admin.admin_id})">
+
+                    Edit
+
+                </button>
+
+                <button
+
+                    class="btn btn-danger btn-sm"
+
+                    onclick="confirmDeleteAdmin(${admin.admin_id})">
+
+                    Delete
+
+                </button>
+
+            `;
+
+        }
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>${admin.admin_id}</td>
+
+            <td>${admin.full_name}</td>
+
+            <td>${admin.email}</td>
+
+            <td>${admin.phone}</td>
+
+            <td>
+
+                <span class="badge ${admin.status === "Active" ? "bg-success" : "bg-secondary"}">
+
+                    ${admin.status}
+
+                </span>
+
+            </td>
+
+            <td>
+
+                ${actionButtons}
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+async function viewAdmin(id) {
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/admins/" +
+
+            id,
+
+            {
+
+                headers: {
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        const admin = data.data;
+
+        document.getElementById(
+
+            "viewAdminBody"
+
+        ).innerHTML = `
+
+        <table class="table table-bordered">
+
+            <tr>
+
+                <th width="40%">
+
+                    Admin ID
+
+                </th>
+
+                <td>
+
+                    ${admin.admin_id}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Full Name
+
+                </th>
+
+                <td>
+
+                    ${admin.full_name}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Email
+
+                </th>
+
+                <td>
+
+                    ${admin.email}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Phone
+
+                </th>
+
+                <td>
+
+                    ${admin.phone}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Designation
+
+                </th>
+
+                <td>
+
+                    ${admin.designation}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Status
+
+                </th>
+
+                <td>
+
+                    ${admin.status}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Super Admin
+
+                </th>
+
+                <td>
+
+                    ${admin.is_super_admin ? "Yes" : "No"}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Created At
+
+                </th>
+
+                <td>
+
+                    ${new Date(
+
+                        admin.created_at
+
+                    ).toLocaleString()}
+
+                </td>
+
+            </tr>
+
+        </table>
+
+        `;
+
+        new bootstrap.Modal(
+
+            document.getElementById(
+
+                "viewAdminModal"
+
+            )
+
+        ).show();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+async function editAdmin(id) {
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/admins/" +
+
+            id,
+
+            {
+
+                headers: {
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        const admin = data.data;
+
+        document.getElementById(
+
+            "editAdminId"
+
+        ).value = admin.admin_id;
+
+        document.getElementById(
+
+            "editAdminName"
+
+        ).value = admin.full_name;
+
+        document.getElementById(
+
+            "editAdminEmail"
+
+        ).value = admin.email;
+
+        document.getElementById(
+
+            "editAdminPhone"
+
+        ).value = admin.phone;
+
+        document.getElementById(
+
+            "editAdminStatus"
+
+        ).value = admin.status;
+
+        new bootstrap.Modal(
+
+            document.getElementById(
+
+                "editAdminModal"
+
+            )
+
+        ).show();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+async function updateAdmin() {
+
+    try {
+
+        const id = document.getElementById(
+
+            "editAdminId"
+
+        ).value;
+
+        const full_name = document.getElementById(
+
+            "editAdminName"
+
+        ).value;
+
+        const email = document.getElementById(
+
+            "editAdminEmail"
+
+        ).value;
+
+        const phone = document.getElementById(
+
+            "editAdminPhone"
+
+        ).value;
+
+        const status = document.getElementById(
+
+            "editAdminStatus"
+
+        ).value;
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/admins/" +
+
+            id,
+
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    "Content-Type": "application/json",
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                },
+
+                body: JSON.stringify({
+
+                    full_name,
+
+                    email,
+
+                    phone,
+
+                    status
+
+                })
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        alert(data.message);
+
+        bootstrap.Modal.getInstance(
+
+            document.getElementById(
+
+                "editAdminModal"
+
+            )
+
+        ).hide();
+
+        loadAdmins();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+function confirmDeleteAdmin(id) {
+
+    if (
+
+        !confirm(
+
+            "Are you sure you want to delete this admin?"
+
+        )
+
+    ) {
+
+        return;
+
+    }
+
+    deleteAdmin(id);
+
+}
+
+async function deleteAdmin(id) {
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/admin/admins/" +
+
+            id,
+
+            {
+
+                method: "DELETE",
+
+                headers: {
+
+                    Authorization:
+
+                        "Bearer " +
+
+                        getToken()
+
+                }
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        alert(data.message);
+
+        if (data.success) {
+
+            loadAdmins();
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+function searchAdmins() {
+
+    const keyword = document
+
+        .getElementById(
+
+            "adminSearch"
+
+        )
+
+        .value
+
+        .toLowerCase()
+
+        .trim();
+
+    filteredAdmins = admins.filter(function(admin) {
+
+        return (
+
+            admin.full_name
+
+                .toLowerCase()
+
+                .includes(keyword)
+
+            ||
+
+            admin.email
+
+                .toLowerCase()
+
+                .includes(keyword)
+
+            ||
+
+            admin.phone
+
+                .toLowerCase()
+
+                .includes(keyword)
+
+        );
+
+    });
+
+    displayAdmins(filteredAdmins);
+
+}
+
 async function loadDashboard() {
 
     try {
@@ -3719,5 +4822,19 @@ if (
 ) {
 
     loadReports();
+
+}
+
+if (
+
+    window.location.pathname.includes(
+
+        "profile.html"
+
+    )
+
+) {
+
+    loadProfile();
 
 }

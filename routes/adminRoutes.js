@@ -53,7 +53,23 @@ const {
 
     getApprovedAuthorizationRequests,
 
-    getPurchaseMonitor
+    getPurchaseMonitor,
+
+    getProfile,
+
+    updateProfile,
+
+    changePassword,
+
+    createAdmin,
+
+    getAllAdmins,
+
+    getAdmin,
+
+    updateAdmin,
+
+    deleteAdmin
 
 
 } = require("../controllers/adminController");
@@ -344,6 +360,110 @@ router.get(
     authorize("admin"),
 
     getApprovedAuthorizationRequests
+
+);
+
+router.get(
+
+    "/profile",
+
+    authenticate,
+
+    authorize("admin"),
+
+    getProfile
+
+);
+
+router.put(
+
+    "/profile",
+
+    authenticate,
+
+    authorize("admin"),
+
+    updateProfile
+
+);
+
+router.put(
+
+    "/change-password",
+
+    authenticate,
+
+    authorize("admin"),
+
+    changePassword
+
+);
+
+router.post(
+
+    "/create",
+
+    authenticate,
+
+    authorize("admin"),
+
+    createAdmin
+
+);
+
+// ==============================
+// Manage Admins
+// ==============================
+
+// Get All Admins
+router.get(
+
+    "/admins",
+
+    authenticate,
+
+    authorize("admin"),
+
+    getAllAdmins
+
+);
+
+// Get Single Admin
+router.get(
+
+    "/admins/:id",
+
+    authenticate,
+
+    authorize("admin"),
+
+    getAdmin
+
+);
+
+// Update Admin
+router.put(
+
+    "/admins/:id",
+
+    authenticate,
+
+    authorize("admin"),
+
+    updateAdmin
+
+);
+
+// Delete Admin
+router.delete(
+
+    "/admins/:id",
+
+    authenticate,
+
+    authorize("admin"),
+
+    deleteAdmin
 
 );
 
