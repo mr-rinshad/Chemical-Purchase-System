@@ -6,41 +6,22 @@ async function login(event) {
 
     event.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
+    const email = document
+        .getElementById("email")
+        .value
+        .trim();
 
-    const password = document.getElementById("password").value;
-
-    const role = document.getElementById("role").value;
-
-    let endpoint = "";
-
-    switch (role) {
-
-        case "user":
-
-            endpoint = "/auth/login";
-
-            break;
-
-        case "laboratory":
-
-            endpoint = "/laboratory/login";
-
-            break;
-
-        case "admin":
-
-            endpoint = "/admin/login";
-
-            break;
-
-    }
+    const password = document
+        .getElementById("password")
+        .value;
 
     try {
 
         const response = await fetch(
 
-            API_BASE_URL + endpoint,
+            API_BASE_URL +
+
+            "/auth/universal-login",
 
             {
 
@@ -74,7 +55,9 @@ async function login(event) {
 
         }
 
-        localStorage.setItem(
+        // Save JWT Token
+
+        setStorage(
 
             "token",
 
@@ -82,15 +65,13 @@ async function login(event) {
 
         );
 
-        localStorage.setItem(
+        // Get role returned from backend
 
-            "user",
+        const role = data.data.role;
 
-            JSON.stringify(data.data)
+        // Save role
 
-        );
-
-        localStorage.setItem(
+        setStorage(
 
             "role",
 
@@ -98,25 +79,79 @@ async function login(event) {
 
         );
 
+        // Save login data using existing keys
+
+        if (role === "admin") {
+
+            setStorage(
+
+                "admin",
+
+                JSON.stringify(data.data)
+
+            );
+
+        }
+
+        else if (role === "laboratory") {
+
+            setStorage(
+
+                "laboratory",
+
+                JSON.stringify(data.data)
+
+            );
+
+        }
+
+        else {
+
+            setStorage(
+
+                "user",
+
+                JSON.stringify(data.data)
+
+            );
+
+        }
+
+        // Redirect automatically
+
         switch (role) {
 
-            case "user":
+            case "admin":
 
-                window.location.href = "user/dashboard.html";
+                window.location.href =
+
+                    "admin/main-dashboard.html";
 
                 break;
 
             case "laboratory":
 
-                window.location.href = "laboratory/main-dashboard.html";
+                window.location.href =
+
+                    "laboratory/main-dashboard.html";
 
                 break;
 
-            case "admin":
+            case "user":
 
-                window.location.href = "admin/main-dashboard.html";
+                window.location.href =
+
+                    "user/dashboard.html";
 
                 break;
+
+            default:
+
+                showMessage(
+
+                    "Unknown account type."
+
+                );
 
         }
 
@@ -124,7 +159,13 @@ async function login(event) {
 
     catch (error) {
 
-        showMessage("Unable to connect to server.");
+        console.error(error);
+
+        showMessage(
+
+            "Unable to connect to server."
+
+        );
 
     }
 

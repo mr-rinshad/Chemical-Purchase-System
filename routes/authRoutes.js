@@ -13,6 +13,8 @@ const {
 
     login,
 
+    universalLogin,
+
     profile,
 
     updateProfile,
@@ -42,6 +44,14 @@ const {
 router.get("/test", testAuth);
 
 router.post("/register", register);
+
+router.post(
+
+    "/universal-login",
+
+    universalLogin
+
+);
 
 router.post("/login", login);
 

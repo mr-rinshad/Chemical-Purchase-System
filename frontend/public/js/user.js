@@ -818,7 +818,7 @@ async function updateProfile(event) {
 
         );
 
-        // Update localStorage so all pages show the latest user information
+        // Update setStorage so all pages show the latest user information
 
         const loggedUser = getLoggedUser();
 
@@ -826,7 +826,7 @@ async function updateProfile(event) {
         loggedUser.user.email = email;
         loggedUser.user.phone = phone;
 
-        localStorage.setItem(
+        setStorage.setItem(
 
             "user",
 

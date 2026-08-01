@@ -21,7 +21,7 @@ if (admin) {
 
 function logout() {
 
-    localStorage.removeItem("user");
+    clearStorage();
 
     window.location.href = "../index.html";
 

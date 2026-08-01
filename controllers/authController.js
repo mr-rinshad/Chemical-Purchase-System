@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 
 const User = require("../models/User");
+const Admin = require("../models/Admin");
 const generateToken = require("../utils/generateToken");
 const ChemicalAuthorization = require("../models/ChemicalAuthorization");
 const generateAuthorizationCode = require("../utils/generateAuthorizationCode");
@@ -253,6 +254,302 @@ const profile = async (req, res, next) => {
             "Profile fetched successfully",
 
             user
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const universalLogin = async (req, res, next) => {
+
+    try {
+
+        const {
+
+            email,
+
+            password
+
+        } = req.body;
+
+        if (!email || !password) {
+
+            return sendError(
+
+                res,
+
+                "Email and password are required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        // ==========================
+        // Check Admin
+        // ==========================
+
+        let admin = await Admin.findByEmail(email);
+
+        if (admin) {
+
+            const isMatch = await bcrypt.compare(
+
+                password,
+
+                admin.password
+
+            );
+
+            if (!isMatch) {
+
+                return sendError(
+
+                    res,
+
+                    "Invalid email or password",
+
+                    [],
+
+                    401
+
+                );
+
+            }
+
+            const token = generateToken({
+
+                id: admin.admin_id,
+
+                email: admin.email,
+
+                account_type: "admin",
+
+                is_super_admin: admin.is_super_admin
+
+            });
+
+            return sendSuccess(
+
+                res,
+
+                "Login successful",
+
+                {
+
+                    role: "admin",
+
+                    token,
+
+                    user: {
+
+                        admin_id: admin.admin_id,
+
+                        full_name: admin.full_name,
+
+                        email: admin.email,
+
+                        is_super_admin: admin.is_super_admin
+
+                    }
+
+                }
+
+            );
+
+        }
+
+        // ==========================
+        // Check Laboratory
+        // ==========================
+
+        let laboratory = await Laboratory.findByEmail(email);
+
+        if (laboratory) {
+
+            const isMatch = await bcrypt.compare(
+
+                password,
+
+                laboratory.password
+
+            );
+
+            if (!isMatch) {
+
+                return sendError(
+
+                    res,
+
+                    "Invalid email or password",
+
+                    [],
+
+                    401
+
+                );
+
+            }
+
+            if (laboratory.status === "Pending") {
+
+                return sendError(
+
+                    res,
+
+                    "Your laboratory account is pending approval.",
+
+                    [],
+
+                    403
+
+                );
+
+            }
+
+            if (laboratory.status === "Rejected") {
+
+                return sendError(
+
+                    res,
+
+                    "Your laboratory account has been rejected.",
+
+                    [],
+
+                    403
+
+                );
+
+            }
+
+            if (laboratory.status === "Suspended") {
+
+                return sendError(
+
+                    res,
+
+                    "Your laboratory account has been suspended. Please contact the administrator.",
+
+                    [],
+
+                    403
+
+                );
+
+            }
+
+            const token = generateToken({
+
+                id: laboratory.lab_id,
+
+                email: laboratory.email,
+
+                account_type: "laboratory"
+
+            });
+
+            return sendSuccess(
+
+                res,
+
+                "Login successful",
+
+                {
+
+                    role: "laboratory",
+
+                    token,
+
+                    user: laboratory
+
+                }
+
+            );
+
+        }
+
+        // ==========================
+        // Check User
+        // ==========================
+
+        let user = await User.findByEmail(email);
+
+        if (user) {
+
+            const isMatch = await bcrypt.compare(
+
+                password,
+
+                user.password
+
+            );
+
+            if (!isMatch) {
+
+                return sendError(
+
+                    res,
+
+                    "Invalid email or password",
+
+                    [],
+
+                    401
+
+                );
+
+            }
+
+            const token = generateToken({
+
+                id: user.user_id,
+
+                email: user.email,
+
+                account_type: "user"
+
+            });
+
+            return sendSuccess(
+
+                res,
+
+                "Login successful",
+
+                {
+
+                    role: "user",
+
+                    token,
+
+                    user
+
+                }
+
+            );
+
+        }
+
+        return sendError(
+
+            res,
+
+            "Invalid email or password",
+
+            [],
+
+            401
 
         );
 
@@ -1023,6 +1320,8 @@ module.exports = {
     register,
 
     login,
+
+    universalLogin,
 
     profile,
 

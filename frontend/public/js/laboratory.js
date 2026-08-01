@@ -1,20 +1,20 @@
 protectPage("laboratory");
 
 let purchaseReport = [];
-const laboratory = getLoggedUser();
+const laboratory = getLoggedLaboratory();
 
 if (document.getElementById("welcome")) {
 
     document.getElementById("welcome").innerHTML =
         "Welcome, " +
-        laboratory.laboratory.lab_name;
+        laboratory.user.lab_name;
 
 }
 
 if (document.getElementById("email")) {
 
     document.getElementById("email").innerHTML =
-        laboratory.laboratory.email;
+        laboratory.user.email;
 
 }
 

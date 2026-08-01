@@ -1,24 +1,64 @@
+function setStorage(key, value) {
+
+    sessionStorage.setItem(key, value);
+
+}
+
+function getStorage(key) {
+
+    return sessionStorage.getItem(key);
+
+}
+
+function removeStorage(key) {
+
+    sessionStorage.removeItem(key);
+
+}
+
+function clearStorage() {
+
+    sessionStorage.clear();
+
+}
+
 function getToken() {
 
-    return localStorage.getItem("token");
+    return getStorage("token");
 
 }
 
 function getLoggedUser() {
 
-    const user = localStorage.getItem("user");
+    const user = getStorage("user");
 
     return user ? JSON.parse(user) : null;
 
 }
 
+function getLoggedLaboratory() {
+
+    const laboratory = getStorage("laboratory");
+
+    return laboratory ? JSON.parse(laboratory) : null;
+
+}
+
+function getLoggedAdmin() {
+
+    const admin = getStorage("admin");
+
+    return admin ? JSON.parse(admin) : null;
+
+}
+
 function logout() {
 
-    localStorage.removeItem("token");
+    removeStorage("token");
 
-    localStorage.removeItem("user");
+    removeStorage("user");
 
-    localStorage.removeItem("role");
+    removeStorage("role");
 
     window.location.href = "/";
 
@@ -28,7 +68,7 @@ function protectPage(requiredRole) {
 
     const token = getToken();
 
-    const role = localStorage.getItem("role");
+    const role = getStorage("role");
 
     if (!token) {
 
