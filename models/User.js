@@ -269,32 +269,44 @@ static async updatePassword(userId, password) {
 
     static async create(userData) {
 
-        const {
+    const {
+
+        full_name,
+        email,
+        phone,
+        address,
+        password
+
+    } = userData;
+
+    const [result] = await db.query(
+
+        `INSERT INTO users
+        (
             full_name,
             email,
             phone,
+            address,
             password
-        } = userData;
+        )
+        VALUES
+        (?, ?, ?, ?, ?)`,
 
-        const [result] = await db.query(
+        [
 
-            `INSERT INTO users
-            (full_name,email,phone,password)
-            VALUES (?,?,?,?)`,
+            full_name,
+            email,
+            phone,
+            address,
+            password
 
-            [
-                full_name,
-                email,
-                phone,
-                password
-            ]
+        ]
 
-        );
+    );
 
-        return result.insertId;
+    return result.insertId;
 
-    }
-
+}
     // User Dashboard Statistics
 static async getDashboardStatistics(userId) {
 

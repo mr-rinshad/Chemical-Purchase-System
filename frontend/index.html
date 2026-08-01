@@ -10,83 +10,56 @@
 
     <title>Chemical Purchase System</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet">
 
-    <link rel="stylesheet"
-          href="public/css/style.css">
+    <link
+        rel="stylesheet"
+        href="public/css/style.css">
 
 </head>
 
-<body>
+<body class="bg-light">
 
 <div class="container">
 
-    <div class="row justify-content-center align-items-center vh-100">
+    <div class="row vh-100 justify-content-center align-items-center">
 
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-5 col-md-7">
 
             <div class="card shadow">
 
-                <div class="card-header text-center">
+                <div class="card-body text-center p-5">
 
-                    <h3>
+                    <h2 class="mb-3">
 
                         Chemical Purchase System
 
-                    </h3>
+                    </h2>
 
-                </div>
+                    <p class="text-muted mb-4">
 
-                <div class="card-body">
+                        Secure platform for purchasing
+                        and managing laboratory chemicals.
 
-                    <form id="loginForm">
+                    </p>
 
-                        <div class="mb-3">
+                    <a
+                        href="login.html"
+                        class="btn btn-primary w-100 mb-3">
 
-                            <center><h4>Login</h4></center>
+                        Login
 
-                            <label class="form-label">
+                    </a>
 
-                                Email
+                    <a
+                        href="register.html"
+                        class="btn btn-success w-100">
 
-                            </label>
+                        Register as User
 
-                            <input
-                                type="email"
-                                id="email"
-                                class="form-control"
-                                required>
-
-                        </div>
-
-                        <div class="mb-3">
-
-                            <label class="form-label">
-
-                                Password
-
-                            </label>
-
-                            <input
-                                type="password"
-                                id="password"
-                                class="form-control"
-                                required>
-
-                        </div>
-
-                        <div id="message"></div>
-
-                        <button
-                            class="btn btn-primary w-100"
-                            type="submit">
-
-                            Login
-
-                        </button>
-
-                    </form>
+                    </a>
 
                 </div>
 
@@ -97,10 +70,6 @@
     </div>
 
 </div>
-
-<script src="public/js/config.js"></script>
-<script src="public/js/common.js"></script>
-<script src="public/js/auth.js"></script>
 
 </body>
 

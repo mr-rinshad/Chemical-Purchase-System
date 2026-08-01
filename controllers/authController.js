@@ -32,63 +32,108 @@ const register = async (req, res, next) => {
             full_name,
             email,
             phone,
+            address,
             password
 
         } = req.body;
 
         if (
+
             !full_name ||
             !email ||
             !phone ||
+            !address ||
             !password
+
         ) {
 
             return sendError(
+
                 res,
+
                 "All fields are required",
+
                 [],
+
                 400
+
             );
 
         }
+        const phonePattern = /^[6-9]\d{9}$/;
+
+if (!phonePattern.test(phone)) {
+
+    return sendError(
+
+        res,
+
+        "Invalid phone number.",
+
+        [],
+
+        400
+
+    );
+
+}
 
         const emailExists =
+
             await User.findByEmail(email);
 
         if (emailExists) {
 
             return sendError(
+
                 res,
+
                 "Email already exists",
+
                 [],
+
                 400
+
             );
 
         }
 
         const phoneExists =
+
             await User.findByPhone(phone);
 
         if (phoneExists) {
 
             return sendError(
+
                 res,
+
                 "Phone number already exists",
+
                 [],
+
                 400
+
             );
 
         }
 
         const hashedPassword =
+
             await bcrypt.hash(password, 10);
 
         const userId =
+
             await User.create({
 
                 full_name,
+
                 email,
+
                 phone,
+
+                address,
+
                 password: hashedPassword
 
             });
@@ -100,7 +145,9 @@ const register = async (req, res, next) => {
             "User registered successfully",
 
             {
+
                 user_id: userId
+
             },
 
             201
