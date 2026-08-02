@@ -44,6 +44,40 @@ if (authorizationForm) {
 
 }
 
+function formatDateTime(date) {
+
+    if (!date) {
+
+        return "-";
+
+    }
+
+    return new Date(date).toLocaleString(
+
+        "en-IN",
+
+        {
+
+            day: "2-digit",
+
+            month: "short",
+
+            year: "numeric",
+
+            hour: "2-digit",
+
+            minute: "2-digit",
+
+            second: "2-digit",
+
+            hour12: true
+
+        }
+
+    );
+
+}
+
 async function submitAuthorization(event) {
 
     event.preventDefault();
@@ -189,9 +223,9 @@ async function loadAuthorizationRequests() {
 
                     <td>${request.status}</td>
 
-                    <td>${request.expiry_date ?? "-"}</td>
+                    <td>${formatDateTime(request.expiry_date)}</td>
 
-                    <td>${new Date(request.created_at).toLocaleString()}</td>
+                    <td>${formatDateTime(request.created_at)}</td>
 
                 </tr>
 
@@ -505,7 +539,8 @@ async function submitPurchaseRequest(event) {
 
 }
 
-// Load Purchase Requests for User Dashboard
+// Load Active Purchase Requests
+
 async function loadPurchaseRequests() {
 
     const token = getToken();
@@ -530,14 +565,13 @@ async function loadPurchaseRequests() {
 
         const data = await response.json();
 
-        if (!data.success || data.data.length === 0) {
+        if (!data.success) {
 
             purchaseRequestTable.innerHTML = `
 
                 <tr>
 
-                    <td colspan="8"
-                        class="text-center">
+                    <td colspan="8" class="text-center">
 
                         No purchase requests found.
 
@@ -551,9 +585,49 @@ async function loadPurchaseRequests() {
 
         }
 
+        // Show only active requests
+
+        const activeRequests = data.data.filter(function (request) {
+
+            return (
+
+                request.request_status === "Submitted"
+
+                ||
+
+                request.request_status === "Approved"
+
+                ||
+
+                request.request_status === "Reserved"
+
+            );
+
+        });
+
+        if (activeRequests.length === 0) {
+
+            purchaseRequestTable.innerHTML = `
+
+                <tr>
+
+                    <td colspan="8" class="text-center">
+
+                        No active purchase requests.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
         purchaseRequestTable.innerHTML = "";
 
-        data.data.forEach(request => {
+        activeRequests.forEach(function (request) {
 
             purchaseRequestTable.innerHTML += `
 
@@ -571,7 +645,31 @@ async function loadPurchaseRequests() {
 
                     <td>${request.request_status}</td>
 
-                    <td>${request.reservation_status}</td>
+                    <td>
+
+                        ${request.reservation_status}
+
+                        ${request.reservation_status === "Reserved"
+
+                            ?
+
+                            `<br>
+
+                            <button
+                                class="btn btn-sm btn-primary mt-1"
+                                onclick="viewReservationExpiry('${request.purchase_code}','${request.reservation_expiry}')">
+
+                                View
+
+                            </button>`
+
+                            :
+
+                            ""
+
+                        }
+
+                    </td>
 
                     <td>${request.purchase_code || "-"}</td>
 
@@ -606,6 +704,7 @@ async function loadPurchaseHistory() {
                 headers: {
 
                     Authorization:
+
                         "Bearer " + token
 
                 }
@@ -616,19 +715,44 @@ async function loadPurchaseHistory() {
 
         const data = await response.json();
 
-        if (
-
-            !data.success ||
-
-            data.data.length === 0
-
-        ) {
+        if (!data.success) {
 
             purchaseHistoryTable.innerHTML = `
 
                 <tr>
 
                     <td colspan="6"
+
+                        class="text-center">
+
+                        No completed purchases found.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+        // Show only completed requests
+
+        const completedPurchases = data.data.filter(function (item) {
+
+            return item.request_status === "Completed";
+
+        });
+
+        if (completedPurchases.length === 0) {
+
+            purchaseHistoryTable.innerHTML = `
+
+                <tr>
+
+                    <td colspan="6"
+
                         class="text-center">
 
                         No completed purchases found.
@@ -645,7 +769,7 @@ async function loadPurchaseHistory() {
 
         purchaseHistoryTable.innerHTML = "";
 
-        data.data.forEach(item => {
+        completedPurchases.forEach(function (item) {
 
             purchaseHistoryTable.innerHTML += `
 
@@ -965,6 +1089,43 @@ async function changePassword(event) {
     }
 
 }
+
+function viewReservationExpiry(
+
+    purchaseCode,
+
+    expiry
+
+) {
+
+    document.getElementById(
+
+        "modalPurchaseCode"
+
+    ).innerHTML = purchaseCode;
+
+    document.getElementById(
+
+        "modalExpiry"
+
+    ).innerHTML =
+
+        new Date(expiry).toLocaleString();
+
+    const modal = new bootstrap.Modal(
+
+        document.getElementById(
+
+            "reservationModal"
+
+        )
+
+    );
+
+    modal.show();
+
+}
+
 // Load Purchase History for User Dashboard
 const purchaseHistoryTable =
     document.getElementById("purchaseHistoryTable");

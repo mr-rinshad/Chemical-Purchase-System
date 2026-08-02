@@ -73,7 +73,7 @@ class PurchaseRequest {
 
     }
 
-    // Get User Purchase Requests
+   // Get User Purchase Requests
 static async getUserRequests(userId) {
 
     const [rows] = await db.execute(
@@ -92,7 +92,13 @@ static async getUserRequests(userId) {
 
             pr.purchase_mode,
 
+            pr.purchase_code,
+
             pr.request_status,
+
+            pr.reservation_status,
+
+            pr.reservation_expiry,
 
             pr.request_date
 
