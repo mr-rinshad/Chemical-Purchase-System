@@ -2903,16 +2903,15 @@ function displayAuthorizations() {
             <td>${authorization.authorization_code}</td>
 
             <td>
+<button
 
-           <a href="${authorization.proof_document}"
+class="btn btn-secondary btn-sm"
 
-              target="_blank"
+onclick="viewProof('${authorization.proof_document}')">
 
-              class="btn btn-sm btn-secondary">
+View Proof
 
-               View Proof
-
-             </a>
+</button>
 
             </td>
 
@@ -2969,6 +2968,71 @@ function displayAuthorizations() {
     });
 
 }
+
+function viewProof(fileName) {
+
+    const image = document.getElementById("proofImage");
+
+    const pdf = document.getElementById("proofPDF");
+
+    image.style.display = "none";
+    pdf.style.display = "none";
+
+    const fileURL =
+        "/uploads/proof/" + fileName;
+
+    const extension =
+        fileName
+        .split(".")
+        .pop()
+        .toLowerCase();
+
+    if (
+
+        extension === "jpg" ||
+
+        extension === "jpeg" ||
+
+        extension === "png"
+
+    ) {
+
+        image.src = fileURL;
+
+        image.style.display = "block";
+
+    }
+
+    else if (
+
+        extension === "pdf"
+
+    ) {
+
+        pdf.src = fileURL;
+
+        pdf.style.display = "block";
+
+    }
+
+    else {
+
+        alert("Unsupported file type.");
+
+        return;
+
+    }
+
+    const modal = new bootstrap.Modal(
+
+        document.getElementById("proofModal")
+
+    );
+
+    modal.show();
+
+}
+
 function viewAuthorization(id) {
 
     const authorization = authorizations.find(
@@ -3473,17 +3537,31 @@ function displayApprovedAuthorizations() {
 
             <td>
 
-                <button
+    <div class="d-flex gap-2">
 
-                    class="btn btn-info btn-sm"
+        <button
 
-                    onclick="viewApprovedAuthorization(${authorization.authorization_id})">
+            class="btn btn-secondary btn-sm"
 
-                    View
+            onclick="viewProof('${authorization.proof_document}')">
 
-                </button>
+            View Proof
 
-            </td>
+        </button>
+
+        <button
+
+            class="btn btn-info btn-sm"
+
+            onclick="viewApprovedAuthorization(${authorization.authorization_id})">
+
+            View Details
+
+        </button>
+
+    </div>
+
+</td>
 
         </tr>
 

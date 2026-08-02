@@ -4,6 +4,7 @@ const router = express.Router();
 
 const authMiddleware = require("../middleware/authMiddleware");
 const authorize = require("../middleware/authorize");
+const upload = require("../middleware/upload");
 
 const {
 
@@ -116,6 +117,8 @@ router.post(
     authMiddleware,
 
     authorize("user"),
+
+    upload.single("proof_document"),
 
     requestAuthorization
 

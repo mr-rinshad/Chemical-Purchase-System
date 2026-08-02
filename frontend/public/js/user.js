@@ -87,10 +87,41 @@ async function submitAuthorization(event) {
         .value
         .trim();
 
-    const proof_document = document
+    const proofFile = document
         .getElementById("proof_document")
-        .value
-        .trim();
+        .files[0];
+
+    if (!proofFile) {
+
+        showMessage(
+
+            "Please select a proof document.",
+
+            "danger"
+
+        );
+
+        return;
+
+    }
+
+    const formData = new FormData();
+
+    formData.append(
+
+        "purpose",
+
+        purpose
+
+    );
+
+    formData.append(
+
+        "proof_document",
+
+        proofFile
+
+    );
 
     const token = getToken();
 
@@ -106,19 +137,11 @@ async function submitAuthorization(event) {
 
                 headers: {
 
-                    "Content-Type": "application/json",
-
                     Authorization: "Bearer " + token
 
                 },
 
-                body: JSON.stringify({
-
-                    purpose,
-
-                    proof_document
-
-                })
+                body: formData
 
             }
 
@@ -129,8 +152,11 @@ async function submitAuthorization(event) {
         if (!data.success) {
 
             showMessage(
+
                 data.message,
+
                 "danger"
+
             );
 
             return;
@@ -138,8 +164,11 @@ async function submitAuthorization(event) {
         }
 
         showMessage(
+
             data.message,
+
             "success"
+
         );
 
         authorizationForm.reset();
@@ -153,8 +182,11 @@ async function submitAuthorization(event) {
         console.error(error);
 
         showMessage(
+
             "Unable to connect to server.",
+
             "danger"
+
         );
 
     }

@@ -850,21 +850,31 @@ const requestAuthorization = async (req, res, next) => {
 
     try {
 
-        const {
+        const { purpose } = req.body;
 
-            purpose,
-
-            proof_document
-
-        } = req.body;
-
-        if (!purpose || !proof_document) {
+        if (!purpose) {
 
             return sendError(
 
                 res,
 
-                "Purpose and proof document are required",
+                "Purpose is required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        if (!req.file) {
+
+            return sendError(
+
+                res,
+
+                "Please upload a proof document",
 
                 [],
 
@@ -884,7 +894,7 @@ const requestAuthorization = async (req, res, next) => {
 
             purpose,
 
-            proof_document
+            proof_document: req.file.filename
 
         });
 

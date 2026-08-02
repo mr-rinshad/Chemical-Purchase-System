@@ -20,6 +20,17 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+
+    "/uploads",
+
+    express.static(
+
+        path.join(__dirname, "uploads")
+
+    )
+
+);
 
 // Serve Frontend
 app.use(express.static(path.join(__dirname, "frontend")));
