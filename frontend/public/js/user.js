@@ -1,6 +1,8 @@
 protectPage("user");
 
 const user = getLoggedUser();
+let selectedPurchase = null;
+let activePurchaseRequests = [];
 
 if (user) {
 
@@ -575,6 +577,8 @@ async function submitPurchaseRequest(event) {
 
 async function loadPurchaseRequests() {
 
+    await autoCompleteOrders();
+
     const token = getToken();
 
     try {
@@ -619,25 +623,29 @@ async function loadPurchaseRequests() {
 
         // Show only active requests
 
-        const activeRequests = data.data.filter(function (request) {
+        activePurchaseRequests = data.data.filter(function (request) {
 
-            return (
+            return [
 
-                request.request_status === "Submitted"
+                "Submitted",
 
-                ||
+                "Approved",
 
-                request.request_status === "Approved"
+                "Reserved",
 
-                ||
+                "Paid",
 
-                request.request_status === "Reserved"
+                "Ready for Delivery",
 
-            );
+                "Delivered"
+
+            ].includes(request.request_status);
 
         });
 
-        if (activeRequests.length === 0) {
+        console.table(activePurchaseRequests);
+
+        if (activePurchaseRequests.length === 0) {
 
             purchaseRequestTable.innerHTML = `
 
@@ -659,7 +667,7 @@ async function loadPurchaseRequests() {
 
         purchaseRequestTable.innerHTML = "";
 
-        activeRequests.forEach(function (request) {
+        activePurchaseRequests.forEach(function (request) {
 
             purchaseRequestTable.innerHTML += `
 
@@ -673,7 +681,59 @@ async function loadPurchaseRequests() {
 
                     <td>${request.quantity}</td>
 
-                    <td>${request.purchase_mode}</td>
+                    <td>
+
+                        ${request.purchase_mode}
+
+                        <br>
+
+                        ${
+                            request.purchase_mode === "Offline"
+
+                            ?
+
+                            `<button
+                                class="btn btn-sm btn-primary mt-1"
+                                onclick="viewOfflinePurchase(${request.request_id})">
+
+                                View
+
+                            </button>`
+
+                            :
+
+                            request.request_status === "Reserved"
+
+                            ?
+
+                            `<button
+                                class="btn btn-sm btn-success mt-1"
+                                onclick="showPaymentModal(${request.request_id})">
+
+                                Payment
+
+                            </button>`
+
+                            :
+
+                            request.request_status === "Paid"
+
+                            ?
+
+                            `<button
+                                class="btn btn-sm btn-warning mt-1"
+                                onclick="trackOrder(${request.request_id})">
+
+                                Track Order
+
+                            </button>`
+
+                            :
+
+                            ""
+                        }
+
+                    </td>
 
                     <td>${request.request_status}</td>
 
@@ -720,7 +780,6 @@ async function loadPurchaseRequests() {
     }
 
 }
-
 async function loadPurchaseHistory() {
 
     const token = getToken();
@@ -1155,6 +1214,410 @@ function viewReservationExpiry(
     );
 
     modal.show();
+
+}
+
+function viewOfflinePurchase(requestId) {
+
+    selectedPurchase = activePurchaseRequests.find(function (item) {
+
+        return item.request_id == requestId;
+
+    });
+
+    if (!selectedPurchase) {
+
+        return;
+
+    }
+
+    document.getElementById("offlineLab").innerHTML =
+        selectedPurchase.lab_name;
+
+    document.getElementById("offlineChemical").innerHTML =
+        selectedPurchase.chemical_name;
+
+    document.getElementById("offlineQuantity").innerHTML =
+        selectedPurchase.quantity + " " + selectedPurchase.unit;
+
+document.getElementById("offlineUnitPrice").innerHTML =
+    "₹ " + Number(selectedPurchase.price_per_unit).toFixed(2);
+
+document.getElementById("offlineTotalPrice").innerHTML =
+    "₹ " + Number(selectedPurchase.total_price).toFixed(2);
+
+    document.getElementById("offlinePurchaseCode").innerHTML =
+        selectedPurchase.purchase_code || "-";
+
+    document.getElementById("offlineStatus").innerHTML =
+        selectedPurchase.request_status;
+
+    new bootstrap.Modal(
+
+        document.getElementById("offlinePurchaseModal")
+
+    ).show();
+
+}
+
+function showPaymentModal(requestId) {
+
+    selectedPurchase = activePurchaseRequests.find(function (item) {
+
+        return item.request_id == requestId;
+
+    });
+
+    if (!selectedPurchase) {
+
+        return;
+
+    }
+
+    document.getElementById("paymentName").innerHTML =
+        selectedPurchase.full_name || "-";
+
+    document.getElementById("paymentAddress").innerHTML =
+        selectedPurchase.address || "-";
+
+    document.getElementById("paymentChemical").innerHTML =
+        selectedPurchase.chemical_name;
+
+    document.getElementById("paymentQuantity").innerHTML =
+        selectedPurchase.quantity + " " + selectedPurchase.unit;
+
+    document.getElementById("paymentUnitPrice").innerHTML =
+        "₹ " + Number(selectedPurchase.price_per_unit).toFixed(2);
+
+    document.getElementById("paymentTotal").innerHTML =
+        "₹ " + Number(selectedPurchase.total_price).toFixed(2);
+
+    // Reset payment form
+    document.getElementById("upiId").value = "";
+
+    document.getElementById("upiError").style.display =
+        "none";
+
+    document.getElementById("payNowBtn").style.display =
+        "block";
+
+    document.getElementById("paymentLoading").style.display =
+        "none";
+
+    document.getElementById("paymentSuccess").style.display =
+        "none";
+
+    new bootstrap.Modal(
+
+        document.getElementById("paymentModal")
+
+    ).show();
+
+}
+
+async function startPayment() {
+
+    const upiId =
+        document.getElementById("upiId").value.trim();
+
+    if (upiId === "") {
+
+        document.getElementById("upiError").style.display =
+            "block";
+
+        return;
+
+    }
+
+    document.getElementById("upiError").style.display =
+        "none";
+
+    document.getElementById("payNowBtn").style.display =
+        "none";
+
+    document.getElementById("paymentLoading").style.display =
+        "block";
+
+    // Dummy payment delay
+    setTimeout(async function () {
+
+        try {
+
+            const response = await fetch(
+
+                API_BASE_URL + "/auth/pay-purchase",
+
+                {
+
+                    method: "PUT",
+
+                    headers: {
+
+                        Authorization:
+                            "Bearer " + getToken(),
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body: JSON.stringify({
+
+                        purchase_code:
+                            selectedPurchase.purchase_code
+
+                    })
+
+                }
+
+            );
+
+            const data = await response.json();
+
+            document.getElementById("paymentLoading").style.display =
+                "none";
+
+if (data.success) {
+
+    document.getElementById("paymentSuccess").style.display =
+        "block";
+
+    showMessage(
+
+        "Payment Successful",
+
+        "success"
+
+    );
+
+    // Close modal after showing success tick
+    setTimeout(function () {
+
+        bootstrap.Modal.getInstance(
+
+            document.getElementById("paymentModal")
+
+        ).hide();
+
+    }, 1500);
+
+    loadPurchaseRequests();
+
+    loadPurchaseHistory();
+
+}
+
+            else {
+
+                document.getElementById("payNowBtn").style.display =
+                    "block";
+
+                showMessage(
+
+                    data.message,
+
+                    "danger"
+
+                );
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.log(error);
+
+            document.getElementById("paymentLoading").style.display =
+                "none";
+
+            document.getElementById("payNowBtn").style.display =
+                "block";
+
+            showMessage(
+
+                "Payment failed.",
+
+                "danger"
+
+            );
+
+        }
+
+    }, 3000);
+
+}
+
+function trackOrder(requestId) {
+
+    selectedPurchase = activePurchaseRequests.find(function (item) {
+
+        return item.request_id == requestId;
+
+    });
+
+    if (!selectedPurchase) {
+
+        return;
+
+    }
+
+    // Show Purchase Code
+    document.getElementById("trackPurchaseCode").innerHTML =
+        "Purchase Code : " + selectedPurchase.purchase_code;
+
+    const paymentDate = new Date(selectedPurchase.payment_date);
+
+    const today = new Date();
+
+    const diffTime = today.getTime() - paymentDate.getTime();
+
+    const diffDays = Math.floor(
+
+        diffTime / (1000 * 60 * 60 * 24)
+
+    );
+
+    // Reset Progress
+    document.getElementById("paidProgress").style.width = "0%";
+    document.getElementById("deliveryProgress").style.width = "0%";
+    document.getElementById("deliveredProgress").style.width = "0%";
+
+    document.getElementById("paidText").innerHTML =
+        "⭕ Paid";
+
+    document.getElementById("deliveryText").innerHTML =
+        "⭕ Out For Delivery";
+
+    document.getElementById("deliveredText").innerHTML =
+        "⭕ Delivered";
+
+    // Stage 1
+    document.getElementById("paidProgress").style.width =
+        "100%";
+
+    document.getElementById("paidText").innerHTML =
+        "✔ Paid";
+
+    // Stage 2
+    if (diffDays >= 1) {
+
+        document.getElementById("deliveryProgress").style.width =
+            "100%";
+
+        document.getElementById("deliveryText").innerHTML =
+            "✔ Out For Delivery";
+
+    }
+
+    // Stage 3
+if (diffDays >= 2) {
+
+    document.getElementById("deliveredProgress").style.width =
+        "100%";
+
+    document.getElementById("deliveredText").innerHTML =
+        "✔ Delivered";
+
+
+}
+
+    new bootstrap.Modal(
+
+        document.getElementById("trackOrderModal")
+
+    ).show();
+
+}
+async function completeOrderAutomatically(requestId){
+
+    try{
+
+        const response = await fetch(
+
+            API_BASE_URL +
+
+            "/auth/complete-online-order",
+
+            {
+
+                method:"PUT",
+
+                headers:{
+
+                    Authorization:
+
+                    "Bearer "+getToken(),
+
+                    "Content-Type":
+
+                    "application/json"
+
+                },
+
+                body:JSON.stringify({
+
+                    request_id:requestId
+
+                })
+
+            }
+
+        );
+
+        const data=await response.json();
+
+        if(data.success){
+
+            loadPurchaseRequests();
+
+            loadPurchaseHistory();
+
+        }
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+async function autoCompleteOrders(){
+
+    try{
+
+        await fetch(
+
+            API_BASE_URL +
+
+            "/auth/auto-complete-orders",
+
+            {
+
+                method:"PUT",
+
+                headers:{
+
+                    Authorization:
+
+                    "Bearer "+getToken()
+
+                }
+
+            }
+
+        );
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+    }
 
 }
 

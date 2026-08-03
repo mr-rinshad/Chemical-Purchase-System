@@ -84,6 +84,8 @@ static async getUserRequests(userId) {
 
             u.full_name,
 
+            u.address,
+
             l.lab_name,
 
             c.chemical_name,
@@ -92,6 +94,8 @@ static async getUserRequests(userId) {
 
             c.price_per_unit,
 
+            (c.price_per_unit * pr.quantity) AS total_price,
+
             pr.quantity,
 
             pr.purchase_mode,
@@ -99,6 +103,8 @@ static async getUserRequests(userId) {
             ca.authorization_code,
 
             pr.purchase_code,
+
+            pr.payment_date,
 
             pr.request_status,
 
@@ -429,6 +435,116 @@ static async expireReservation(requestId) {
     return result.affectedRows;
 
 }
+
+// Mark Online Purchase as Paid
+static async markAsPaid(purchaseCode, userId) {
+
+    const [result] = await db.execute(
+
+        `UPDATE purchase_requests
+
+        SET
+
+            request_status = 'Paid',
+
+            payment_date = NOW()
+
+        WHERE
+
+            purchase_code = ?
+
+        AND
+
+            user_id = ?`,
+
+        [
+
+            purchaseCode,
+
+            userId
+
+        ]
+
+    );
+
+    return result.affectedRows > 0;
+
+}
+
+static async completeOnlineOrder(requestId,userId){
+
+    const [result] = await db.execute(
+
+        `UPDATE purchase_requests
+
+        SET
+
+            request_status='Completed',
+
+            completed_at=NOW()
+
+        WHERE
+
+            request_id=?
+
+        AND
+
+            user_id=?`,
+
+        [
+
+            requestId,
+
+            userId
+
+        ]
+
+    );
+
+    return result.affectedRows>0;
+
+}
+
+static async autoCompleteOrders(userId){
+
+    const [result] = await db.execute(
+
+        `UPDATE purchase_requests
+
+        SET
+
+            request_status='Completed',
+
+            completed_at=NOW()
+
+        WHERE
+
+            user_id=?
+
+        AND
+
+            request_status='Paid'
+
+        AND
+
+            payment_date IS NOT NULL
+
+        AND
+
+            payment_date <= DATE_SUB(NOW(),INTERVAL 2 DAY)`,
+
+        [
+
+            userId
+
+        ]
+
+    );
+
+    return result;
+
+}
+
 }
 
 module.exports = PurchaseRequest;

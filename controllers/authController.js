@@ -1370,6 +1370,174 @@ const getPurchaseHistory = async (req, res, next) => {
 
 };
 
+const payPurchase = async (req, res, next) => {
+
+    try {
+
+        const {
+
+            purchase_code
+
+        } = req.body;
+
+        if (!purchase_code) {
+
+            return sendError(
+
+                res,
+
+                "Purchase code is required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const success =
+
+            await PurchaseRequest.markAsPaid(
+
+                purchase_code,
+
+                req.user.id
+
+            );
+
+        if (!success) {
+
+            return sendError(
+
+                res,
+
+                "Purchase not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        sendSuccess(
+
+            res,
+
+            "Payment completed successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const completeOnlineOrder = async (req, res, next) => {
+
+    try {
+
+        const {
+
+            request_id
+
+        } = req.body;
+
+        if (!request_id) {
+
+            return sendError(
+
+                res,
+
+                "Request ID is required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const success =
+
+            await PurchaseRequest.completeOnlineOrder(
+
+                request_id,
+
+                req.user.id
+
+            );
+
+        if (!success) {
+
+            return sendError(
+
+                res,
+
+                "Order not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        sendSuccess(
+
+            res,
+
+            "Order completed successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const autoCompleteOrders = async (req, res, next) => {
+
+    try {
+
+        await PurchaseRequest.autoCompleteOrders(
+
+            req.user.id
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Orders updated successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
 module.exports = {
 
     testAuth,
@@ -1402,6 +1570,12 @@ module.exports = {
 
     dashboard,
 
-    getPurchaseHistory
+    getPurchaseHistory,
+
+    payPurchase,
+
+    completeOnlineOrder,
+
+    autoCompleteOrders
 
 };

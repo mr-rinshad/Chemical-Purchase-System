@@ -38,7 +38,13 @@ const {
 
     dashboard,
 
-    getPurchaseHistory
+    getPurchaseHistory,
+
+    payPurchase,
+
+    completeOnlineOrder,
+
+    autoCompleteOrders
 
 } = require("../controllers/authController");
 
@@ -193,6 +199,42 @@ router.get(
     authorize("user"),
 
     getPurchaseHistory
+
+);
+
+router.put(
+
+    "/pay-purchase",
+
+    authMiddleware,
+
+    authorize("user"),
+
+    payPurchase
+
+);
+
+router.put(
+
+    "/complete-online-order",
+
+    authMiddleware,
+
+    authorize("user"),
+
+    completeOnlineOrder
+
+);
+
+router.put(
+
+    "/auto-complete-orders",
+
+    authMiddleware,
+
+    authorize("user"),
+
+    autoCompleteOrders
 
 );
 module.exports = router;
