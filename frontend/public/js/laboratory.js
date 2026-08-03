@@ -1,6 +1,8 @@
 protectPage("laboratory");
 
 let purchaseReport = [];
+let purchaseRequests = [];
+let selectedPurchase = null;
 const laboratory = getLoggedLaboratory();
 
 if (document.getElementById("welcome")) {
@@ -406,9 +408,11 @@ async function loadPurchaseRequests() {
 
         }
 
+        purchaseRequests = data.data;
+
         displayPurchaseRequests(
 
-            data.data
+            purchaseRequests
 
         );
 
@@ -429,6 +433,8 @@ async function loadPurchaseRequests() {
     }
 
 }
+
+
 
 function displayPurchaseRequests(requests) {
 
@@ -558,11 +564,23 @@ function displayPurchaseRequests(requests) {
 
             </td>
 
-            <td>
+<td>
 
-                ${request.purchase_mode}
+    ${request.purchase_mode}
 
-            </td>
+    <br>
+
+    <button
+
+        class="btn btn-info btn-sm mt-2"
+
+        onclick="viewPurchaseRequest(${request.request_id})">
+
+        View
+
+    </button>
+
+</td>
 
             <td>
 
@@ -601,6 +619,98 @@ function displayPurchaseRequests(requests) {
     });
 
 }
+
+function searchPurchaseRequests() {
+
+    const keyword = document
+        .getElementById("purchaseSearch")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const filtered = purchaseRequests.filter(function(item){
+
+        return (
+
+            item.full_name.toLowerCase().includes(keyword)
+
+            ||
+
+            item.chemical_name.toLowerCase().includes(keyword)
+
+            ||
+
+            (item.purchase_code || "")
+            .toLowerCase()
+            .includes(keyword)
+
+        );
+
+    });
+
+    displayPurchaseRequests(filtered);
+
+}
+
+function viewPurchaseRequest(id) {
+
+    selectedPurchase = purchaseRequests.find(function (item) {
+
+        return item.request_id == id;
+
+    });
+    console.log(selectedPurchase);
+
+    if (!selectedPurchase) {
+
+        return;
+
+    }
+
+    const quantity = Number(selectedPurchase.quantity);
+
+    const unitPrice = Number(selectedPurchase.price_per_unit);
+
+    const totalPrice = quantity * unitPrice;
+
+    document.getElementById("modalUser").innerHTML =
+        selectedPurchase.full_name;
+
+    document.getElementById("modalAuthorization").innerHTML =
+        selectedPurchase.authorization_code;
+
+    document.getElementById("modalChemical").innerHTML =
+        selectedPurchase.chemical_name;
+
+    document.getElementById("modalQuantity").innerHTML =
+        quantity.toFixed(2) + " " + selectedPurchase.unit;
+
+    document.getElementById("modalUnitPrice").innerHTML =
+        "₹ " + unitPrice.toFixed(2);
+
+    document.getElementById("modalTotalPrice").innerHTML =
+        "₹ " + totalPrice.toFixed(2);
+
+    document.getElementById("modalMode").innerHTML =
+        selectedPurchase.purchase_mode;
+
+    document.getElementById("modalPurchaseCode").innerHTML =
+        selectedPurchase.purchase_code || "-";
+
+    document.getElementById("modalStatus").innerHTML =
+        selectedPurchase.request_status;
+
+    document.getElementById("modalPurchaseCodeInput").value =
+        selectedPurchase.purchase_code || "";
+
+    new bootstrap.Modal(
+
+        document.getElementById("purchaseDetailsModal")
+
+    ).show();
+
+}
+
 function downloadPurchaseReport() {
 
     const workbook = XLSX.utils.book_new();
@@ -826,11 +936,16 @@ async function updateReservations() {
     }
 
 }
-async function completePurchase(event) {
 
-    event.preventDefault();
+
+async function completePurchaseFromModal() {
 
     try {
+
+        const purchase_code =
+            document.getElementById(
+                "modalPurchaseCodeInput"
+            ).value;
 
         const response = await fetch(
 
@@ -853,11 +968,7 @@ async function completePurchase(event) {
 
                 body: JSON.stringify({
 
-                    purchase_code:
-
-                    document
-                        .getElementById("purchase_code")
-                        .value
+                    purchase_code
 
                 })
 
@@ -879,13 +990,15 @@ async function completePurchase(event) {
 
         if (data.success) {
 
-            document
-                .getElementById("completePurchaseForm")
-                .reset();
+            bootstrap.Modal.getInstance(
+
+                document.getElementById(
+                    "purchaseDetailsModal"
+                )
+
+            ).hide();
 
             loadPurchaseRequests();
-
-    
 
         }
 

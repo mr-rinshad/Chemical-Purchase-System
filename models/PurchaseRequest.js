@@ -73,7 +73,7 @@ class PurchaseRequest {
 
     }
 
-   // Get User Purchase Requests
+// Get User Purchase Requests
 static async getUserRequests(userId) {
 
     const [rows] = await db.execute(
@@ -82,15 +82,21 @@ static async getUserRequests(userId) {
 
             pr.request_id,
 
+            u.full_name,
+
             l.lab_name,
 
             c.chemical_name,
 
-            pr.quantity,
-
             c.unit,
 
+            c.price_per_unit,
+
+            pr.quantity,
+
             pr.purchase_mode,
+
+            ca.authorization_code,
 
             pr.purchase_code,
 
@@ -104,11 +110,17 @@ static async getUserRequests(userId) {
 
         FROM purchase_requests pr
 
+        INNER JOIN users u
+            ON pr.user_id = u.user_id
+
         INNER JOIN laboratories l
             ON pr.lab_id = l.lab_id
 
         INNER JOIN chemicals c
             ON pr.chemical_id = c.chemical_id
+
+        INNER JOIN chemical_authorizations ca
+            ON pr.authorization_id = ca.authorization_id
 
         WHERE pr.user_id = ?
 
@@ -121,7 +133,6 @@ static async getUserRequests(userId) {
     return rows;
 
 }
-
 // Get Laboratory Purchase Requests
 static async getLaboratoryRequests(labId) {
 
@@ -148,6 +159,8 @@ static async getLaboratoryRequests(labId) {
             c.formula,
 
             c.unit,
+
+            c.price_per_unit,
 
             pr.quantity,
 

@@ -77,6 +77,43 @@
                 </button>
 
             </div>
+            <div class="row mb-3">
+
+    <div class="col-md-7">
+
+        <input
+            type="text"
+            id="purchaseSearch"
+            class="form-control"
+            placeholder="Search User, Chemical or Purchase Code">
+
+    </div>
+
+    <div class="col-md-2">
+
+        <button
+            class="btn btn-primary w-100"
+            onclick="searchPurchaseRequests()">
+
+            Search
+
+        </button>
+
+    </div>
+
+    <div class="col-md-2">
+
+        <button
+            class="btn btn-secondary w-100"
+            onclick="loadPurchaseRequests()">
+
+            Refresh
+
+        </button>
+
+    </div>
+
+</div>
 
             <div class="table-responsive">
 
@@ -124,46 +161,137 @@
 
     </div>
 
-    <div class="card mt-4">
+</div>
 
-        <div class="card-header">
+<div
+    class="modal fade"
+    id="purchaseDetailsModal"
+    tabindex="-1">
 
-            <h3>
+    <div class="modal-dialog modal-lg">
 
-                Complete Purchase
+        <div class="modal-content">
 
-            </h3>
+            <div class="modal-header">
 
-        </div>
+                <h4 class="modal-title">
 
-        <div class="card-body">
+                    Purchase Details
 
-            <form id="completePurchaseForm">
+                </h4>
+
+                <button
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <table class="table table-bordered">
+
+                    <tr>
+
+                        <th>User</th>
+
+                        <td id="modalUser"></td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Authorization Code</th>
+
+                        <td id="modalAuthorization"></td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Chemical</th>
+
+                        <td id="modalChemical"></td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Quantity</th>
+
+                        <td id="modalQuantity"></td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Unit Price</th>
+
+                        <td id="modalUnitPrice"></td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Total Price</th>
+
+                        <td id="modalTotalPrice"></td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Purchase Mode</th>
+
+                        <td id="modalMode"></td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Purchase Code</th>
+
+                        <td id="modalPurchaseCode"></td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Status</th>
+
+                        <td id="modalStatus"></td>
+
+                    </tr>
+
+                </table>
+
+                <hr>
+
+                <h5>
+
+                    Complete Purchase
+
+                </h5>
 
                 <div class="row">
 
                     <div class="col-md-8">
 
-                        <label>
-
-                            Purchase Code
-
-                        </label>
-
                         <input
-                            type="text"
-                            id="purchase_code"
+                            id="modalPurchaseCodeInput"
                             class="form-control"
-                            placeholder="Enter Purchase Code"
-                            required>
+                            readonly>
 
                     </div>
 
-                    <div class="col-md-4 d-flex align-items-end">
+                    <div class="col-md-4">
 
                         <button
+
                             class="btn btn-success w-100"
-                            type="submit">
+
+                            onclick="completePurchaseFromModal()">
 
                             Complete Purchase
 
@@ -173,14 +301,14 @@
 
                 </div>
 
-            </form>
+            </div>
 
         </div>
 
     </div>
 
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../public/js/config.js"></script>
 <script src="../public/js/common.js"></script>
 <script src="../public/js/laboratory.js"></script>
