@@ -33,6 +33,7 @@ class User {
             full_name,
             email,
             phone,
+            address,
             created_at
         FROM users
         WHERE user_id = ?`,
@@ -92,6 +93,8 @@ static async findAll() {
 
             phone,
 
+            address,
+
             created_at
 
         FROM users
@@ -117,6 +120,8 @@ static async search(keyword) {
             email,
 
             phone,
+
+            address,
 
             created_at
 
@@ -161,6 +166,8 @@ static async findByIdAdmin(userId) {
 
             phone,
 
+            address,
+
             created_at
 
         FROM users
@@ -178,13 +185,15 @@ static async findByIdAdmin(userId) {
     return rows[0];
 
 }
+
 static async updateProfile(userId, data) {
 
     const {
 
         full_name,
         email,
-        phone
+        phone,
+        address
 
     } = data;
 
@@ -192,16 +201,18 @@ static async updateProfile(userId, data) {
 
         `UPDATE users
          SET
-            full_name=?,
-            email=?,
-            phone=?
-         WHERE user_id=?`,
+            full_name = ?,
+            email = ?,
+            phone = ?,
+            address = ?
+         WHERE user_id = ?`,
 
         [
 
             full_name,
             email,
             phone,
+            address,
             userId
 
         ]
@@ -209,6 +220,7 @@ static async updateProfile(userId, data) {
     );
 
 }
+
 static async findPasswordById(userId) {
 
     const [rows] = await db.query(

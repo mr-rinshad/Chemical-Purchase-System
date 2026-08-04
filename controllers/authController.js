@@ -614,48 +614,24 @@ const updateProfile = async (req, res, next) => {
 
     try {
 
-        const userId = req.user.id;
-
         const {
 
             full_name,
             email,
-            phone
+            phone,
+            address
 
         } = req.body;
 
-        if (
+        // Check duplicate email
 
-            !full_name ||
+        const emailExists = await User.findByEmailExceptUser(
 
-            !email ||
+            email,
 
-            !phone
+            req.user.id
 
-        ) {
-
-            return sendError(
-
-                res,
-
-                "All fields are required",
-
-                [],
-
-                400
-
-            );
-
-        }
-
-        const emailExists =
-            await User.findByEmailExceptUser(
-
-                email,
-
-                userId
-
-            );
+        );
 
         if (emailExists) {
 
@@ -663,24 +639,21 @@ const updateProfile = async (req, res, next) => {
 
                 res,
 
-                "Email already exists",
-
-                [],
-
-                400
+                "Email already exists"
 
             );
 
         }
 
-        const phoneExists =
-            await User.findByPhoneExceptUser(
+        // Check duplicate phone
 
-                phone,
+        const phoneExists = await User.findByPhoneExceptUser(
 
-                userId
+            phone,
 
-            );
+            req.user.id
+
+        );
 
         if (phoneExists) {
 
@@ -688,11 +661,7 @@ const updateProfile = async (req, res, next) => {
 
                 res,
 
-                "Phone number already exists",
-
-                [],
-
-                400
+                "Phone number already exists"
 
             );
 
@@ -700,28 +669,27 @@ const updateProfile = async (req, res, next) => {
 
         await User.updateProfile(
 
-            userId,
+            req.user.id,
 
             {
 
                 full_name,
+
                 email,
-                phone
+
+                phone,
+
+                address
 
             }
 
         );
 
-        const updatedUser =
-            await User.findById(userId);
-
         sendSuccess(
 
             res,
 
-            "Profile updated successfully",
-
-            updatedUser
+            "Profile updated successfully"
 
         );
 
@@ -734,6 +702,7 @@ const updateProfile = async (req, res, next) => {
     }
 
 };
+
 const changePassword = async (req, res, next) => {
 
     try {

@@ -945,6 +945,9 @@ async function loadProfile() {
         document.getElementById("phone").value =
             data.data.phone;
 
+        document.getElementById("address").value =
+            data.data.address || "";
+
     }
 
     catch (error) {
@@ -954,6 +957,7 @@ async function loadProfile() {
     }
 
 }
+
 async function updateProfile(event) {
 
     event.preventDefault();
@@ -975,6 +979,11 @@ async function updateProfile(event) {
         .value
         .trim();
 
+    const address = document
+        .getElementById("address")
+        .value
+        .trim();
+
     try {
 
         const response = await fetch(
@@ -989,19 +998,16 @@ async function updateProfile(event) {
 
                     "Content-Type": "application/json",
 
-                    Authorization:
-
-                        "Bearer " + token
+                    Authorization: "Bearer " + token
 
                 },
 
                 body: JSON.stringify({
 
                     full_name,
-
                     email,
-
-                    phone
+                    phone,
+                    address
 
                 })
 
@@ -1033,33 +1039,38 @@ async function updateProfile(event) {
 
         );
 
-        // Update setStorage so all pages show the latest user information
-
         const loggedUser = getLoggedUser();
 
-        loggedUser.user.full_name = full_name;
-        loggedUser.user.email = email;
-        loggedUser.user.phone = phone;
+        console.log(loggedUser);
 
-        setStorage.setItem(
+        if (loggedUser && loggedUser.user) {
 
-            "user",
+            loggedUser.user.full_name = full_name;
+            loggedUser.user.email = email;
+            loggedUser.user.phone = phone;
+            loggedUser.user.address = address;
 
-            JSON.stringify(loggedUser)
+         setStorage(
 
-        );
+    "user",
 
-        // Reload the profile from the server
+    JSON.stringify(loggedUser)
 
-        loadProfile();
+);
+
+        }
+
+        await loadProfile();
 
     }
 
     catch (error) {
 
+        console.error(error);
+
         showMessage(
 
-            "Unable to connect to server.",
+            error.message,
 
             "danger"
 
@@ -1068,6 +1079,7 @@ async function updateProfile(event) {
     }
 
 }
+
 async function changePassword(event) {
 
     event.preventDefault();
