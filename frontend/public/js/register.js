@@ -1,6 +1,16 @@
-document
-    .getElementById("registerForm")
-    .addEventListener("submit", register);
+const registerForm = document.getElementById("registerForm");
+
+if (registerForm) {
+
+    registerForm.addEventListener(
+
+        "submit",
+
+        register
+
+    );
+
+}
 
 async function register(event) {
 
@@ -152,5 +162,168 @@ if (!phonePattern.test(phone)) {
         );
 
     }
+
+}
+function showUserForm() {
+
+    document.getElementById(
+        "userRegistration"
+    ).style.display = "block";
+
+    document.getElementById(
+        "laboratoryRegistration"
+    ).style.display = "none";
+
+}
+
+function showLabForm() {
+
+    document.getElementById(
+        "userRegistration"
+    ).style.display = "none";
+
+    document.getElementById(
+        "laboratoryRegistration"
+    ).style.display = "block";
+
+}
+async function registerLaboratory(event) {
+
+    event.preventDefault();
+
+    const password =
+        document.getElementById(
+            "lab_password"
+        ).value;
+
+    const confirmPassword =
+        document.getElementById(
+            "lab_confirm_password"
+        ).value;
+
+    if (password !== confirmPassword) {
+
+        alert("Passwords do not match.");
+
+        return;
+
+    }
+
+    const phonePattern = /^[6-9]\d{9}$/;
+
+    if (!phonePattern.test(
+
+        document.getElementById("lab_phone").value
+
+    )) {
+
+        alert(
+
+            "Phone number must contain exactly 10 digits and start with 6, 7, 8 or 9."
+
+        );
+
+        return;
+
+    }
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL + "/laboratory/register",
+
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type": "application/json"
+
+                },
+
+                body: JSON.stringify({
+
+                    license_id:
+                        Number(document.getElementById("lab_license_id").value),
+
+                    lab_name:
+                        document.getElementById("lab_name").value,
+
+                    owner_name:
+                        document.getElementById("lab_owner_name").value.trim(),
+
+                    email:
+                        document.getElementById("lab_email").value,
+
+                    password,
+
+                    phone:
+                        document.getElementById("lab_phone").value,
+
+                    address:
+                        document.getElementById("lab_address").value,
+
+                    city:
+                        document.getElementById("lab_city").value,
+
+                    state:
+                        document.getElementById("lab_state").value,
+
+                    pincode:
+                        document.getElementById("lab_pincode").value
+
+                })
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+        alert(data.message);
+
+        document.getElementById(
+            "labRegisterForm"
+        ).reset();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+        alert("Unable to connect to server.");
+
+    }
+
+}
+
+const labRegisterForm =
+
+document.getElementById(
+
+    "labRegisterForm"
+
+);
+
+if (labRegisterForm) {
+
+    labRegisterForm.addEventListener(
+
+        "submit",
+
+        registerLaboratory
+
+    );
 
 }

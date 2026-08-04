@@ -47,13 +47,46 @@ static async findById(id) {
 
 }
 
-    // Register a new laboratory
-    static async create(data) {
+   // Register a new laboratory
+static async create(data) {
 
-        const {
+    const {
+
+        license_id,
+        lab_name,
+        owner_name,
+        email,
+        password,
+        phone,
+        address,
+        city,
+        state,
+        pincode
+
+    } = data;
+
+    const [result] = await db.execute(
+
+        `INSERT INTO laboratories
+        (
+            license_id,
+            lab_name,
+            owner_name,
+            email,
+            password,
+            phone,
+            address,
+            city,
+            state,
+            pincode
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+
+        [
 
             license_id,
             lab_name,
+            owner_name,
             email,
             password,
             phone,
@@ -62,41 +95,13 @@ static async findById(id) {
             state,
             pincode
 
-        } = data;
+        ]
 
-        const [result] = await db.execute(
+    );
 
-            `INSERT INTO laboratories
-            (
-                license_id,
-                lab_name,
-                email,
-                password,
-                phone,
-                address,
-                city,
-                state,
-                pincode
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    return result;
 
-            [
-                license_id,
-                lab_name,
-                email,
-                password,
-                phone,
-                address,
-                city,
-                state,
-                pincode
-            ]
-
-        );
-
-        return result;
-
-    }
+}
     // Get All Laboratories
 static async findAll() {
 
@@ -106,6 +111,7 @@ static async findAll() {
             lab_id,
             license_id,
             lab_name,
+            owner_name,
             email,
             phone,
             city,
@@ -119,7 +125,7 @@ static async findAll() {
 
     return rows;
 
- }
+}
  // Get All Pending Laboratories
 static async findPending() {
 
@@ -129,6 +135,7 @@ static async findPending() {
             lab_id,
             license_id,
             lab_name,
+            owner_name,
             email,
             phone,
             city,
@@ -153,6 +160,7 @@ static async findByLabId(labId) {
             lab_id,
             license_id,
             lab_name,
+            owner_name,
             email,
             phone,
             address,
@@ -615,12 +623,15 @@ static async filterPurchaseReport(labId, filters) {
 static async registerLicense(data) {
 
     const {
+
         license_number,
         laboratory_name,
+        owner_name,
         issued_by,
         issue_date,
         expiry_date,
         status
+
     } = data;
 
     const [result] = await db.execute(
@@ -629,20 +640,24 @@ static async registerLicense(data) {
         (
             license_number,
             laboratory_name,
+            owner_name,
             issued_by,
             issue_date,
             expiry_date,
             status
         )
-        VALUES (?, ?, ?, ?, ?, ?)`,
+        VALUES (?, ?, ?, ?, ?, ?, ?)`,
 
         [
+
             license_number,
             laboratory_name,
+            owner_name,
             issued_by,
             issue_date,
             expiry_date,
             status
+
         ]
 
     );
@@ -708,6 +723,7 @@ static async findLicenseNumber(number) {
     return rows[0];
 
 }
+
 static async updateLicense(id, license) {
 
     const [result] = await db.execute(
@@ -716,6 +732,7 @@ static async updateLicense(id, license) {
          SET
             license_number = ?,
             laboratory_name = ?,
+            owner_name = ?,
             issued_by = ?,
             issue_date = ?,
             expiry_date = ?,
@@ -726,6 +743,7 @@ static async updateLicense(id, license) {
 
             license.license_number,
             license.laboratory_name,
+            license.owner_name,
             license.issued_by,
             license.issue_date,
             license.expiry_date,

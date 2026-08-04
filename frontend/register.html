@@ -21,13 +21,14 @@
 </head>
 
 <body class="bg-light">
-    <div class="position-absolute top-0 start-0 m-3">
+
+<div class="position-absolute top-0 start-0 m-3">
 
     <a
         href="index.html"
         class="btn btn-outline-primary">
 
-         Home
+        Home
 
     </a>
 
@@ -39,135 +40,339 @@
 
         <div class="col-lg-6 col-md-8">
 
-            <div class="card shadow">
+            <!-- Registration Type Buttons -->
 
-                <div class="card-header text-center">
+            <div class="text-center mb-4">
 
-                    <h3>User Registration</h3>
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="userTab"
+                    onclick="showUserForm()">
+
+                    User Registration
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="labTab"
+                    onclick="showLabForm()">
+
+                    Laboratory Registration
+
+                </button>
+
+            </div>
+
+            <!-- User Registration -->
+
+            <div id="userRegistration">
+
+                <div class="card shadow">
+
+                    <div class="card-header text-center">
+
+                        <h3>User Registration</h3>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <form id="registerForm">
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Full Name
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="full_name"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Email
+
+                                </label>
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Phone Number
+
+                                </label>
+
+                                <input
+                                    type="tel"
+                                    id="phone"
+                                    class="form-control"
+                                    maxlength="10"
+                                    pattern="[6-9]{1}[0-9]{9}"
+                                    oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                                    required>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Address
+
+                                </label>
+
+                                <textarea
+                                    id="address"
+                                    class="form-control"
+                                    rows="3"
+                                    required></textarea>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Password
+
+                                </label>
+
+                                <input
+                                    type="password"
+                                    id="password"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Confirm Password
+
+                                </label>
+
+                                <input
+                                    type="password"
+                                    id="confirm_password"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+                            <div id="message"></div>
+
+                            <button
+                                class="btn btn-success w-100"
+                                type="submit">
+
+                                Register
+
+                            </button>
+
+                            <a
+                                href="login.html"
+                                class="btn btn-secondary w-100 mt-2">
+
+                                Back to Login
+
+                            </a>
+
+                        </form>
+
+                    </div>
 
                 </div>
 
-                <div class="card-body">
+            </div>
 
-                    <form id="registerForm">
+            <!-- Laboratory Registration -->
 
-                        <div class="mb-3">
+            <div id="laboratoryRegistration" style="display:none;">
 
-                            <label class="form-label">
+                <div class="card shadow">
 
-                                Full Name
+                    <div class="card-header bg-primary text-white">
 
-                            </label>
+                        <h3 class="text-center">
 
-                            <input
-                                type="text"
-                                id="full_name"
-                                class="form-control"
-                                required>
+                            Laboratory Registration
 
-                        </div>
+                        </h3>
 
-                        <div class="mb-3">
+                    </div>
 
-                            <label class="form-label">
+                    <div class="card-body">
 
-                                Email
+                        <form id="labRegisterForm">
 
-                            </label>
+                            <div class="mb-3">
 
-                            <input
-                                type="email"
-                                id="email"
-                                class="form-control"
-                                required>
+                                <label>License ID</label>
 
-                        </div>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="lab_license_id"
+                                    required>
 
-                        <div class="mb-3">
+                            </div>
 
-                            <label class="form-label">
+                            <div class="mb-3">
 
-                                Phone Number
+                                <label>Laboratory Name</label>
 
-                            </label>
-<input
-    type="tel"
-    id="phone"
-    class="form-control"
-    maxlength="10"
-    pattern="[6-9]{1}[0-9]{9}"
-    oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-    required>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="lab_name"
+                                    required>
 
-                        </div>
+                            </div>
+                            <div class="mb-3">
+    <label>Owner Name</label>
+    <input
+        type="text"
+        id="lab_owner_name"
+        class="form-control"
+        required
+    >
+</div>
 
-                        <div class="mb-3">
+                            <div class="mb-3">
 
-                            <label class="form-label">
+                                <label>Email</label>
 
-                                Address
+                                <input
+                                    type="email"
+                                    class="form-control"
+                                    id="lab_email"
+                                    required>
 
-                            </label>
+                            </div>
 
-                            <textarea
-                                id="address"
-                                class="form-control"
-                                rows="3"
-                                required></textarea>
+                            <div class="mb-3">
 
-                        </div>
+                                <label>Phone</label>
 
-                        <div class="mb-3">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="lab_phone"
+                                    required>
 
-                            <label class="form-label">
+                            </div>
 
-                                Password
+                            <div class="mb-3">
 
-                            </label>
+                                <label>Address</label>
 
-                            <input
-                                type="password"
-                                id="password"
-                                class="form-control"
-                                required>
+                                <textarea
+                                    class="form-control"
+                                    id="lab_address"
+                                    required></textarea>
 
-                        </div>
+                            </div>
 
-                        <div class="mb-3">
+                            <div class="mb-3">
 
-                            <label class="form-label">
+                                <label>City</label>
 
-                                Confirm Password
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="lab_city"
+                                    required>
 
-                            </label>
+                            </div>
 
-                            <input
-                                type="password"
-                                id="confirm_password"
-                                class="form-control"
-                                required>
+                            <div class="mb-3">
 
-                        </div>
+                                <label>State</label>
 
-                        <div id="message"></div>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="lab_state"
+                                    required>
 
-                        <button
-                            class="btn btn-success w-100"
-                            type="submit">
+                            </div>
 
-                            Register
+                            <div class="mb-3">
 
-                        </button>
+                                <label>Pincode</label>
 
-                        <a
-                            href="login.html"
-                            class="btn btn-secondary w-100 mt-2">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="lab_pincode"
+                                    required>
 
-                            Back to Login
+                            </div>
 
-                        </a>
+                            <div class="mb-3">
 
-                    </form>
+                                <label>Password</label>
+
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    id="lab_password"
+                                    required>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label>Confirm Password</label>
+
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    id="lab_confirm_password"
+                                    required>
+
+                            </div>
+
+                            <button
+                                class="btn btn-success w-100"
+                                type="submit">
+
+                                Register Laboratory
+
+                            </button>
+                              <a
+                                href="login.html"
+                                class="btn btn-secondary w-100 mt-2">
+
+                                Back to Login
+
+                            </a>
+
+                        </form>
+
+                    </div>
 
                 </div>
 

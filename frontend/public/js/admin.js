@@ -2361,6 +2361,15 @@ async function registerLicense(e) {
 
         ).value;
 
+    const owner_name =
+
+        document.getElementById(
+
+            "owner_name"
+
+        ).value
+        .trim();
+
     try {
 
         const response = await fetch(
@@ -2402,6 +2411,10 @@ async function registerLicense(e) {
 
                     laboratory_name:
                         document.getElementById("laboratory_name").value,
+
+                    owner_name:
+
+                        owner_name,
 
                     issued_by:
                         document.getElementById("issued_by").value,
@@ -2452,6 +2465,12 @@ async function registerLicense(e) {
             "licenseForm"
 
         ).reset();
+
+        document.getElementById(
+
+            "owner_name"
+
+        ).value = "";
 
         document.getElementById(
 
@@ -2523,57 +2542,65 @@ async function viewLicense(id) {
 
         document.getElementById("licenseDetails").innerHTML = `
 
-        <table class="table table-bordered">
+<table class="table table-bordered">
 
-        <tr>
+<tr>
 
-        <th>License Number</th>
+<th>License Number</th>
 
-        <td>${license.license_number}</td>
+<td>${license.license_number}</td>
 
-        </tr>
+</tr>
 
-        <tr>
+<tr>
 
-        <th>Laboratory</th>
+<th>Laboratory</th>
 
-        <td>${license.laboratory_name}</td>
+<td>${license.laboratory_name}</td>
 
-        </tr>
+</tr>
 
-        <tr>
+<tr>
 
-        <th>Issued By</th>
+<th>Owner Name</th>
 
-        <td>${license.issued_by}</td>
+<td>${license.owner_name}</td>
 
-        </tr>
+</tr>
 
-        <tr>
+<tr>
 
-        <th>Issue Date</th>
+<th>Issued By</th>
 
-        <td>${license.issue_date}</td>
+<td>${license.issued_by}</td>
 
-        </tr>
+</tr>
 
-        <tr>
+<tr>
 
-        <th>Expiry Date</th>
+<th>Issue Date</th>
 
-        <td>${license.expiry_date}</td>
+<td>${license.issue_date}</td>
 
-        </tr>
+</tr>
 
-        <tr>
+<tr>
 
-        <th>Status</th>
+<th>Expiry Date</th>
 
-        <td>${license.status}</td>
+<td>${license.expiry_date}</td>
 
-        </tr>
+</tr>
 
-        `;
+<tr>
+
+<th>Status</th>
+
+<td>${license.status}</td>
+
+</tr>
+
+`;
 
         new bootstrap.Modal(
 
@@ -2594,6 +2621,7 @@ async function viewLicense(id) {
     }
 
 }
+
 function searchLicenses() {
 
     const keyword =
@@ -2728,6 +2756,9 @@ async function editLicense(id) {
 
         document.getElementById("laboratory_name").value =
             license.laboratory_name;
+
+        document.getElementById("owner_name").value =
+            license.owner_name;
 
         document.getElementById("issued_by").value =
             license.issued_by;

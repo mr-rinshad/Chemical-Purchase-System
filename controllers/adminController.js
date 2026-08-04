@@ -1572,6 +1572,7 @@ const registerLicense = async (req, res, next) => {
         const {
             license_number,
             laboratory_name,
+            owner_name,
             issued_by,
             issue_date,
             expiry_date,
@@ -1581,6 +1582,7 @@ const registerLicense = async (req, res, next) => {
         if (
             !license_number ||
             !laboratory_name ||
+            !owner_name ||
             !issued_by ||
             !issue_date ||
             !expiry_date
@@ -1613,6 +1615,7 @@ const registerLicense = async (req, res, next) => {
 
             license_number,
             laboratory_name,
+            owner_name,
             issued_by,
             issue_date,
             expiry_date,

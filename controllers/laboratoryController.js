@@ -31,6 +31,7 @@ const register = async (req, res, next) => {
 
             license_id,
             lab_name,
+            owner_name,
             email,
             password,
             phone,
@@ -45,6 +46,7 @@ const register = async (req, res, next) => {
         if (
             !license_id ||
             !lab_name ||
+            !owner_name ||
             !email ||
             !password ||
             !phone ||
@@ -57,6 +59,20 @@ const register = async (req, res, next) => {
             return sendError(
                 res,
                 "All fields are required",
+                [],
+                400
+            );
+
+        }
+
+        // Phone Validation
+        const phonePattern = /^[6-9]\d{9}$/;
+
+        if (!phonePattern.test(phone)) {
+
+            return sendError(
+                res,
+                "Phone number must contain exactly 10 digits and start with 6, 7, 8 or 9.",
                 [],
                 400
             );
@@ -85,6 +101,7 @@ const register = async (req, res, next) => {
 
             license_id,
             lab_name,
+            owner_name,
             email,
             password: hashedPassword,
             phone,
