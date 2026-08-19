@@ -15,6 +15,10 @@ const {
 
     getProfile,
 
+    updateProfile,
+
+    changePassword,
+
     verifyAuthorization,
 
     addChemical,
@@ -94,6 +98,30 @@ router.get(
     authorize("laboratory"),
 
     getProfile
+
+);
+
+router.put(
+
+    "/profile",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    updateProfile
+
+);
+
+router.put(
+
+    "/change-password",
+
+    authenticate,
+
+    authorize("laboratory"),
+
+    changePassword
 
 );
 

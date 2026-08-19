@@ -339,6 +339,263 @@ const getProfile = async (req, res, next) => {
     }
 
 };
+const updateProfile = async (req, res, next) => {
+
+    try {
+
+        const {
+
+            lab_name,
+            owner_name,
+            email,
+            phone,
+            address,
+            city,
+            state,
+            pincode
+
+        } = req.body;
+
+        if (
+            !lab_name ||
+            !owner_name ||
+            !email ||
+            !phone ||
+            !address ||
+            !city ||
+            !state ||
+            !pincode
+        ) {
+
+            return sendError(
+
+                res,
+
+                "All fields are required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        // Phone Validation
+
+        const phonePattern = /^[6-9]\d{9}$/;
+
+        if (!phonePattern.test(phone)) {
+
+            return sendError(
+
+                res,
+
+                "Phone number must contain exactly 10 digits and start with 6, 7, 8 or 9.",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        // Check whether email belongs to another laboratory
+
+        const existingLab =
+            await Laboratory.findByEmail(email);
+
+        if (
+            existingLab &&
+            existingLab.lab_id !== req.user.id
+        ) {
+
+            return sendError(
+
+                res,
+
+                "Laboratory email already exists",
+
+                [],
+
+                409
+
+            );
+
+        }
+
+        await Laboratory.updateProfile(
+
+            req.user.id,
+
+            {
+
+                lab_name,
+                owner_name,
+                email,
+                phone,
+                address,
+                city,
+                state,
+                pincode
+
+            }
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Laboratory profile updated successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+const changePassword = async (req, res, next) => {
+
+    try {
+
+        const {
+
+            current_password,
+            new_password,
+            confirm_password
+
+        } = req.body;
+
+        if (
+            !current_password ||
+            !new_password ||
+            !confirm_password
+        ) {
+
+            return sendError(
+
+                res,
+
+                "All password fields are required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        if (new_password !== confirm_password) {
+
+            return sendError(
+
+                res,
+
+                "New password and confirm password do not match",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        if (new_password.length < 6) {
+
+            return sendError(
+
+                res,
+
+                "New password must contain at least 6 characters",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const laboratory =
+            await Laboratory.findById(req.user.id);
+
+        if (!laboratory) {
+
+            return sendError(
+
+                res,
+
+                "Laboratory not found",
+
+                [],
+
+                404
+
+            );
+
+        }
+
+        const isMatch = await bcrypt.compare(
+
+            current_password,
+
+            laboratory.password
+
+        );
+
+        if (!isMatch) {
+
+            return sendError(
+
+                res,
+
+                "Current password is incorrect",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const hashedPassword =
+            await bcrypt.hash(new_password, 10);
+
+        await Laboratory.changePassword(
+
+            req.user.id,
+
+            hashedPassword
+
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Password updated successfully"
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
 
 const verifyAuthorization = async (req, res, next) => {
 
@@ -1588,6 +1845,10 @@ module.exports = {
     login,
 
     getProfile,
+
+    updateProfile,
+
+    changePassword,
 
     verifyAuthorization,
 

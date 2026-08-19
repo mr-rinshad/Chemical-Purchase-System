@@ -109,7 +109,6 @@ async function loadDashboard() {
 }
 
 // Profile Function
-
 async function loadProfile() {
 
     const token = getToken();
@@ -118,13 +117,15 @@ async function loadProfile() {
 
         const response = await fetch(
 
-            API_BASE_URL + "/laboratory/profile",
+            API_BASE_URL +
+            "/laboratory/profile",
 
             {
 
                 headers: {
 
-                    Authorization: "Bearer " + token
+                    Authorization:
+                        "Bearer " + token
 
                 }
 
@@ -148,32 +149,499 @@ async function loadProfile() {
 
         }
 
+        const laboratory = data.data;
+
         document.getElementById("license_id").value =
-            data.data.license_id;
+            laboratory.license_id;
 
         document.getElementById("lab_name").value =
-            data.data.lab_name;
+            laboratory.lab_name;
+
+        document.getElementById("owner_name").value =
+            laboratory.owner_name;
 
         document.getElementById("email").value =
-            data.data.email;
+            laboratory.email;
 
         document.getElementById("phone").value =
-            data.data.phone;
+            laboratory.phone;
 
         document.getElementById("address").value =
-            data.data.address;
+            laboratory.address;
 
         document.getElementById("city").value =
-            data.data.city;
+            laboratory.city;
 
         document.getElementById("state").value =
-            data.data.state;
+            laboratory.state;
 
         document.getElementById("pincode").value =
-            data.data.pincode;
+            laboratory.pincode;
 
         document.getElementById("status").value =
-            data.data.status;
+            laboratory.status;
+
+        // Always start in read-only mode
+
+        setProfileReadOnly();
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+
+            "Unable to connect to server.",
+
+            "danger"
+
+        );
+
+    }
+
+}
+// Set Profile to Read-Only Mode
+function setProfileReadOnly() {
+
+    document.getElementById("lab_name").readOnly = true;
+
+    document.getElementById("owner_name").readOnly = true;
+
+    document.getElementById("email").readOnly = true;
+
+    document.getElementById("phone").readOnly = true;
+
+    document.getElementById("address").readOnly = true;
+
+    document.getElementById("city").readOnly = true;
+
+    document.getElementById("state").readOnly = true;
+
+    document.getElementById("pincode").readOnly = true;
+
+    // License ID must always remain read-only
+
+    document.getElementById("license_id").readOnly = true;
+
+    // Status must always remain read-only
+
+    document.getElementById("status").readOnly = true;
+
+    const button =
+        document.getElementById("editProfileBtn");
+
+    if (button) {
+
+        button.innerHTML = "Edit Profile";
+
+        button.className =
+            "btn btn-primary";
+
+    }
+
+}
+
+// Toggle Profile Edit Mode
+function toggleEditProfile() {
+
+    const button =
+        document.getElementById("editProfileBtn");
+
+    if (!button) {
+
+        return;
+
+    }
+
+    // If currently in read mode
+
+    if (button.innerHTML === "Edit Profile") {
+
+        document.getElementById("lab_name").readOnly = false;
+
+        document.getElementById("owner_name").readOnly = false;
+
+        document.getElementById("email").readOnly = false;
+
+        document.getElementById("phone").readOnly = false;
+
+        document.getElementById("address").readOnly = false;
+
+        document.getElementById("city").readOnly = false;
+
+        document.getElementById("state").readOnly = false;
+
+        document.getElementById("pincode").readOnly = false;
+
+        // These must NEVER become editable
+
+        document.getElementById("license_id").readOnly = true;
+
+        document.getElementById("status").readOnly = true;
+
+        button.innerHTML = "Update Profile";
+
+        button.className =
+            "btn btn-success";
+
+    }
+
+    else {
+
+        updateProfile();
+
+    }
+
+}
+// Update Laboratory Profile
+async function updateProfile() {
+
+    const lab_name =
+        document.getElementById("lab_name")
+        .value
+        .trim();
+
+    const owner_name =
+        document.getElementById("owner_name")
+        .value
+        .trim();
+
+    const email =
+        document.getElementById("email")
+        .value
+        .trim();
+
+    const phone =
+        document.getElementById("phone")
+        .value
+        .trim();
+
+    const address =
+        document.getElementById("address")
+        .value
+        .trim();
+
+    const city =
+        document.getElementById("city")
+        .value
+        .trim();
+
+    const state =
+        document.getElementById("state")
+        .value
+        .trim();
+
+    const pincode =
+        document.getElementById("pincode")
+        .value
+        .trim();
+
+
+    // Required field validation
+
+    if (
+        !lab_name ||
+        !owner_name ||
+        !email ||
+        !phone ||
+        !address ||
+        !city ||
+        !state ||
+        !pincode
+    ) {
+
+        showMessage(
+
+            "All profile fields are required.",
+
+            "danger"
+
+        );
+
+        return;
+
+    }
+
+
+    // Phone validation
+
+    const phonePattern =
+        /^[6-9]\d{9}$/;
+
+    if (!phonePattern.test(phone)) {
+
+        showMessage(
+
+            "Phone number must contain exactly 10 digits and start with 6, 7, 8 or 9.",
+
+            "danger"
+
+        );
+
+        return;
+
+    }
+
+
+    // Pincode validation
+
+    const pincodePattern =
+        /^\d{6}$/;
+
+    if (!pincodePattern.test(pincode)) {
+
+        showMessage(
+
+            "Pincode must contain exactly 6 digits.",
+
+            "danger"
+
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+            "/laboratory/profile",
+
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json",
+
+                    Authorization:
+                        "Bearer " + getToken()
+
+                },
+
+                body: JSON.stringify({
+
+                    lab_name,
+
+                    owner_name,
+
+                    email,
+
+                    phone,
+
+                    address,
+
+                    city,
+
+                    state,
+
+                    pincode
+
+                })
+
+            }
+
+        );
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            showMessage(
+
+                data.message,
+
+                "danger"
+
+            );
+
+            return;
+
+        }
+
+
+        showMessage(
+
+            data.message,
+
+            "success"
+
+        );
+
+
+        // Reload updated profile
+
+        await loadProfile();
+
+
+        // Return to read-only mode
+
+        setProfileReadOnly();
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+
+            "Unable to connect to server.",
+
+            "danger"
+
+        );
+
+    }
+
+}
+// Change Laboratory Password
+async function changePassword(event) {
+
+    event.preventDefault();
+
+    const current_password =
+        document.getElementById(
+            "current_password"
+        ).value;
+
+    const new_password =
+        document.getElementById(
+            "new_password"
+        ).value;
+
+    const confirm_password =
+        document.getElementById(
+            "confirm_password"
+        ).value;
+
+
+    if (
+        !current_password ||
+        !new_password ||
+        !confirm_password
+    ) {
+
+        showMessage(
+
+            "All password fields are required.",
+
+            "danger"
+
+        );
+
+        return;
+
+    }
+
+
+    if (new_password !== confirm_password) {
+
+        showMessage(
+
+            "New password and confirm password do not match.",
+
+            "danger"
+
+        );
+
+        return;
+
+    }
+
+
+    if (new_password.length < 6) {
+
+        showMessage(
+
+            "New password must contain at least 6 characters.",
+
+            "danger"
+
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response = await fetch(
+
+            API_BASE_URL +
+            "/laboratory/change-password",
+
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json",
+
+                    Authorization:
+                        "Bearer " + getToken()
+
+                },
+
+                body: JSON.stringify({
+
+                    current_password,
+
+                    new_password,
+
+                    confirm_password
+
+                })
+
+            }
+
+        );
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            showMessage(
+
+                data.message,
+
+                "danger"
+
+            );
+
+            return;
+
+        }
+
+
+        showMessage(
+
+            data.message,
+
+            "success"
+
+        );
+
+
+        // Clear password fields
+
+        document.getElementById(
+            "passwordForm"
+        ).reset();
 
     }
 
@@ -2056,6 +2524,24 @@ if (downloadBtn) {
     );
 
 }
+// Password Form
+const passwordForm =
+    document.getElementById(
+        "passwordForm"
+    );
+
+if (passwordForm) {
+
+    passwordForm.addEventListener(
+
+        "submit",
+
+        changePassword
+
+    );
+
+}
+
 
 
 if (window.location.pathname.includes("chemicals.html")) {

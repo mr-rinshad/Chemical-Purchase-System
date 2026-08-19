@@ -27,6 +27,7 @@ static async findById(id) {
             lab_id,
             license_id,
             lab_name,
+            owner_name,
             email,
             phone,
             address,
@@ -46,7 +47,76 @@ static async findById(id) {
     return rows[0];
 
 }
+// Update Laboratory Profile
+static async updateProfile(id, data) {
 
+    const {
+
+        lab_name,
+        owner_name,
+        email,
+        phone,
+        address,
+        city,
+        state,
+        pincode
+
+    } = data;
+
+    const [result] = await db.execute(
+
+        `UPDATE laboratories
+         SET
+            lab_name = ?,
+            owner_name = ?,
+            email = ?,
+            phone = ?,
+            address = ?,
+            city = ?,
+            state = ?,
+            pincode = ?
+         WHERE lab_id = ?`,
+
+        [
+
+            lab_name,
+            owner_name,
+            email,
+            phone,
+            address,
+            city,
+            state,
+            pincode,
+            id
+
+        ]
+
+    );
+
+    return result;
+
+}
+// Update Laboratory Password
+static async changePassword(id, password) {
+
+    const [result] = await db.execute(
+
+        `UPDATE laboratories
+         SET password = ?
+         WHERE lab_id = ?`,
+
+        [
+
+            password,
+            id
+
+        ]
+
+    );
+
+    return result;
+
+}
    // Register a new laboratory
 static async create(data) {
 
