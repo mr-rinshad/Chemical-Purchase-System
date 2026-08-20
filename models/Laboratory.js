@@ -252,6 +252,43 @@ static async findByLabId(labId) {
 
 }
 
+// Get Laboratory Password
+static async getPasswordById(labId) {
+
+    const [rows] = await db.execute(
+
+        `SELECT password
+         FROM laboratories
+         WHERE lab_id = ?`,
+
+        [labId]
+
+    );
+
+    return rows[0];
+
+}
+
+// Update Laboratory Password
+static async updatePassword(labId, hashedPassword) {
+
+    const [result] = await db.execute(
+
+        `UPDATE laboratories
+         SET password = ?
+         WHERE lab_id = ?`,
+
+        [
+            hashedPassword,
+            labId
+        ]
+
+    );
+
+    return result;
+
+}
+
 // Approve Laboratory
 static async approveLab(labId) {
 

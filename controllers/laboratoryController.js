@@ -461,17 +461,19 @@ const updateProfile = async (req, res, next) => {
     }
 
 };
+// Change Laboratory Password
 const changePassword = async (req, res, next) => {
 
     try {
 
         const {
-
             current_password,
             new_password,
             confirm_password
-
         } = req.body;
+
+
+        // Required field validation
 
         if (
             !current_password ||
@@ -493,6 +495,9 @@ const changePassword = async (req, res, next) => {
 
         }
 
+
+        // Check new password confirmation
+
         if (new_password !== confirm_password) {
 
             return sendError(
@@ -508,6 +513,9 @@ const changePassword = async (req, res, next) => {
             );
 
         }
+
+
+        // Password length validation
 
         if (new_password.length < 6) {
 
@@ -525,8 +533,16 @@ const changePassword = async (req, res, next) => {
 
         }
 
+
+        // Get the hashed password from database
+
         const laboratory =
-            await Laboratory.findById(req.user.id);
+            await Laboratory.getPasswordById(
+
+                req.user.id
+
+            );
+
 
         if (!laboratory) {
 
@@ -544,13 +560,38 @@ const changePassword = async (req, res, next) => {
 
         }
 
-        const isMatch = await bcrypt.compare(
 
-            current_password,
+        // Make sure password exists
 
-            laboratory.password
+        if (!laboratory.password) {
 
-        );
+            return sendError(
+
+                res,
+
+                "Laboratory password not found",
+
+                [],
+
+                500
+
+            );
+
+        }
+
+
+        // Compare entered current password
+        // with the hashed password from database
+
+        const isMatch =
+            await bcrypt.compare(
+
+                current_password,
+
+                laboratory.password
+
+            );
+
 
         if (!isMatch) {
 
@@ -562,22 +603,35 @@ const changePassword = async (req, res, next) => {
 
                 [],
 
-                400
+                401
 
             );
 
         }
 
-        const hashedPassword =
-            await bcrypt.hash(new_password, 10);
 
-        await Laboratory.changePassword(
+        // Hash the new password
+
+        const hashedPassword =
+            await bcrypt.hash(
+
+                new_password,
+
+                10
+
+            );
+
+
+        // Update password in database
+
+        await Laboratory.updatePassword(
 
             req.user.id,
 
             hashedPassword
 
         );
+
 
         sendSuccess(
 
