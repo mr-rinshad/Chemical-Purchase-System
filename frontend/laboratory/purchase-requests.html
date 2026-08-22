@@ -2,316 +2,245 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Requests | Chemical Purchase System</title>
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Purchase Requests</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="../public/css/style.css">
 </head>
 
 <body>
 
-<nav class="navbar navbar-dark bg-primary">
-
-    <div class="container-fluid">
-
-        <a
-            href="main-dashboard.html"
-            class="navbar-brand">
-
-            Dashboard
-
-        </a>
-
-        <button
-            class="btn btn-light"
-            onclick="logout()">
-
-            Logout
-
-        </button>
-
-    </div>
-
-</nav>
-
-<div class="container mt-4">
-
-    <div class="card shadow">
-
-        <div class="card-header">
-
-            <h3>
-
-                Purchase Requests
-
-            </h3>
-
-        </div>
-
-        <div class="card-body">
-
-            <div id="message"></div>
-
-            <div class="d-flex justify-content-between align-items-center mb-3">
-
-                <h4>
-
-                    Purchase Requests
-
-                </h4>
-
-                <button
-                    id="updateReservationsBtn"
-                    class="btn btn-warning">
-
-                    Update Expired Reservations
-
-                </button>
-
-            </div>
-            <div class="row mb-3">
-
-    <div class="col-md-7">
-
-        <input
-            type="text"
-            id="purchaseSearch"
-            class="form-control"
-            placeholder="Search User, Chemical or Purchase Code">
-
-    </div>
-
-    <div class="col-md-2">
-
-        <button
-            class="btn btn-primary w-100"
-            onclick="searchPurchaseRequests()">
-
-            Search
-
-        </button>
-
-    </div>
-
-    <div class="col-md-2">
-
-        <button
-            class="btn btn-secondary w-100"
-            onclick="loadPurchaseRequests()">
-
-            Refresh
-
-        </button>
-
-    </div>
-
-</div>
-
-            <div class="table-responsive">
-
-                <table class="table table-bordered table-striped">
-
-                    <thead class="table-primary">
-
-                        <tr>
-
-                            <th>User</th>
-
-                            <th>Chemical</th>
-
-                            <th>Quantity</th>
-
-                            <th>Authorization</th>
-
-                            <th>Purpose</th>
-
-                            <th>Expiry</th>
-
-                            <th>Purchase Mode</th>
-
-                            <th>Status</th>
-
-                            <th>Purchase Code</th>
-
-                            <th>Request Date</th>
-
-                            <th>Action</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody id="purchaseRequestTable">
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div
-    class="modal fade"
-    id="purchaseDetailsModal"
-    tabindex="-1">
-
-    <div class="modal-dialog modal-lg">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h4 class="modal-title">
-
-                    Purchase Details
-
-                </h4>
-
-                <button
-                    class="btn-close"
-                    data-bs-dismiss="modal">
-
-                </button>
-
-            </div>
-
-            <div class="modal-body">
-
-                <table class="table table-bordered">
-
-                    <tr>
-
-                        <th>User</th>
-
-                        <td id="modalUser"></td>
-
-                    </tr>
-
-                    <tr>
-
-                        <th>Authorization Code</th>
-
-                        <td id="modalAuthorization"></td>
-
-                    </tr>
-
-                    <tr>
-
-                        <th>Chemical</th>
-
-                        <td id="modalChemical"></td>
-
-                    </tr>
-
-                    <tr>
-
-                        <th>Quantity</th>
-
-                        <td id="modalQuantity"></td>
-
-                    </tr>
-
-                    <tr>
-
-                        <th>Unit Price</th>
-
-                        <td id="modalUnitPrice"></td>
-
-                    </tr>
-
-                    <tr>
-
-                        <th>Total Price</th>
-
-                        <td id="modalTotalPrice"></td>
-
-                    </tr>
-
-                    <tr>
-
-                        <th>Purchase Mode</th>
-
-                        <td id="modalMode"></td>
-
-                    </tr>
-
-                    <tr>
-
-                        <th>Purchase Code</th>
-
-                        <td id="modalPurchaseCode"></td>
-
-                    </tr>
-
-                    <tr>
-
-                        <th>Status</th>
-
-                        <td id="modalStatus"></td>
-
-                    </tr>
-
-                </table>
-
-                <hr>
-
-                <h5>
-
-                    Complete Purchase
-
-                </h5>
-
-                <div class="row">
-
-                    <div class="col-md-8">
-
-                        <input
-                            id="modalPurchaseCodeInput"
-                            class="form-control"
-                            readonly>
-
+    <div class="app-layout">
+
+        <!-- Mobile Backdrop -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar" id="appSidebar">
+            <div class="sidebar-header">
+                <a href="main-dashboard.html" class="sidebar-brand">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-flask-vial"></i>
                     </div>
+                    <span>Lab Supplier</span>
+                </a>
+            </div>
 
-                    <div class="col-md-4">
+            <div class="sidebar-nav">
+                <div class="nav-section-label">Main Navigation</div>
+                <a href="main-dashboard.html" class="nav-link">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span>Inventory Dashboard</span>
+                </a>
 
-                        <button
+                <div class="nav-section-label">Catalog & Fulfillment</div>
+                <a href="chemicals.html" class="nav-link">
+                    <i class="fa-solid fa-vial"></i>
+                    <span>Chemical Management</span>
+                </a>
+                <a href="purchase-requests.html" class="nav-link active">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    <span>Purchase Requests</span>
+                </a>
+                <a href="reports.html" class="nav-link">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Purchase Reports</span>
+                </a>
 
-                            class="btn btn-success w-100"
+                <div class="nav-section-label">Account</div>
+                <a href="profile.html" class="nav-link">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>My Profile</span>
+                </a>
+            </div>
 
-                            onclick="completePurchaseFromModal()">
+            <div class="sidebar-footer">
+                <button class="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center gap-2" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
 
-                            Complete Purchase
+        <!-- Main Content Area -->
+        <div class="app-main">
 
-                        </button>
-
-                    </div>
-
+            <!-- Topbar Header -->
+            <header class="app-topbar">
+                <div class="topbar-left">
+                    <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h1 class="topbar-title">Fulfillment & Purchase Requests</h1>
                 </div>
 
-            </div>
+                <div class="topbar-right">
+                    <div class="user-badge">
+                        <div class="user-avatar" style="background: linear-gradient(135deg, #FFBF00, #807040); color: #0f172a;">L</div>
+                        <div>
+                            <div class="user-info-name">Certified Lab</div>
+                            <div class="user-info-role">Chemical Supplier</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="app-content">
+
+                <div id="message"></div>
+
+                <div class="page-header">
+                    <div>
+                        <h2 class="page-title">Buyer Purchase Requests</h2>
+                        <p class="page-subtitle">Review incoming chemical orders, verify authorization codes, and release or complete reservations.</p>
+                    </div>
+                    <button id="updateReservationsBtn" class="btn btn-amber shadow">
+                        <i class="fa-solid fa-clock-rotate-left me-1"></i> Update Expired Reservations
+                    </button>
+                </div>
+
+                <!-- Search Card -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white text-muted">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </span>
+                                    <input type="text" id="purchaseSearch" class="form-control ps-2" placeholder="Search User, Chemical or Purchase Code...">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary w-100" onclick="searchPurchaseRequests()">
+                                    <i class="fa-solid fa-magnifying-glass"></i> Search
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-secondary w-100" onclick="loadPurchaseRequests()">
+                                    <i class="fa-solid fa-rotate"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Card -->
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Chemical</th>
+                                        <th>Quantity</th>
+                                        <th>Authorization</th>
+                                        <th>Purpose</th>
+                                        <th>Expiry</th>
+                                        <th>Purchase Mode</th>
+                                        <th>Status</th>
+                                        <th>Purchase Code</th>
+                                        <th>Request Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="purchaseRequestTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
 
         </div>
 
     </div>
 
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../public/js/config.js"></script>
-<script src="../public/js/common.js"></script>
-<script src="../public/js/laboratory.js"></script>
+    <!-- Purchase Details Modal -->
+    <div class="modal fade" id="purchaseDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fa-solid fa-file-invoice-dollar me-2"></i> Purchase Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered mb-4">
+                        <tr>
+                            <th width="35%">User Name</th>
+                            <td id="modalUser" class="fw-semibold"></td>
+                        </tr>
+                        <tr>
+                            <th>Authorization Code</th>
+                            <td id="modalAuthorization" class="text-primary font-monospace"></td>
+                        </tr>
+                        <tr>
+                            <th>Chemical Item</th>
+                            <td id="modalChemical" class="fw-bold"></td>
+                        </tr>
+                        <tr>
+                            <th>Quantity Requested</th>
+                            <td id="modalQuantity"></td>
+                        </tr>
+                        <tr>
+                            <th>Unit Price</th>
+                            <td id="modalUnitPrice"></td>
+                        </tr>
+                        <tr>
+                            <th>Total Price</th>
+                            <td id="modalTotalPrice" class="fw-bold text-success"></td>
+                        </tr>
+                        <tr>
+                            <th>Purchase Mode</th>
+                            <td id="modalMode"></td>
+                        </tr>
+                        <tr>
+                            <th>Purchase Verification Code</th>
+                            <td id="modalPurchaseCode" class="fw-bold text-danger font-monospace fs-5"></td>
+                        </tr>
+                        <tr>
+                            <th>Status</th>
+                            <td id="modalStatus"></td>
+                        </tr>
+                    </table>
+
+                    <div class="p-3 bg-light rounded-3 border">
+                        <h5 class="fw-bold mb-2 text-dark"><i class="fa-solid fa-circle-check me-2 text-success"></i> Complete Purchase Order</h5>
+                        <p class="text-muted fs-6 mb-3">Verify that the buyer presented the matching verification code.</p>
+                        <div class="row g-2">
+                            <div class="col-md-8">
+                                <input id="modalPurchaseCodeInput" class="form-control font-monospace fw-bold text-primary" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-success w-100 shadow" onclick="completePurchaseFromModal()">
+                                    <i class="fa-solid fa-check me-1"></i> Complete Order
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../public/js/config.js"></script>
+    <script src="../public/js/common.js"></script>
+    <script src="../public/js/laboratory.js"></script>
 
 </body>
 

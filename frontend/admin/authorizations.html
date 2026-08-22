@@ -1,393 +1,273 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorization Requests | Chemical Purchase System</title>
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Authorization Requests</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="../public/css/style.css">
+    <link rel="stylesheet" href="../public/css/admin.css">
 </head>
 
 <body>
 
-<div class="container mt-4">
+    <div class="app-layout">
 
-    <h2 class="mb-4">
+        <!-- Mobile Backdrop -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
 
-        Pending Authorization Requests
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar" id="appSidebar">
+            <div class="sidebar-header">
+                <a href="main-dashboard.html" class="sidebar-brand">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-vial-circle-check"></i>
+                    </div>
+                    <span>Chemical System</span>
+                </a>
+            </div>
 
-    </h2>
+            <div class="sidebar-nav">
+                <div class="nav-section-label">Main Navigation</div>
+                <a href="main-dashboard.html" class="nav-link">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Statistics Dashboard</span>
+                </a>
 
-    <div class="row mb-3">
+                <div class="nav-section-label">Management</div>
+                <a href="users.html" class="nav-link">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Users Management</span>
+                </a>
+                <a href="laboratories.html" class="nav-link">
+                    <i class="fa-solid fa-flask-vial"></i>
+                    <span>Laboratories</span>
+                </a>
+                <a href="license-registration.html" class="nav-link">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>License Registration</span>
+                </a>
 
-        <div class="col-md-5">
+                <div class="nav-section-label">Operations</div>
+                <a href="authorizations.html" class="nav-link active">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Authorizations</span>
+                </a>
+                <a href="purchase-monitor.html" class="nav-link">
+                    <i class="fa-solid fa-cart-flatbed"></i>
+                    <span>Purchase Monitor</span>
+                </a>
+                <a href="reports.html" class="nav-link">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <span>Purchase Reports</span>
+                </a>
 
-            <input
+                <div class="nav-section-label">Account</div>
+                <a href="profile.html" class="nav-link">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>Admin Profile</span>
+                </a>
+            </div>
 
-                type="text"
+            <div class="sidebar-footer">
+                <button class="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center gap-2" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
 
-                id="searchAuthorization"
+        <!-- Main Content Area -->
+        <div class="app-main">
 
-                class="form-control"
+            <!-- Topbar Header -->
+            <header class="app-topbar">
+                <div class="topbar-left">
+                    <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h1 class="topbar-title">Chemical Authorization Management</h1>
+                </div>
 
-                placeholder="Search User or Authorization Code">
+                <div class="topbar-right">
+                    <div class="user-badge">
+                        <div class="user-avatar">A</div>
+                        <div>
+                            <div class="user-info-name">Administrator</div>
+                            <div class="user-info-role">System Admin</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
 
-        </div>
+            <!-- Page Content -->
+            <main class="app-content">
 
-        <div class="col-md-2">
+                <div class="page-header">
+                    <div>
+                        <h2 class="page-title">Pending & Approved Authorizations</h2>
+                        <p class="page-subtitle">Inspect user chemical authorization proof documents, verify purpose of purchase, and grant usage permits.</p>
+                    </div>
+                </div>
 
-            <button
+                <!-- Section 1: Pending Authorizations -->
+                <div class="card mb-5">
+                    <div class="card-header-primary py-3 px-4 d-flex align-items-center justify-content-between">
+                        <h4 class="text-white mb-0"><i class="fa-solid fa-hourglass-half me-2"></i> Pending Authorization Requests</h4>
+                        <span class="badge badge-accent">Action Required</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-8">
+                                <input type="text" id="searchAuthorization" class="form-control" placeholder="Search User or Authorization Code...">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary w-100" onclick="searchAuthorizations()">
+                                    <i class="fa-solid fa-magnifying-glass"></i> Search
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-secondary w-100" onclick="loadPendingAuthorizations()">
+                                    <i class="fa-solid fa-rotate"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
 
-                class="btn btn-primary w-100"
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>User</th>
+                                        <th>Authorization Code</th>
+                                        <th>Proof Document</th>
+                                        <th>Purpose</th>
+                                        <th>Status</th>
+                                        <th width="220">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="authorizationTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
-                onclick="searchAuthorizations()">
+                <!-- Section 2: Approved Authorizations -->
+                <div class="card">
+                    <div class="card-header bg-dark text-white py-3 px-4">
+                        <h4 class="text-white mb-0"><i class="fa-solid fa-circle-check me-2 text-warning"></i> Approved Authorization Records</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-8">
+                                <input type="text" id="approvedSearch" class="form-control" placeholder="Search Approved User or Code...">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary w-100" onclick="searchApprovedAuthorizations()">
+                                    <i class="fa-solid fa-magnifying-glass"></i> Search
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-secondary w-100" onclick="loadApprovedAuthorizations()">
+                                    <i class="fa-solid fa-rotate"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
 
-                Search
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>User</th>
+                                        <th>Authorization Code</th>
+                                        <th>Purpose</th>
+                                        <th>Issue Date</th>
+                                        <th>Expiry Date</th>
+                                        <th>Status</th>
+                                        <th width="120">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="approvedAuthorizationTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
-            </button>
-
-        </div>
-
-        <div class="col-md-2">
-
-            <button
-
-                class="btn btn-secondary w-100"
-
-                onclick="loadPendingAuthorizations()">
-
-                Refresh
-
-            </button>
+            </main>
 
         </div>
 
     </div>
 
-    <table class="table table-bordered table-striped">
-
-        <thead class="table-dark">
-
-            <tr>
-
-                <th>ID</th>
-
-                <th>User</th>
-
-                <th>Authorization Code</th>
-
-                <th>Proof Document</th>
-
-                <th>Purpose</th>
-
-                <th>Status</th>
-
-                <th width="220">
-
-                    Action
-
-                </th>
-
-            </tr>
-
-        </thead>
-
-        <tbody id="authorizationTableBody">
-
-        </tbody>
-
-    </table>
-
-    <hr class="my-5">
-
-    <h2 class="mb-4">
-
-        Approved Authorization Requests
-
-    </h2>
-
-    <div class="row mb-3">
-
-        <div class="col-md-5">
-
-            <input
-
-                type="text"
-
-                id="approvedSearch"
-
-                class="form-control"
-
-                placeholder="Search User or Authorization Code">
-
+    <!-- View Authorization Modal -->
+    <div class="modal fade" id="authorizationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fa-solid fa-file-shield me-2"></i> Authorization Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="authorizationDetails">
+                </div>
+            </div>
         </div>
-
-        <div class="col-md-2">
-
-            <button
-
-                class="btn btn-primary w-100"
-
-                onclick="searchApprovedAuthorizations()">
-
-                Search
-
-            </button>
-
-        </div>
-
-        <div class="col-md-2">
-
-            <button
-
-                class="btn btn-secondary w-100"
-
-                onclick="loadApprovedAuthorizations()">
-
-                Refresh
-
-            </button>
-
-        </div>
-
     </div>
 
-    <table class="table table-bordered table-striped">
-
-        <thead class="table-success">
-
-            <tr>
-
-                <th>ID</th>
-
-                <th>User</th>
-
-                <th>Authorization Code</th>
-
-                <th>Purpose</th>
-
-                <th>Issue Date</th>
-
-                <th>Expiry Date</th>
-
-                <th>Status</th>
-
-                <th width="120">
-
-                    Action
-
-                </th>
-
-            </tr>
-
-        </thead>
-
-        <tbody id="approvedAuthorizationTableBody">
-
-        </tbody>
-
-    </table>
-
-</div>
-
-<!-- View Modal -->
-
-<div
-
-    class="modal fade"
-
-    id="authorizationModal"
-
-    tabindex="-1">
-
-    <div class="modal-dialog modal-lg">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5>
-
-                    Authorization Details
-
-                </h5>
-
-                <button
-
-                    class="btn-close"
-
-                    data-bs-dismiss="modal">
-
-                </button>
-
+    <!-- Reject Authorization Modal -->
+    <div class="modal fade" id="rejectAuthorizationModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title text-white"><i class="fa-solid fa-circle-xmark me-2"></i> Reject Authorization Request</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="rejectAuthorizationId">
+                    <label class="form-label fw-bold">Specify Rejection Reason</label>
+                    <textarea id="rejectReason" class="form-control" rows="4" placeholder="Provide a detailed explanation for rejection..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-danger" onclick="submitAuthorizationReject()">Submit Rejection</button>
+                </div>
             </div>
-
-            <div
-
-                class="modal-body"
-
-                id="authorizationDetails">
-
-            </div>
-
         </div>
-
     </div>
 
-</div>
-
-<!-- Reject Authorization Modal -->
-
-<div
-
-    class="modal fade"
-
-    id="rejectAuthorizationModal"
-
-    tabindex="-1">
-
-    <div class="modal-dialog">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5 class="modal-title">
-
-                    Reject Authorization Request
-
-                </h5>
-
-                <button
-
-                    type="button"
-
-                    class="btn-close"
-
-                    data-bs-dismiss="modal">
-
-                </button>
-
+    <!-- Proof Document Modal -->
+    <div class="modal fade" id="proofModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fa-solid fa-file-contract me-2"></i> Proof Document Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center p-0">
+                    <img id="proofImage" class="img-fluid" style="display:none; max-height:700px;">
+                    <iframe id="proofPDF" width="100%" height="700" style="display:none; border:none;"></iframe>
+                </div>
             </div>
-
-            <div class="modal-body">
-
-                <input
-
-                    type="hidden"
-
-                    id="rejectAuthorizationId">
-
-                <label class="form-label">
-
-                    Rejection Reason
-
-                </label>
-
-                <textarea
-
-                    id="rejectReason"
-
-                    class="form-control"
-
-                    rows="4"
-
-                    placeholder="Enter rejection reason">
-
-                </textarea>
-
-            </div>
-
-            <div class="modal-footer">
-
-                <button
-
-                    class="btn btn-secondary"
-
-                    data-bs-dismiss="modal">
-
-                    Cancel
-
-                </button>
-
-                <button
-
-                    class="btn btn-danger"
-
-                    onclick="submitAuthorizationReject()">
-
-                    Reject
-
-                </button>
-
-            </div>
-
         </div>
-
     </div>
 
-</div>
-
-<div class="modal fade"
-     id="proofModal"
-     tabindex="-1">
-
-    <div class="modal-dialog modal-xl">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5 class="modal-title">
-                    Proof Document
-                </h5>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal">
-                </button>
-
-            </div>
-
-            <div class="modal-body text-center">
-
-                <img
-                    id="proofImage"
-                    class="img-fluid"
-                    style="display:none; max-height:700px;">
-
-                <iframe
-                    id="proofPDF"
-                    width="100%"
-                    height="700"
-                    style="display:none; border:none;">
-                </iframe>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<script src="../public/js/config.js"></script>
-
-<script src="../public/js/common.js"></script>
-
-<script src="../public/js/admin.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../public/js/config.js"></script>
+    <script src="../public/js/common.js"></script>
+    <script src="../public/js/admin.js"></script>
 
 </body>
 

@@ -2,75 +2,132 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Purchase System | Home</title>
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Chemical Purchase System</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-
-    <link
-        rel="stylesheet"
-        href="public/css/style.css">
-
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="public/css/style.css">
+    <style>
+        /* One-Page Lock for Desktop */
+        @media (min-width: 992px) {
+            html, body {
+                height: 100vh;
+                max-height: 100vh;
+                overflow: hidden;
+            }
+            .hero-section {
+                height: calc(100vh - 76px);
+                display: flex;
+                align-items: center;
+            }
+        }
+        .hero-banner-img {
+            width: 100%;
+            height: 100%;
+            min-height: 280px;
+            max-height: 380px;
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(6, 78, 59, 0.15);
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body class="bg-white">
 
-<div class="container">
+    <!-- Minimal Horizontal Top Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom py-3 sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-3" href="index.html">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-vial-circle-check"></i>
+                </div>
+                <span class="fs-4 fw-extrabold text-dark">Chemical System</span>
+            </a>
 
-    <div class="row vh-100 justify-content-center align-items-center">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="col-lg-5 col-md-7">
-
-            <div class="card shadow">
-
-                <div class="card-body text-center p-5">
-
-                    <h2 class="mb-3">
-
-                        Chemical Purchase System
-
-                    </h2>
-
-                    <p class="text-muted mb-4">
-
-                        Secure platform for purchasing
-                        and managing laboratory chemicals.
-
-                    </p>
-
-                    <a
-                        href="login.html"
-                        class="btn btn-primary w-100 mb-3">
-
-                        Login
-
+            <div class="collapse navbar-collapse" id="topNav">
+                <div class="d-flex align-items-center gap-2">
+                    <a href="login.html" class="btn btn-outline-primary px-4 py-2">
+                        <i class="fa-solid fa-right-to-bracket me-1"></i> Login
                     </a>
-
-                    <a
-                        href="register.html"
-                        class="btn btn-success w-100">
-
-                        Register Account
-
+                    <a href="register.html" class="btn btn-primary px-4 py-2">
+                        <i class="fa-solid fa-user-plus me-1"></i> Register
                     </a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
+    <!-- Main Viewport Hero Section -->
+    <main class="hero-section py-4">
+        <div class="container">
+            <div class="row g-4 align-items-center">
+
+                <!-- Left Column (Title & Key Features) -->
+                <div class="col-lg-6">
+                    <div class="pe-lg-4">
+                        <div class="badge bg-light text-success border mb-3 px-3 py-2 fs-6 d-inline-flex align-items-center gap-2">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>ISO 27001 Certified Governance</span>
+                        </div>
+
+                        <h1 class="display-title display-5 text-dark mb-3">
+                            Industrial Chemical Procurement Portal
+                        </h1>
+
+                        <p class="fs-5 text-muted mb-4">
+                            Transparent chemical sourcing, laboratory license verification, chemical usage permits, and real-time order tracking.
+                        </p>
+
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <a href="login.html" class="btn btn-primary btn-lg px-4 shadow">
+                                Access Portal <i class="fa-solid fa-arrow-right ms-2"></i>
+                            </a>
+                            <a href="register.html" class="btn btn-secondary btn-lg px-4">
+                                Create Account
+                            </a>
+                        </div>
+
+                        <!-- 3 Minimal Feature Bullets -->
+                        <div class="row g-3 pt-3 border-top">
+                            <div class="col-4">
+                                <div class="fw-bold text-dark fs-6"><i class="fa-solid fa-check text-success me-1"></i> Verified Stock</div>
+                                <small class="text-muted">Certified Labs</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="fw-bold text-dark fs-6"><i class="fa-solid fa-check text-success me-1"></i> Permits</div>
+                                <small class="text-muted">Govt Compliance</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="fw-bold text-dark fs-6"><i class="fa-solid fa-check text-success me-1"></i> Live Tracking</div>
+                                <small class="text-muted">Order Security</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column (AI Laboratory Graphic) -->
+                <div class="col-lg-6">
+                    <div class="position-relative">
+                        <img src="public/images/chemical_lab_hero.jpg" alt="Chemical Laboratory" class="hero-banner-img">
+                    </div>
                 </div>
 
             </div>
-
         </div>
+    </main>
 
-    </div>
-
-</div>
-
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

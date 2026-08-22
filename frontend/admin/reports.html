@@ -1,232 +1,227 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Reports | Chemical Purchase System</title>
 
-    <title>Purchase Reports</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="../public/css/style.css">
+    <link rel="stylesheet" href="../public/css/admin.css">
 </head>
 
 <body>
 
-<div class="container mt-4">
-
-    <h2 class="mb-4">
-
-        Purchase Reports
-
-    </h2>
-
-    <div class="row mb-3">
-
-        <div class="col-md-4">
-
-            <input
-
-                type="text"
-
-                id="reportSearch"
-
-                class="form-control"
-
-                placeholder="Search Purchase Code, User, Laboratory or Chemical">
-
-        </div>
-
-        <div class="col-md-2">
-
-            <select
-
-                id="reportStatusFilter"
-
-                class="form-select">
-
-                <option value="">All Status</option>
-
-                <option value="Pending">Pending</option>
-
-                <option value="Approved">Approved</option>
-
-                <option value="Completed">Completed</option>
-
-                <option value="Rejected">Rejected</option>
-
-            </select>
-
-        </div>
-
-        <div class="col-md-2">
-
-            <select
-
-                id="reportReservationFilter"
-
-                class="form-select">
-
-                <option value="">All Reservation</option>
-
-                <option value="Reserved">Reserved</option>
-
-                <option value="Released">Released</option>
-
-                <option value="Expired">Expired</option>
-
-            </select>
-
-        </div>
-
-        <div class="col-md-2">
-
-            <button
-
-                class="btn btn-primary w-100"
-
-                onclick="searchReports()">
-
-                Search
-
-            </button>
-
-        </div>
-
-        <div class="col-md-2">
-
-            <button
-
-                class="btn btn-secondary w-100"
-
-                onclick="loadReports()">
-
-                Refresh
-
-            </button>
-
-        </div>
-
-    </div>
-
-    <div class="row mb-3">
-
-        <div class="col-md-2">
-
-            <button
-
-                class="btn btn-success w-100"
-
-                onclick="downloadReportExcel()">
-
-                Download Excel
-
-            </button>
-
-        </div>
-
-    </div>
-
-    <table class="table table-bordered table-striped">
-
-        <thead class="table-dark">
-
-            <tr>
-
-                <th>ID</th>
-
-                <th>User</th>
-
-                <th>Laboratory</th>
-
-                <th>Chemical</th>
-
-                <th>Quantity</th>
-
-                <th>Purchase Code</th>
-
-                <th>Status</th>
-
-                <th>Reservation</th>
-
-                <th>Date</th>
-
-                <th width="100">
-
-                    Action
-
-                </th>
-
-            </tr>
-
-        </thead>
-
-        <tbody id="reportTableBody">
-
-        </tbody>
-
-    </table>
-
-</div>
-
-<!-- View Modal -->
-
-<div
-
-    class="modal fade"
-
-    id="reportModal"
-
-    tabindex="-1">
-
-    <div class="modal-dialog modal-lg">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5>
-
-                    Purchase Report Details
-
-                </h5>
-
-                <button
-
-                    class="btn-close"
-
-                    data-bs-dismiss="modal">
-
+    <div class="app-layout">
+
+        <!-- Mobile Backdrop -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar" id="appSidebar">
+            <div class="sidebar-header">
+                <a href="main-dashboard.html" class="sidebar-brand">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-vial-circle-check"></i>
+                    </div>
+                    <span>Chemical System</span>
+                </a>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">Main Navigation</div>
+                <a href="main-dashboard.html" class="nav-link">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Statistics Dashboard</span>
+                </a>
+
+                <div class="nav-section-label">Management</div>
+                <a href="users.html" class="nav-link">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Users Management</span>
+                </a>
+                <a href="laboratories.html" class="nav-link">
+                    <i class="fa-solid fa-flask-vial"></i>
+                    <span>Laboratories</span>
+                </a>
+                <a href="license-registration.html" class="nav-link">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>License Registration</span>
+                </a>
+
+                <div class="nav-section-label">Operations</div>
+                <a href="authorizations.html" class="nav-link">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Authorizations</span>
+                </a>
+                <a href="purchase-monitor.html" class="nav-link">
+                    <i class="fa-solid fa-cart-flatbed"></i>
+                    <span>Purchase Monitor</span>
+                </a>
+                <a href="reports.html" class="nav-link active">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <span>Purchase Reports</span>
+                </a>
+
+                <div class="nav-section-label">Account</div>
+                <a href="profile.html" class="nav-link">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>Admin Profile</span>
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                <button class="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center gap-2" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
                 </button>
-
             </div>
+        </aside>
 
-            <div
+        <!-- Main Content Area -->
+        <div class="app-main">
 
-                class="modal-body"
+            <!-- Topbar Header -->
+            <header class="app-topbar">
+                <div class="topbar-left">
+                    <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h1 class="topbar-title">Purchase Audit Reports</h1>
+                </div>
 
-                id="reportDetails">
+                <div class="topbar-right">
+                    <div class="user-badge">
+                        <div class="user-avatar">A</div>
+                        <div>
+                            <div class="user-info-name">Administrator</div>
+                            <div class="user-info-role">System Admin</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
 
-            </div>
+            <!-- Page Content -->
+            <main class="app-content">
+
+                <div class="page-header">
+                    <div>
+                        <h2 class="page-title">Chemical Purchase Audit Reports</h2>
+                        <p class="page-subtitle">Filter transaction histories, audit compliance data, and export report datasets in Excel format.</p>
+                    </div>
+                    <button class="btn btn-amber shadow" onclick="downloadReportExcel()">
+                        <i class="fa-solid fa-file-excel me-1"></i> Export Excel Report
+                    </button>
+                </div>
+
+                <!-- Filters Card -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white text-muted">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </span>
+                                    <input type="text" id="reportSearch" class="form-control ps-2" placeholder="Search Code, User, Lab or Chemical...">
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <select id="reportStatusFilter" class="form-select">
+                                    <option value="">All Status</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Rejected">Rejected</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <select id="reportReservationFilter" class="form-select">
+                                    <option value="">All Reservation</option>
+                                    <option value="Reserved">Reserved</option>
+                                    <option value="Released">Released</option>
+                                    <option value="Expired">Expired</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <button class="btn btn-primary w-100" onclick="searchReports()">
+                                    <i class="fa-solid fa-magnifying-glass"></i> Filter
+                                </button>
+                            </div>
+
+                            <div class="col-md-2">
+                                <button class="btn btn-secondary w-100" onclick="loadReports()">
+                                    <i class="fa-solid fa-rotate"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Card -->
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>User</th>
+                                        <th>Laboratory</th>
+                                        <th>Chemical</th>
+                                        <th>Quantity</th>
+                                        <th>Purchase Code</th>
+                                        <th>Status</th>
+                                        <th>Reservation</th>
+                                        <th>Date</th>
+                                        <th width="100">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reportTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
 
         </div>
 
     </div>
 
-</div>
+    <!-- View Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fa-solid fa-file-invoice me-2"></i> Report Record Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="reportDetails">
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script src="../public/js/config.js"></script>
-
-<script src="../public/js/common.js"></script>
-
-<script src="../public/js/admin.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Excel Library -->
-
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <!-- Scripts -->
+    <script src="../public/js/config.js"></script>
+    <script src="../public/js/common.js"></script>
+    <script src="../public/js/admin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 </body>
 

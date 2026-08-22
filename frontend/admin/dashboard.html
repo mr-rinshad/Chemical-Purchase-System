@@ -1,151 +1,258 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Statistics Dashboard | Chemical Purchase System</title>
 
-    <title>Admin Dashboard</title>
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="../public/css/style.css">
+    <link rel="stylesheet" href="../public/css/admin.css">
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-primary">
 
-    <div class="container-fluid">
+    <div class="app-layout">
 
-        <a href="main-dashboard.html"
-           class="navbar-brand">
+        <!-- Mobile Backdrop -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
 
-            ← Dashboard
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar" id="appSidebar">
+            <div class="sidebar-header">
+                <a href="main-dashboard.html" class="sidebar-brand">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-vial-circle-check"></i>
+                    </div>
+                    <span>Chemical System</span>
+                </a>
+            </div>
 
-        </a>
+            <div class="sidebar-nav">
+                <div class="nav-section-label">Main Navigation</div>
+                <a href="main-dashboard.html" class="nav-link">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="dashboard.html" class="nav-link active">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Statistics Dashboard</span>
+                </a>
 
-        <button
-            class="btn btn-light"
-            onclick="logout()">
+                <div class="nav-section-label">Management</div>
+                <a href="users.html" class="nav-link">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Users Management</span>
+                </a>
+                <a href="laboratories.html" class="nav-link">
+                    <i class="fa-solid fa-flask-vial"></i>
+                    <span>Laboratories</span>
+                </a>
+                <a href="license-registration.html" class="nav-link">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>License Registration</span>
+                </a>
 
-            Logout
+                <div class="nav-section-label">Operations</div>
+                <a href="authorizations.html" class="nav-link">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Authorizations</span>
+                </a>
+                <a href="purchase-monitor.html" class="nav-link">
+                    <i class="fa-solid fa-cart-flatbed"></i>
+                    <span>Purchase Monitor</span>
+                </a>
+                <a href="reports.html" class="nav-link">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <span>Purchase Reports</span>
+                </a>
 
-        </button>
+                <div class="nav-section-label">Account</div>
+                <a href="profile.html" class="nav-link">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>Admin Profile</span>
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                <button class="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center gap-2" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="app-main">
+
+            <!-- Topbar Header -->
+            <header class="app-topbar">
+                <div class="topbar-left">
+                    <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h1 class="topbar-title">Statistics & Inventory Analytics</h1>
+                </div>
+
+                <div class="topbar-right">
+                    <div class="user-badge">
+                        <div class="user-avatar">A</div>
+                        <div>
+                            <div class="user-info-name">Administrator</div>
+                            <div class="user-info-role">System Admin</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="app-content">
+
+                <div class="page-header">
+                    <div>
+                        <h2 class="page-title">Live System Metrics</h2>
+                        <p class="page-subtitle">Real-time statistics across users, laboratories, authorizations, and chemical orders.</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div>
+                                <div class="stat-title">Total Users</div>
+                                <h2 class="stat-value" id="total_users">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card accent-emerald">
+                            <div>
+                                <div class="stat-title">Total Laboratories</div>
+                                <h2 class="stat-value" id="total_laboratories">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-building-user"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card accent-amber">
+                            <div>
+                                <div class="stat-title">Pending Labs</div>
+                                <h2 class="stat-value" id="pending_laboratories">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div>
+                                <div class="stat-title">Approved Labs</div>
+                                <h2 class="stat-value" id="approved_laboratories">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card accent-amber">
+                            <div>
+                                <div class="stat-title">Pending Authorizations</div>
+                                <h2 class="stat-value" id="pending_authorizations">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card accent-emerald">
+                            <div>
+                                <div class="stat-title">Approved Authorizations</div>
+                                <h2 class="stat-value" id="approved_authorizations">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-file-circle-check"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div>
+                                <div class="stat-title">Total Chemicals</div>
+                                <h2 class="stat-value" id="total_chemicals">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-vial"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card accent-emerald">
+                            <div>
+                                <div class="stat-title">Purchase Requests</div>
+                                <h2 class="stat-value" id="total_purchase_requests">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-clipboard-list"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div>
+                                <div class="stat-title">Completed Purchases</div>
+                                <h2 class="stat-value" id="completed_purchases">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card accent-amber">
+                            <div>
+                                <div class="stat-title">Expired Reservations</div>
+                                <h2 class="stat-value" id="expired_reservations">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+
+        </div>
 
     </div>
 
-</nav>
-
-
-<div class="container mt-4">
-
-    <h2 class="mb-4">
-        Admin Dashboard
-    </h2>
-
-    <div class="row">
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Total Users</h5>
-                    <h2 id="total_users">0</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Total Laboratories</h5>
-                    <h2 id="total_laboratories">0</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Pending Labs</h5>
-                    <h2 id="pending_laboratories">0</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Approved Labs</h5>
-                    <h2 id="approved_laboratories">0</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Pending Authorizations</h5>
-                    <h2 id="pending_authorizations">0</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Approved Authorizations</h5>
-                    <h2 id="approved_authorizations">0</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Total Chemicals</h5>
-                    <h2 id="total_chemicals">0</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Total Purchase Requests</h5>
-                    <h2 id="total_purchase_requests">0</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Completed Purchases</h5>
-                    <h2 id="completed_purchases">0</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Expired Reservations</h5>
-                    <h2 id="expired_reservations">0</h2>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Project JS -->
-
-<script src="../public/js/config.js"></script>
-
-<script src="../public/js/common.js"></script>
-
-<script src="../public/js/admin.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../public/js/config.js"></script>
+    <script src="../public/js/common.js"></script>
+    <script src="../public/js/admin.js"></script>
 
 </body>
 

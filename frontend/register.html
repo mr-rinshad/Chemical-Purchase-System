@@ -2,391 +2,201 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Registration | Chemical Purchase System</title>
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>User Registration</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-
-    <link
-        rel="stylesheet"
-        href="public/css/style.css">
-
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="public/css/style.css">
+    <style>
+        .role-pill-btn {
+            border-radius: 30px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.925rem;
+            transition: var(--transition-fast);
+            border: 1px solid var(--border-color);
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body class="bg-white">
 
-<div class="position-absolute top-0 start-0 m-3">
+    <!-- Minimal Horizontal Top Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom py-3 sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-3" href="index.html">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-vial-circle-check"></i>
+                </div>
+                <span class="fs-4 fw-extrabold text-dark">Chemical System</span>
+            </a>
 
-    <a
-        href="index.html"
-        class="btn btn-outline-primary">
+            <div class="d-flex align-items-center gap-2 ms-auto">
+                <a href="index.html" class="btn btn-outline-secondary px-3 py-1.5 fs-6">
+                    <i class="fa-solid fa-house me-1"></i> Home
+                </a>
+                <a href="login.html" class="btn btn-primary px-3 py-1.5 fs-6">
+                    <i class="fa-solid fa-right-to-bracket me-1"></i> Login
+                </a>
+            </div>
+        </div>
+    </nav>
 
-        Home
+    <!-- Main Registration Section -->
+    <main class="py-5">
+        <div class="container max-w-4xl">
 
-    </a>
-
-</div>
-
-<div class="container">
-
-    <div class="row justify-content-center align-items-center vh-100">
-
-        <div class="col-lg-6 col-md-8">
-
-            <!-- Registration Type Buttons -->
-
+            <!-- Role Switcher Pill -->
             <div class="text-center mb-4">
-
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    id="userTab"
-                    onclick="showUserForm()">
-
-                    User Registration
-
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    id="labTab"
-                    onclick="showLabForm()">
-
-                    Laboratory Registration
-
-                </button>
-
+                <div class="btn-group p-1.5 bg-light border rounded-pill shadow-sm" role="group">
+                    <button type="button" class="btn btn-primary role-pill-btn shadow" id="userTab" onclick="showUserForm()">
+                        <i class="fa-solid fa-user me-2"></i> User / Researcher
+                    </button>
+                    <button type="button" class="btn btn-light role-pill-btn text-muted" id="labTab" onclick="showLabForm()">
+                        <i class="fa-solid fa-flask me-2"></i> Certified Laboratory
+                    </button>
+                </div>
             </div>
 
-            <!-- User Registration -->
-
+            <!-- User Registration Card -->
             <div id="userRegistration">
-
-                <div class="card shadow">
-
-                    <div class="card-header text-center">
-
-                        <h3>User Registration</h3>
-
+                <div class="card p-0 shadow-lg border-0 rounded-4 overflow-hidden">
+                    <div class="card-header-primary p-4 text-center">
+                        <h3 class="display-title text-white mb-1"><i class="fa-solid fa-user-plus me-2"></i> User Account Registration</h3>
+                        <p class="text-white-50 fs-6 mb-0">Register as a researcher or authorized chemical buyer</p>
                     </div>
-
-                    <div class="card-body">
-
+                    <div class="p-4 p-md-5 bg-white">
                         <form id="registerForm">
-
-                            <div class="mb-3">
-
-                                <label class="form-label">
-
-                                    Full Name
-
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="full_name"
-                                    class="form-control"
-                                    required>
-
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Full Name</label>
+                                    <input type="text" id="full_name" class="form-control" placeholder="e.g. John Doe" minlength="3" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Email Address</label>
+                                    <input type="email" id="email" class="form-control" placeholder="name@domain.com" required>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Phone Number</label>
+                                    <input type="tel" id="phone" class="form-control" placeholder="10-digit mobile number (starts with 6-9)" maxlength="10" pattern="[6-9]{1}[0-9]{9}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Delivery / Institution Address</label>
+                                    <textarea id="address" class="form-control" rows="2" placeholder="Full postal delivery address" minlength="5" required></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Password</label>
+                                    <input type="password" id="password" class="form-control" placeholder="At least 6 characters" minlength="6" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Confirm Password</label>
+                                    <input type="password" id="confirm_password" class="form-control" placeholder="Repeat password" minlength="6" required>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
+                            <div id="message" class="mt-3"></div>
 
-                                <label class="form-label">
-
-                                    Email
-
-                                </label>
-
-                                <input
-                                    type="email"
-                                    id="email"
-                                    class="form-control"
-                                    required>
-
-                            </div>
-
-                            <div class="mb-3">
-
-                                <label class="form-label">
-
-                                    Phone Number
-
-                                </label>
-
-                                <input
-                                    type="tel"
-                                    id="phone"
-                                    class="form-control"
-                                    maxlength="10"
-                                    pattern="[6-9]{1}[0-9]{9}"
-                                    oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-                                    required>
-
-                            </div>
-
-                            <div class="mb-3">
-
-                                <label class="form-label">
-
-                                    Address
-
-                                </label>
-
-                                <textarea
-                                    id="address"
-                                    class="form-control"
-                                    rows="3"
-                                    required></textarea>
-
-                            </div>
-
-                            <div class="mb-3">
-
-                                <label class="form-label">
-
-                                    Password
-
-                                </label>
-
-                                <input
-                                    type="password"
-                                    id="password"
-                                    class="form-control"
-                                    required>
-
-                            </div>
-
-                            <div class="mb-3">
-
-                                <label class="form-label">
-
-                                    Confirm Password
-
-                                </label>
-
-                                <input
-                                    type="password"
-                                    id="confirm_password"
-                                    class="form-control"
-                                    required>
-
-                            </div>
-
-                            <div id="message"></div>
-
-                            <button
-                                class="btn btn-success w-100"
-                                type="submit">
-
-                                Register
-
+                            <button class="btn btn-primary w-100 py-2.5 fs-6 shadow mt-4" type="submit">
+                                <i class="fa-solid fa-user-check me-2"></i> Register Account
                             </button>
-
-                            <a
-                                href="login.html"
-                                class="btn btn-secondary w-100 mt-2">
-
-                                Back to Login
-
-                            </a>
-
                         </form>
-
                     </div>
-
                 </div>
-
             </div>
 
-            <!-- Laboratory Registration -->
-
+            <!-- Laboratory Registration Card -->
             <div id="laboratoryRegistration" style="display:none;">
-
-                <div class="card shadow">
-
-                    <div class="card-header bg-primary text-white">
-
-                        <h3 class="text-center">
-
-                            Laboratory Registration
-
-                        </h3>
-
+                <div class="card p-0 shadow-lg border-0 rounded-4 overflow-hidden">
+                    <div class="card-header-primary p-4 text-center">
+                        <h3 class="display-title text-white mb-1"><i class="fa-solid fa-flask me-2"></i> Laboratory Registration</h3>
+                        <p class="text-white-50 fs-6 mb-0">Register a certified chemical supplying laboratory</p>
                     </div>
-
-                    <div class="card-body">
-
+                    <div class="p-4 p-md-5 bg-white">
                         <form id="labRegisterForm">
-
-                            <div class="mb-3">
-
-                                <label>License ID</label>
-
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="lab_license_id"
-                                    required>
-
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Government License ID</label>
+                                    <input type="number" class="form-control" id="lab_license_id" placeholder="Registered License Number" min="1" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Laboratory Name</label>
+                                    <input type="text" class="form-control" id="lab_name" placeholder="e.g. Apex Bio-Labs" minlength="3" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Owner Name</label>
+                                    <input type="text" id="lab_owner_name" class="form-control" placeholder="Director Name" minlength="3" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Email Address</label>
+                                    <input type="email" class="form-control" id="lab_email" placeholder="contact@labdomain.com" required>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Phone Number</label>
+                                    <input type="tel" class="form-control" id="lab_phone" placeholder="10-digit contact number" maxlength="10" pattern="[6-9]{1}[0-9]{9}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Laboratory Address</label>
+                                    <textarea class="form-control" id="lab_address" rows="2" placeholder="Full laboratory location address" minlength="5" required></textarea>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">City</label>
+                                    <input type="text" class="form-control" id="lab_city" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">State</label>
+                                    <input type="text" class="form-control" id="lab_state" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Pincode</label>
+                                    <input type="text" class="form-control" id="lab_pincode" placeholder="6-digit pincode" maxlength="6" pattern="[0-9]{6}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Password</label>
+                                    <input type="password" class="form-control" id="lab_password" placeholder="At least 6 characters" minlength="6" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Confirm Password</label>
+                                    <input type="password" class="form-control" id="lab_confirm_password" placeholder="Repeat password" minlength="6" required>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-
-                                <label>Laboratory Name</label>
-
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    id="lab_name"
-                                    required>
-
-                            </div>
-                            <div class="mb-3">
-    <label>Owner Name</label>
-    <input
-        type="text"
-        id="lab_owner_name"
-        class="form-control"
-        required
-    >
-</div>
-
-                            <div class="mb-3">
-
-                                <label>Email</label>
-
-                                <input
-                                    type="email"
-                                    class="form-control"
-                                    id="lab_email"
-                                    required>
-
-                            </div>
-
-                            <div class="mb-3">
-
-                                <label>Phone</label>
-
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    id="lab_phone"
-                                    required>
-
-                            </div>
-
-                            <div class="mb-3">
-
-                                <label>Address</label>
-
-                                <textarea
-                                    class="form-control"
-                                    id="lab_address"
-                                    required></textarea>
-
-                            </div>
-
-                            <div class="mb-3">
-
-                                <label>City</label>
-
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    id="lab_city"
-                                    required>
-
-                            </div>
-
-                            <div class="mb-3">
-
-                                <label>State</label>
-
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    id="lab_state"
-                                    required>
-
-                            </div>
-
-                            <div class="mb-3">
-
-                                <label>Pincode</label>
-
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    id="lab_pincode"
-                                    required>
-
-                            </div>
-
-                            <div class="mb-3">
-
-                                <label>Password</label>
-
-                                <input
-                                    type="password"
-                                    class="form-control"
-                                    id="lab_password"
-                                    required>
-
-                            </div>
-
-                            <div class="mb-3">
-
-                                <label>Confirm Password</label>
-
-                                <input
-                                    type="password"
-                                    class="form-control"
-                                    id="lab_confirm_password"
-                                    required>
-
-                            </div>
-
-                            <button
-                                class="btn btn-success w-100"
-                                type="submit">
-
-                                Register Laboratory
-
+                            <button class="btn btn-primary w-100 py-2.5 fs-6 shadow mt-4" type="submit">
+                                <i class="fa-solid fa-flask-vial me-2"></i> Register Laboratory Account
                             </button>
-                              <a
-                                href="login.html"
-                                class="btn btn-secondary w-100 mt-2">
-
-                                Back to Login
-
-                            </a>
-
                         </form>
-
                     </div>
-
                 </div>
-
             </div>
 
         </div>
+    </main>
 
-    </div>
+    <!-- Role Switcher Script -->
+    <script>
+        function showUserForm() {
+            document.getElementById('userRegistration').style.display = 'block';
+            document.getElementById('laboratoryRegistration').style.display = 'none';
+            document.getElementById('userTab').className = 'btn btn-primary role-pill-btn shadow';
+            document.getElementById('labTab').className = 'btn btn-light role-pill-btn text-muted';
+        }
+        function showLabForm() {
+            document.getElementById('userRegistration').style.display = 'none';
+            document.getElementById('laboratoryRegistration').style.display = 'block';
+            document.getElementById('userTab').className = 'btn btn-light role-pill-btn text-muted';
+            document.getElementById('labTab').className = 'btn btn-primary role-pill-btn shadow';
+        }
+    </script>
 
-</div>
-
-<script src="public/js/config.js"></script>
-<script src="public/js/common.js"></script>
-<script src="public/js/register.js"></script>
+    <!-- Scripts -->
+    <script src="public/js/config.js"></script>
+    <script src="public/js/common.js"></script>
+    <script src="public/js/register.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 
