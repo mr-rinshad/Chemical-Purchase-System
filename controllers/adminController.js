@@ -1857,6 +1857,28 @@ const getPurchaseMonitor = async (req, res, next) => {
     }
 
 };
+const updateUserStatus = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        if (!status || !["Active", "Inactive"].includes(status)) {
+            return sendError(res, "Status must be Active or Inactive", [], 400);
+        }
+
+        const user = await User.findByIdAdmin(id);
+        if (!user) {
+            return sendError(res, "User not found", [], 404);
+        }
+
+        await User.updateStatus(id, status);
+
+        sendSuccess(res, `User status updated to ${status} successfully.`);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
 
     testAdmin,
@@ -1921,6 +1943,8 @@ module.exports = {
 
     updateAdmin,
 
-    deleteAdmin
+    deleteAdmin,
+
+    updateUserStatus
 
 };

@@ -1475,70 +1475,46 @@ function trackOrder(requestId) {
     }
 
     // Show Purchase Code
-    document.getElementById("trackPurchaseCode").innerHTML =
-        "Purchase Code : " + selectedPurchase.purchase_code;
+    document.getElementById("trackPurchaseCode").innerHTML = selectedPurchase.purchase_code;
 
     const paymentDate = new Date(selectedPurchase.payment_date);
-
     const today = new Date();
-
     const diffTime = today.getTime() - paymentDate.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-    const diffDays = Math.floor(
+    const stepPaid = document.getElementById("stepPaid");
+    const stepDelivery = document.getElementById("stepDelivery");
+    const stepDelivered = document.getElementById("stepDelivered");
 
-        diffTime / (1000 * 60 * 60 * 24)
+    // Reset Stage Classes
+    if (stepPaid) stepPaid.className = "stepper-item completed";
+    if (stepDelivery) stepDelivery.className = "stepper-item active";
+    if (stepDelivered) stepDelivered.className = "stepper-item";
 
-    );
-
-    // Reset Progress
-    document.getElementById("paidProgress").style.width = "0%";
+    document.getElementById("paidProgress").style.width = "100%";
     document.getElementById("deliveryProgress").style.width = "0%";
     document.getElementById("deliveredProgress").style.width = "0%";
 
-    document.getElementById("paidText").innerHTML =
-        "⭕ Paid";
+    document.getElementById("paidText").innerHTML = "✔ Payment Confirmed";
+    document.getElementById("deliveryText").innerHTML = "⭕ Out For Delivery";
+    document.getElementById("deliveredText").innerHTML = "⭕ Delivered";
 
-    document.getElementById("deliveryText").innerHTML =
-        "⭕ Out For Delivery";
-
-    document.getElementById("deliveredText").innerHTML =
-        "⭕ Delivered";
-
-    // Stage 1
-    document.getElementById("paidProgress").style.width =
-        "100%";
-
-    document.getElementById("paidText").innerHTML =
-        "✔ Paid";
-
-    // Stage 2
+    // Stage 2: Out For Delivery
     if (diffDays >= 1) {
-
-        document.getElementById("deliveryProgress").style.width =
-            "100%";
-
-        document.getElementById("deliveryText").innerHTML =
-            "✔ Out For Delivery";
-
+        if (stepDelivery) stepDelivery.className = "stepper-item completed";
+        if (stepDelivered) stepDelivered.className = "stepper-item active";
+        document.getElementById("deliveryProgress").style.width = "100%";
+        document.getElementById("deliveryText").innerHTML = "✔ Out For Delivery";
     }
 
-    // Stage 3
-if (diffDays >= 2) {
+    // Stage 3: Delivered
+    if (diffDays >= 2) {
+        if (stepDelivered) stepDelivered.className = "stepper-item completed";
+        document.getElementById("deliveredProgress").style.width = "100%";
+        document.getElementById("deliveredText").innerHTML = "✔ Successfully Delivered";
+    }
 
-    document.getElementById("deliveredProgress").style.width =
-        "100%";
-
-    document.getElementById("deliveredText").innerHTML =
-        "✔ Delivered";
-
-
-}
-
-    new bootstrap.Modal(
-
-        document.getElementById("trackOrderModal")
-
-    ).show();
+    new bootstrap.Modal(document.getElementById("trackOrderModal")).show();
 
 }
 async function completeOrderAutomatically(requestId){

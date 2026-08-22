@@ -1274,235 +1274,151 @@ async function loadUsers() {
 
 }
 function displayUsers() {
-
-    const tbody =
-
-        document.getElementById(
-
-            "userTableBody"
-
-        );
-
+    const tbody = document.getElementById("userTableBody");
+    if (!tbody) return;
     tbody.innerHTML = "";
 
-    users.forEach(function(user){
+    users.forEach(function(user) {
+        const isInactive = user.status === "Inactive";
+        const statusBadge = isInactive
+            ? `<span class="badge bg-danger">Suspended</span>`
+            : `<span class="badge bg-success">Active</span>`;
+
+        const actionBtn = isInactive
+            ? `<button class="btn btn-success btn-sm" onclick="toggleUserStatus(${user.user_id}, 'Active')"><i class="fa-solid fa-user-check"></i> Activate</button>`
+            : `<button class="btn btn-danger btn-sm" onclick="toggleUserStatus(${user.user_id}, 'Inactive')"><i class="fa-solid fa-user-slash"></i> Suspend</button>`;
 
         tbody.innerHTML += `
-
         <tr>
-
             <td>${user.user_id}</td>
-
             <td>${user.full_name}</td>
-
             <td>${user.email}</td>
-
             <td>${user.phone}</td>
-
-            <td>
-
-                ${new Date(
-
-                    user.created_at
-
-                ).toLocaleDateString()}
-
+            <td>${statusBadge}</td>
+            <td>${new Date(user.created_at).toLocaleDateString()}</td>
+            <td class="text-center">
+                <div class="d-inline-flex align-items-center gap-1">
+                    <button class="btn btn-info btn-sm" onclick="viewUser(${user.user_id})">
+                        <i class="fa-solid fa-eye"></i> View
+                    </button>
+                    ${actionBtn}
+                </div>
             </td>
-
-            <td>
-
-                <button
-
-                class="btn btn-info btn-sm"
-
-                onclick="viewUser(${user.user_id})"
-
-                >
-
-                View
-
-                </button>
-
-            </td>
-
         </tr>
-
         `;
-
     });
-
 }
+
 async function searchUsers() {
-
-    const keyword =
-
-        document
-
-        .getElementById(
-
-            "searchKeyword"
-
-        )
-
-        .value
-
-        .trim();
+    const keyword = document.getElementById("searchKeyword").value.trim();
 
     try {
-
         const response = await fetch(
-
-            API_BASE_URL +
-
-            "/admin/users/search?keyword=" +
-
-            encodeURIComponent(keyword),
-
+            API_BASE_URL + "/admin/users/search?keyword=" + encodeURIComponent(keyword),
             {
-
-                headers:{
-
-                    Authorization:
-
-                    "Bearer " +
-
-                    getToken()
-
+                headers: {
+                    Authorization: "Bearer " + getToken()
                 }
-
             }
-
         );
 
         const data = await response.json();
 
-        if(!data.success){
-
-            showMessage(
-
-                data.message,
-
-                "danger"
-
-            );
-
+        if (!data.success) {
+            showMessage(data.message, "danger");
             return;
-
         }
 
         users = data.data;
-
         displayUsers();
-
-    }
-
-    catch(error){
-
+    } catch (error) {
         console.log(error);
-
     }
-
 }
-async function viewUser(id){
 
-    try{
-
+async function viewUser(id) {
+    try {
         const response = await fetch(
-
-            API_BASE_URL +
-
-            "/admin/users/" +
-
-            id,
-
+            API_BASE_URL + "/admin/users/" + id,
             {
-
-                headers:{
-
-                    Authorization:
-
-                    "Bearer " +
-
-                    getToken()
-
+                headers: {
+                    Authorization: "Bearer " + getToken()
                 }
-
             }
-
         );
 
         const data = await response.json();
 
-        if(!data.success){
-
-            showMessage(
-
-                data.message,
-
-                "danger"
-
-            );
-
+        if (!data.success) {
+            showMessage(data.message, "danger");
             return;
-
         }
 
         const user = data.data;
+        document.getElementById("view_user_id").innerHTML = user.user_id;
+        document.getElementById("view_name").innerHTML = user.full_name;
+        document.getElementById("view_email").innerHTML = user.email;
+        document.getElementById("view_phone").innerHTML = user.phone;
+        document.getElementById("view_created").innerHTML = new Date(user.created_at).toLocaleDateString();
 
-        document.getElementById(
+        const userStatusEl = document.getElementById("view_status");
+        if (userStatusEl) {
+            const isInactive = user.status === "Inactive";
+            userStatusEl.className = isInactive ? "badge bg-danger" : "badge bg-success";
+            userStatusEl.innerText = isInactive ? "Suspended" : "Active";
+        }
 
-            "view_user_id"
+        const modalActionEl = document.getElementById("modalStatusAction");
+        if (modalActionEl) {
+            const isInactive = user.status === "Inactive";
+            if (isInactive) {
+                modalActionEl.innerHTML = `
+                    <button class="btn btn-success btn-sm" onclick="toggleUserStatus(${user.user_id}, 'Active'); bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();">
+                        <i class="fa-solid fa-user-check me-1"></i> Activate Account
+                    </button>`;
+            } else {
+                modalActionEl.innerHTML = `
+                    <button class="btn btn-danger btn-sm" onclick="toggleUserStatus(${user.user_id}, 'Inactive'); bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();">
+                        <i class="fa-solid fa-user-slash me-1"></i> Suspend Account
+                    </button>`;
+            }
+        }
 
-        ).innerHTML = user.user_id;
-
-        document.getElementById(
-
-            "view_name"
-
-        ).innerHTML = user.full_name;
-
-        document.getElementById(
-
-            "view_email"
-
-        ).innerHTML = user.email;
-
-        document.getElementById(
-
-            "view_phone"
-
-        ).innerHTML = user.phone;
-
-        document.getElementById(
-
-            "view_created"
-
-        ).innerHTML =
-
-        new Date(
-
-            user.created_at
-
-        ).toLocaleDateString();
-
-        new bootstrap.Modal(
-
-            document.getElementById(
-
-                "userModal"
-
-            )
-
-        ).show();
-
-    }
-
-    catch(error){
-
+        new bootstrap.Modal(document.getElementById("userModal")).show();
+    } catch (error) {
         console.log(error);
+    }
+}
 
+async function toggleUserStatus(userId, newStatus) {
+    const actionLabel = newStatus === "Inactive" ? "suspend" : "activate";
+    if (!confirm(`Are you sure you want to ${actionLabel} this user account?`)) {
+        return;
     }
 
+    try {
+        const response = await fetch(API_BASE_URL + "/admin/users/" + userId + "/status", {
+            method: "PUT",
+            headers: {
+                Authorization: "Bearer " + getToken(),
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ status: newStatus })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            alert(data.message || "Failed to update user status");
+            return;
+        }
+
+        alert(`User account successfully ${newStatus === "Inactive" ? "suspended" : "activated"}.`);
+        loadUsers();
+    } catch (error) {
+        console.error(error);
+        alert("Unable to connect to server.");
+    }
 }
 
 async function loadLaboratories() {

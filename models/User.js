@@ -80,110 +80,63 @@ static async findByPhoneExceptUser(phone, userId) {
 }
 // Admin - Get All Users
 static async findAll() {
-
     const [rows] = await db.execute(
-
         `SELECT
-
             user_id,
-
             full_name,
-
             email,
-
             phone,
-
             address,
-
+            status,
             created_at
-
         FROM users
-
         ORDER BY created_at DESC`
-
     );
-
     return rows;
-
 }
+
 // Admin - Search Users
 static async search(keyword) {
-
     const [rows] = await db.execute(
-
         `SELECT
-
             user_id,
-
             full_name,
-
             email,
-
             phone,
-
             address,
-
+            status,
             created_at
-
         FROM users
-
         WHERE
-
             full_name LIKE ?
-
             OR email LIKE ?
-
             OR phone LIKE ?
-
         ORDER BY created_at DESC`,
-
         [
-
             `%${keyword}%`,
             `%${keyword}%`,
             `%${keyword}%`
-
         ]
-
     );
-
     return rows;
-
 }
 
 // Admin - User Details
 static async findByIdAdmin(userId) {
-
     const [rows] = await db.execute(
-
         `SELECT
-
             user_id,
-
             full_name,
-
             email,
-
             phone,
-
             address,
-
+            status,
             created_at
-
         FROM users
-
         WHERE user_id = ?`,
-
-        [
-
-            userId
-
-        ]
-
+        [userId]
     );
-
     return rows[0];
-
 }
 
 static async updateProfile(userId, data) {
@@ -259,24 +212,26 @@ static async updatePassword(userId, password) {
 
 }
     static async login(email) {
-
         const [rows] = await db.query(
-
             `SELECT
                 user_id,
                 full_name,
                 email,
                 phone,
-                password
+                password,
+                status
             FROM users
             WHERE email = ?`,
-
             [email]
-
         );
-
         return rows[0];
+    }
 
+    static async updateStatus(userId, status) {
+        await db.execute(
+            "UPDATE users SET status = ? WHERE user_id = ?",
+            [status, userId]
+        );
     }
 
     static async create(userData) {

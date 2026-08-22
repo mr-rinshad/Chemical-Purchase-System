@@ -89,8 +89,8 @@ function showUserForm() {
 
     if (userReg) userReg.style.display = "block";
     if (labReg) labReg.style.display = "none";
-    if (userTab) userTab.className = "btn btn-primary role-pill-btn shadow";
-    if (labTab) labTab.className = "btn btn-light role-pill-btn text-muted";
+    if (userTab) userTab.classList.add("active");
+    if (labTab) labTab.classList.remove("active");
 }
 
 function showLabForm() {
@@ -101,8 +101,8 @@ function showLabForm() {
 
     if (userReg) userReg.style.display = "none";
     if (labReg) labReg.style.display = "block";
-    if (userTab) userTab.className = "btn btn-light role-pill-btn text-muted";
-    if (labTab) labTab.className = "btn btn-primary role-pill-btn shadow";
+    if (userTab) userTab.classList.remove("active");
+    if (labTab) labTab.classList.add("active");
 }
 
 async function registerLaboratory(event) {

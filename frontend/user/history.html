@@ -275,14 +275,25 @@
                         </button>
                     </div>
 
-                    <div id="paymentLoading" class="text-center mt-4" style="display:none;">
-                        <div class="spinner-border text-primary" role="status"></div>
-                        <p class="mt-3 fw-semibold text-muted">Processing Payment with Gateway...</p>
+                    <!-- Animated Processing State -->
+                    <div id="paymentLoading" class="text-center py-4" style="display:none;">
+                        <div class="payment-radar-box">
+                            <div class="payment-radar-ring"></div>
+                            <div class="payment-radar-icon">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-1">Verifying Gateway Transaction</h5>
+                        <p class="text-muted fs-6 mb-0">Communicating with UPI Banking Server...</p>
                     </div>
 
-                    <div id="paymentSuccess" class="text-center mt-4" style="display:none;">
-                        <div style="font-size:70px; color:#10b981;"><i class="fa-solid fa-circle-check"></i></div>
-                        <h4 class="text-success fw-bold">Payment Successful</h4>
+                    <!-- Animated Success State -->
+                    <div id="paymentSuccess" class="text-center py-4" style="display:none;">
+                        <div class="payment-success-badge">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <h3 class="text-success fw-bold mb-1">Payment Successful!</h3>
+                        <p class="text-muted fs-6 mb-0">Transaction confirmed. Redirecting to live tracking...</p>
                     </div>
                 </div>
             </div>
@@ -291,46 +302,79 @@
 
     <!-- Track Order Modal -->
     <div class="modal fade" id="trackOrderModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fa-solid fa-truck-fast me-2"></i> Track Order Status</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+                <div class="modal-header-primary p-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center justify-content-center bg-white text-success rounded-circle shadow-sm" style="width: 44px; height: 44px; font-size: 1.25rem;">
+                            <i class="fa-solid fa-truck-fast"></i>
+                        </div>
+                        <div>
+                            <h4 class="modal-title text-white fw-bold mb-0">Live Order Tracking</h4>
+                            <small class="text-white-50 fs-6">Real-time chemical dispatch & transit status</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body p-4">
-                    <div class="text-center mb-4 p-2 bg-light rounded border">
-                        <h6 id="trackPurchaseCode" class="fw-bold text-primary font-monospace mb-0"></h6>
+
+                <div class="modal-body p-4 p-md-5 bg-white">
+
+                    <!-- Purchase Code Banner Pill -->
+                    <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-4 border mb-4">
+                        <div>
+                            <small class="text-muted fw-bold text-uppercase d-block mb-1">Tracking Code</small>
+                            <span id="trackPurchaseCode" class="fs-5 fw-extrabold text-primary font-monospace"></span>
+                        </div>
+                        <span class="badge bg-success px-3 py-2 fs-6">
+                            <i class="fa-solid fa-shield-check me-1"></i> Live Tracking Active
+                        </span>
                     </div>
 
-                    <!-- Paid -->
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between">
-                            <strong id="paidText">⭕ Paid</strong>
+                    <!-- Modern Timeline Stepper Container -->
+                    <div class="tracking-stepper">
+                        <!-- Step 1: Order Confirmed & Paid -->
+                        <div class="stepper-item completed" id="stepPaid">
+                            <div class="stepper-icon">
+                                <i class="fa-solid fa-credit-card"></i>
+                            </div>
+                            <div class="stepper-content">
+                                <h5 class="fw-bold mb-1" id="paidText">✔ Payment Confirmed</h5>
+                                <p class="text-muted fs-6 mb-0">Payment verified by laboratory gateway</p>
+                                <div class="progress mt-2" style="height: 6px;">
+                                    <div id="paidProgress" class="progress-bar bg-success" style="width:100%"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="progress mt-2" style="height: 10px;">
-                            <div id="paidProgress" class="progress-bar bg-success" style="width:0%"></div>
+
+                        <!-- Step 2: Out for Delivery -->
+                        <div class="stepper-item" id="stepDelivery">
+                            <div class="stepper-icon">
+                                <i class="fa-solid fa-truck-ramp-box"></i>
+                            </div>
+                            <div class="stepper-content">
+                                <h5 class="fw-bold mb-1" id="deliveryText">⭕ Out For Delivery</h5>
+                                <p class="text-muted fs-6 mb-0">Chemical package dispatched via certified transit container</p>
+                                <div class="progress mt-2" style="height: 6px;">
+                                    <div id="deliveryProgress" class="progress-bar bg-warning" style="width:0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Delivered -->
+                        <div class="stepper-item" id="stepDelivered">
+                            <div class="stepper-icon">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="stepper-content">
+                                <h5 class="fw-bold mb-1" id="deliveredText">⭕ Delivered</h5>
+                                <p class="text-muted fs-6 mb-0">Successfully delivered to destination laboratory address</p>
+                                <div class="progress mt-2" style="height: 6px;">
+                                    <div id="deliveredProgress" class="progress-bar bg-primary" style="width:0%"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Out for Delivery -->
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between">
-                            <strong id="deliveryText">⭕ Out For Delivery</strong>
-                        </div>
-                        <div class="progress mt-2" style="height: 10px;">
-                            <div id="deliveryProgress" class="progress-bar bg-warning" style="width:0%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Delivered -->
-                    <div>
-                        <div class="d-flex justify-content-between">
-                            <strong id="deliveredText">⭕ Delivered</strong>
-                        </div>
-                        <div class="progress mt-2" style="height: 10px;">
-                            <div id="deliveredProgress" class="progress-bar bg-primary" style="width:0%"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

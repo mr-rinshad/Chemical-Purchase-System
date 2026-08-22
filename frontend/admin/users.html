@@ -157,8 +157,9 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Phone</th>
+                                        <th>Status</th>
                                         <th>Registered</th>
-                                        <th text-align="center">Action</th>
+                                        <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="userTableBody">
@@ -179,7 +180,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fa-solid fa-user-circle me-2"></i> User Details</h5>
+                    <h5 class="modal-title"><i class="fa-solid fa-user-circle me-2"></i> User Profile & Access Control</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body fs-6">
@@ -188,10 +189,12 @@
                         <p class="mb-2"><strong>Name:</strong> <span id="view_name" class="fw-semibold"></span></p>
                         <p class="mb-2"><strong>Email:</strong> <span id="view_email" class="text-muted"></span></p>
                         <p class="mb-2"><strong>Phone:</strong> <span id="view_phone"></span></p>
+                        <p class="mb-2"><strong>Account Status:</strong> <span id="view_status" class="badge"></span></p>
                         <p class="mb-0"><strong>Registered:</strong> <span id="view_created" class="text-muted"></span></p>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer d-flex justify-content-between">
+                    <div id="modalStatusAction"></div>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>

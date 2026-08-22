@@ -41,6 +41,8 @@ const {
 
     getUserDetails,
 
+    updateUserStatus,
+
     registerLicense,
 
     getAllLicenses,
@@ -270,6 +272,18 @@ router.get(
     authorize("admin"),
 
     getUserDetails
+
+);
+
+router.put(
+
+    "/users/:id/status",
+
+    authenticate,
+
+    authorize("admin"),
+
+    updateUserStatus
 
 );
 router.get(

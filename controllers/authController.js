@@ -194,19 +194,21 @@ const login = async (req, res, next) => {
         const user = await User.login(email);
 
         if (!user) {
-
             return sendError(
-
                 res,
-
                 "Invalid email or password",
-
                 [],
-
                 401
-
             );
+        }
 
+        if (user.status === "Inactive") {
+            return sendError(
+                res,
+                "Your account has been suspended by the administrator. Please contact support.",
+                [],
+                403
+            );
         }
 
         const isMatch = await bcrypt.compare(
@@ -556,6 +558,15 @@ const universalLogin = async (req, res, next) => {
 
                 );
 
+            }
+
+            if (user.status === "Inactive" || user.status === "Suspended") {
+                return sendError(
+                    res,
+                    "Your account has been suspended by the administrator. Please contact support.",
+                    [],
+                    403
+                );
             }
 
             const token = generateToken({

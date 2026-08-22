@@ -94,74 +94,83 @@
             <!-- Page Content -->
             <main class="app-content">
 
-                <div class="card p-4 text-white shadow-lg mb-4 card-header-primary">
-                    <h2 id="welcome" class="text-white fw-bold mb-1">Welcome</h2>
-                    <p class="text-white-50 mb-0 fs-6">Request chemical permits, browse certified lab stock, and track your purchase orders in real-time.</p>
+                <!-- Header Welcome Banner -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card card-header-primary p-4 p-md-5">
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                                <div>
+                                    <h2 id="welcome" class="display-title text-white mb-2">Welcome</h2>
+                                    <p class="text-white-50 mb-0 fs-6">Request chemical permits, browse certified lab stock, and track your purchase orders in real-time.</p>
+                                </div>
+                                <a href="purchase.html" class="btn btn-amber px-4 shadow">
+                                    <i class="fa-solid fa-cart-shopping me-1"></i> Browse Store
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- Navigation Quick Cards Grid -->
                 <div class="row g-4">
-                    <div class="col-md-6 col-xl-3">
-                        <div class="card stat-card accent-emerald h-100">
-                            <div>
-                                <div class="stat-title">Compliance Permit</div>
-                                <h4 class="fw-bold text-dark mb-2">Authorization</h4>
-                                <p class="text-muted fs-6 mb-3">Request chemical usage permit</p>
-                                <a href="authorization.html" class="btn btn-primary btn-sm">
-                                    Open Request <i class="fa-solid fa-arrow-right ms-1"></i>
-                                </a>
+                    <div class="col-xl-3 col-md-6">
+                        <a href="authorization.html" class="text-decoration-none">
+                            <div class="bento-card h-100 bg-white">
+                                <div class="stat-icon mb-3">
+                                    <i class="fa-solid fa-file-signature"></i>
+                                </div>
+                                <div>
+                                    <span class="text-muted fs-6 fw-bold text-uppercase">COMPLIANCE PERMIT</span>
+                                    <h4 class="fw-bold text-dark mb-1">Authorizations</h4>
+                                    <p class="text-muted fs-6 mb-0">Request chemical usage permit</p>
+                                </div>
                             </div>
-                            <div class="stat-icon">
-                                <i class="fa-solid fa-file-signature"></i>
-                            </div>
-                        </div>
+                        </a>
                     </div>
 
-                    <div class="col-md-6 col-xl-3">
-                        <div class="card stat-card accent-amber h-100">
-                            <div>
-                                <div class="stat-title">Storefront</div>
-                                <h4 class="fw-bold text-dark mb-2">Purchase Request</h4>
-                                <p class="text-muted fs-6 mb-3">Order laboratory chemicals</p>
-                                <a href="purchase.html" class="btn btn-amber btn-sm">
-                                    Open Store <i class="fa-solid fa-arrow-right ms-1"></i>
-                                </a>
+                    <div class="col-xl-3 col-md-6">
+                        <a href="purchase.html" class="text-decoration-none">
+                            <div class="bento-card h-100 bg-white">
+                                <div class="stat-icon mb-3">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                </div>
+                                <div>
+                                    <span class="text-muted fs-6 fw-bold text-uppercase">STOREFRONT</span>
+                                    <h4 class="fw-bold text-dark mb-1">Chemical Purchase</h4>
+                                    <p class="text-muted fs-6 mb-0">Order laboratory chemicals</p>
+                                </div>
                             </div>
-                            <div class="stat-icon">
-                                <i class="fa-solid fa-cart-shopping"></i>
-                            </div>
-                        </div>
+                        </a>
                     </div>
 
-                    <div class="col-md-6 col-xl-3">
-                        <div class="card stat-card h-100">
-                            <div>
-                                <div class="stat-title">Tracking</div>
-                                <h4 class="fw-bold text-dark mb-2">Purchase History</h4>
-                                <p class="text-muted fs-6 mb-3">View active & completed orders</p>
-                                <a href="history.html" class="btn btn-secondary btn-sm">
-                                    View History <i class="fa-solid fa-arrow-right ms-1"></i>
-                                </a>
+                    <div class="col-xl-3 col-md-6">
+                        <a href="history.html" class="text-decoration-none">
+                            <div class="bento-card h-100 bg-white">
+                                <div class="stat-icon mb-3">
+                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                </div>
+                                <div>
+                                    <span class="text-muted fs-6 fw-bold text-uppercase">TRACKING</span>
+                                    <h4 class="fw-bold text-dark mb-1">Purchase History</h4>
+                                    <p class="text-muted fs-6 mb-0">View active & completed orders</p>
+                                </div>
                             </div>
-                            <div class="stat-icon">
-                                <i class="fa-solid fa-clock-rotate-left"></i>
-                            </div>
-                        </div>
+                        </a>
                     </div>
 
-                    <div class="col-md-6 col-xl-3">
-                        <div class="card stat-card accent-emerald h-100">
-                            <div>
-                                <div class="stat-title">Settings</div>
-                                <h4 class="fw-bold text-dark mb-2">My Profile</h4>
-                                <p class="text-muted fs-6 mb-3">Manage address & security</p>
-                                <a href="profile.html" class="btn btn-outline-primary btn-sm">
-                                    Manage Profile <i class="fa-solid fa-arrow-right ms-1"></i>
-                                </a>
+                    <div class="col-xl-3 col-md-6">
+                        <a href="profile.html" class="text-decoration-none">
+                            <div class="bento-card h-100 bg-white">
+                                <div class="stat-icon mb-3">
+                                    <i class="fa-solid fa-user-gear"></i>
+                                </div>
+                                <div>
+                                    <span class="text-muted fs-6 fw-bold text-uppercase">SETTINGS</span>
+                                    <h4 class="fw-bold text-dark mb-1">My Profile</h4>
+                                    <p class="text-muted fs-6 mb-0">Manage address & security</p>
+                                </div>
                             </div>
-                            <div class="stat-icon">
-                                <i class="fa-solid fa-user"></i>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
 
