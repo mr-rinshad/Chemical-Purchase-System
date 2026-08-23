@@ -2,7 +2,7 @@
    CHEMICAL PURCHASE SYSTEM - PREMIUM BUTTON & UI DESIGN SYSTEM
    Primary Brand: Emerald Ink (#064E3B), Mint (#10B981)
    Backgrounds: Pure Crisp White (#FFFFFF) & Soft Slate White (#F8FAFC)
-   Typography: Plus Jakarta Sans & Outfit & Inter
+   Typography: Plus Jakarta Sans & Outfit & Inter & Space Grotesk
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Sora:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap');
@@ -57,6 +57,220 @@
     --transition-fast: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ==========================================================================
+   ULTRA-BEAUTIFUL DARK THEME SYSTEM TOKENS ([data-theme="dark"])
+   ========================================================================== */
+[data-theme="dark"] {
+    --bg-body: #0B1310;               /* Deep Dark Obsidian Green */
+    --surface-card: #121F1B;          /* Dark Emerald Surface Card */
+    --surface-topbar: #121F1B;        /* Dark Topbar */
+    --surface-sidebar: #0E1815;       /* Dark Sidebar */
+    --surface-table-header: #182A24;  /* Dark Table Header */
+    
+    --border-color: #1E342D;          /* Subtle Dark Emerald Border */
+    --border-color-strong: #27453B;
+    
+    --text-primary: #F8FAFC;          /* Bright Crisp White Text */
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+    
+    --sidebar-bg: #0E1815;
+    --sidebar-border: #1E342D;
+    --sidebar-link-color: #CBD5E1;
+    --sidebar-link-hover-bg: #182A24;
+    --sidebar-link-hover-color: #10B981;
+    
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 12px 32px -4px rgba(0, 0, 0, 0.6);
+}
+
+/* Dark Theme Specific Element Overrides */
+[data-theme="dark"] body {
+    background-color: var(--bg-body) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .bg-light {
+    background-color: var(--surface-card) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .app-topbar,
+[data-theme="dark"] .app-sidebar,
+[data-theme="dark"] .navbar {
+    background-color: var(--surface-card) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .sidebar-header,
+[data-theme="dark"] .sidebar-footer {
+    background-color: var(--surface-card) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .text-dark {
+    color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .text-muted {
+    color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .bento-card,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .table-responsive,
+[data-theme="dark"] .role-switch-card,
+[data-theme="dark"] .role-tab-container,
+[data-theme="dark"] .stat-card {
+    background-color: var(--surface-card) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Welcome Card Header Banner in Dark Mode */
+[data-theme="dark"] .card-header-primary {
+    background: linear-gradient(135deg, #093327 0%, #0F2E23 100%) !important;
+    border: 1px solid rgba(16, 185, 129, 0.35) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="dark"] .card-header-primary h2, 
+[data-theme="dark"] .card-header-primary h3, 
+[data-theme="dark"] .card-header-primary h4,
+[data-theme="dark"] .card-header-primary p {
+    color: #F8FAFC !important;
+}
+
+/* Dark Theme Form Controls */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] .input-group {
+    background-color: #0E1815 !important;
+    border-color: var(--border-color) !important;
+    color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .input-group-text {
+    background-color: transparent !important;
+    color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .form-control::placeholder {
+    color: #64748B !important;
+}
+
+[data-theme="dark"] .table {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .table thead th {
+    background-color: #182A24 !important;
+    color: #F8FAFC !important;
+    border-bottom-color: var(--color-mint) !important;
+}
+
+[data-theme="dark"] .table tbody tr {
+    border-bottom-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .table tbody tr:hover {
+    background-color: rgba(16, 185, 129, 0.08) !important;
+}
+
+[data-theme="dark"] .user-badge {
+    background-color: #0E1815 !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .role-tab-container {
+    background-color: #0E1815 !important;
+}
+
+[data-theme="dark"] .navbar-brand-text {
+    color: #10B981 !important;
+}
+
+/* ==========================================================================
+   ENHANCED DARK THEME BUTTON & HOVER COLOR PALETTE
+   ========================================================================== */
+
+/* Dark Mode Primary Button */
+[data-theme="dark"] .btn-primary {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35) !important;
+}
+
+[data-theme="dark"] .btn-primary:hover, 
+[data-theme="dark"] .btn-primary:focus {
+    background: linear-gradient(135deg, #34D399 0%, #10B981 100%) !important;
+    color: #064E3B !important;
+    box-shadow: 0 0 22px rgba(16, 185, 129, 0.55) !important;
+    transform: translateY(-2px);
+}
+
+/* Dark Mode Outline Primary Button */
+[data-theme="dark"] .btn-outline-primary {
+    background: transparent !important;
+    color: #10B981 !important;
+    border: 2px solid #10B981 !important;
+    box-shadow: none !important;
+}
+
+[data-theme="dark"] .btn-outline-primary:hover, 
+[data-theme="dark"] .btn-outline-primary:focus {
+    background: #10B981 !important;
+    color: #064E3B !important;
+    border-color: #10B981 !important;
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.45) !important;
+    transform: translateY(-2px);
+}
+
+/* Dark Mode Secondary Button */
+[data-theme="dark"] .btn-secondary {
+    background: #182A24 !important;
+    color: #34D399 !important;
+    border: 1px solid #27453B !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .btn-secondary:hover, 
+[data-theme="dark"] .btn-secondary:focus {
+    background: #27453B !important;
+    color: #64E3B8 !important;
+    border-color: #10B981 !important;
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.25) !important;
+    transform: translateY(-2px);
+}
+
+/* Dark Mode Amber CTA Button */
+[data-theme="dark"] .btn-amber, 
+[data-theme="dark"] .btn-accent {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 18px rgba(245, 158, 11, 0.4) !important;
+}
+
+[data-theme="dark"] .btn-amber:hover, 
+[data-theme="dark"] .btn-accent:hover {
+    background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%) !important;
+    color: #78350F !important;
+    box-shadow: 0 0 24px rgba(245, 158, 11, 0.6) !important;
+    transform: translateY(-2px);
+}
+
+/* Dark Mode Active Sidebar Link */
+[data-theme="dark"] .sidebar-nav .nav-link.active {
+    background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4) !important;
+}
+
 /* Base Reset & Typography */
 * {
     box-sizing: border-box;
@@ -93,6 +307,38 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
     font-weight: 800 !important;
     letter-spacing: -0.035em !important;
+}
+
+/* ==========================================================================
+   THEME TOGGLE BUTTON ENGINE
+   ========================================================================== */
+
+.theme-toggle-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background-color: #ffffff;
+    color: var(--text-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    font-size: 1.1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.08);
+    border-color: var(--color-emerald-ink);
+    box-shadow: var(--shadow-md);
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+    background-color: #182A24 !important;
+    color: #F59E0B !important;
+    border-color: #27453B !important;
 }
 
 /* ==========================================================================
@@ -234,7 +480,7 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
 }
 
 /* ==========================================================================
-   APP LAYOUT ENGINE (Pure White Surface + Emerald Ink Accents)
+   APP LAYOUT ENGINE
    ========================================================================== */
 
 .app-layout {
@@ -244,7 +490,7 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     overflow-x: hidden;
 }
 
-/* Sidebar Styles (Clean Light Sidebar with Emerald Ink Active Pill) */
+/* Sidebar Styles */
 .app-sidebar {
     width: var(--sidebar-width);
     background: var(--surface-sidebar);
@@ -431,7 +677,7 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
 .topbar-right {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
+    gap: 1rem;
 }
 
 .user-badge {
@@ -471,7 +717,7 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
 .app-content {
     padding: 2.25rem;
     flex: 1;
-    background-color: #ffffff;
+    background-color: var(--bg-body);
 }
 
 /* Sidebar Backdrop Mobile Overlay */
@@ -746,10 +992,7 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     color: #ffffff !important;
 }
 
-/* ==========================================================================
-   REAL-WORLD LIVE ORDER TRACKING STEPPER TIMELINE
-   ========================================================================== */
-
+/* REAL-WORLD LIVE ORDER TRACKING STEPPER TIMELINE */
 .tracking-stepper {
     display: flex;
     flex-direction: column;
@@ -820,10 +1063,7 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     background: #F0FDF4;
 }
 
-/* ==========================================================================
-   HIGH-TECH PAYMENT PROCESSING & SUCCESS ANIMATIONS
-   ========================================================================== */
-
+/* HIGH-TECH PAYMENT PROCESSING & SUCCESS ANIMATIONS */
 .payment-radar-box {
     position: relative;
     width: 96px;
@@ -883,6 +1123,7 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
         transform: scale(1) rotate(0deg);
     }
 }
+
 .badge {
     padding: 0.4rem 0.8rem;
     font-family: 'Plus Jakarta Sans', sans-serif;

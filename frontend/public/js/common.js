@@ -84,3 +84,39 @@ function toggleSidebar() {
         backdrop.classList.toggle("show");
     }
 }
+
+/* ==========================================================================
+   GLOBAL LIGHT / DARK THEME ENGINE
+   ========================================================================== */
+
+function initTheme() {
+    const savedTheme = localStorage.getItem("theme") || "light";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    updateThemeToggleIcons(savedTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+    updateThemeToggleIcons(newTheme);
+}
+
+function updateThemeToggleIcons(theme) {
+    const icons = document.querySelectorAll(".themeIcon, #themeIcon");
+    icons.forEach(function (icon) {
+        if (theme === "dark") {
+            icon.className = "fa-solid fa-sun text-warning themeIcon";
+        } else {
+            icon.className = "fa-solid fa-moon text-dark themeIcon";
+        }
+    });
+}
+
+// Run initTheme immediately
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initTheme);
+} else {
+    initTheme();
+}
