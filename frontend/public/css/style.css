@@ -293,6 +293,14 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     justify-content: center;
     font-size: 1.2rem;
     box-shadow: 0 4px 14px rgba(6, 78, 59, 0.35);
+    overflow: hidden;
+}
+
+.brand-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
 }
 
 .sidebar-nav {
