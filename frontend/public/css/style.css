@@ -58,7 +58,7 @@
 }
 
 /* ==========================================================================
-   ULTRA-BEAUTIFUL DARK THEME SYSTEM TOKENS ([data-theme="dark"])
+   DARK THEME SYSTEM TOKENS ([data-theme="dark"])
    ========================================================================== */
 [data-theme="dark"] {
     --bg-body: #0B1310;               /* Deep Dark Obsidian Green */
@@ -85,7 +85,7 @@
     --shadow-lg: 0 12px 32px -4px rgba(0, 0, 0, 0.6);
 }
 
-/* Dark Theme Specific Element Overrides */
+/* Dark Theme Element Overrides */
 [data-theme="dark"] body {
     background-color: var(--bg-body) !important;
     color: var(--text-primary) !important;
@@ -130,7 +130,6 @@
     color: var(--text-primary) !important;
 }
 
-/* Welcome Card Header Banner in Dark Mode */
 [data-theme="dark"] .card-header-primary {
     background: linear-gradient(135deg, #093327 0%, #0F2E23 100%) !important;
     border: 1px solid rgba(16, 185, 129, 0.35) !important;
@@ -144,7 +143,6 @@
     color: #F8FAFC !important;
 }
 
-/* Dark Theme Form Controls */
 [data-theme="dark"] .form-control,
 [data-theme="dark"] .form-select,
 [data-theme="dark"] .input-group {
@@ -193,11 +191,7 @@
     color: #10B981 !important;
 }
 
-/* ==========================================================================
-   ENHANCED DARK THEME BUTTON & HOVER COLOR PALETTE
-   ========================================================================== */
-
-/* Dark Mode Primary Button */
+/* Dark Mode Buttons */
 [data-theme="dark"] .btn-primary {
     background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
     color: #ffffff !important;
@@ -213,7 +207,6 @@
     transform: translateY(-2px);
 }
 
-/* Dark Mode Outline Primary Button */
 [data-theme="dark"] .btn-outline-primary {
     background: transparent !important;
     color: #10B981 !important;
@@ -221,33 +214,25 @@
     box-shadow: none !important;
 }
 
-[data-theme="dark"] .btn-outline-primary:hover, 
-[data-theme="dark"] .btn-outline-primary:focus {
+[data-theme="dark"] .btn-outline-primary:hover {
     background: #10B981 !important;
     color: #064E3B !important;
     border-color: #10B981 !important;
-    box-shadow: 0 0 18px rgba(16, 185, 129, 0.45) !important;
     transform: translateY(-2px);
 }
 
-/* Dark Mode Secondary Button */
 [data-theme="dark"] .btn-secondary {
     background: #182A24 !important;
     color: #34D399 !important;
     border: 1px solid #27453B !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
-[data-theme="dark"] .btn-secondary:hover, 
-[data-theme="dark"] .btn-secondary:focus {
+[data-theme="dark"] .btn-secondary:hover {
     background: #27453B !important;
     color: #64E3B8 !important;
-    border-color: #10B981 !important;
-    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.25) !important;
     transform: translateY(-2px);
 }
 
-/* Dark Mode Amber CTA Button */
 [data-theme="dark"] .btn-amber, 
 [data-theme="dark"] .btn-accent {
     background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
@@ -260,15 +245,199 @@
 [data-theme="dark"] .btn-accent:hover {
     background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%) !important;
     color: #78350F !important;
-    box-shadow: 0 0 24px rgba(245, 158, 11, 0.6) !important;
     transform: translateY(-2px);
 }
 
-/* Dark Mode Active Sidebar Link */
 [data-theme="dark"] .sidebar-nav .nav-link.active {
     background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
     color: #ffffff !important;
     box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4) !important;
+}
+
+/* ==========================================================================
+   CHERRY VANILLA THEME SYSTEM TOKENS ([data-theme="cherry"])
+   Cherry Cola (#9A0002) Red in place of Green
+   Cream Vanilla (#EFE6DD) in place of Pure White
+   ========================================================================== */
+
+[data-theme="cherry"] {
+    --color-emerald-ink: #9A0002;     /* Cherry Cola Red */
+    --color-emerald-ink-hover: #7A0002;
+    --color-mint: #C51115;            /* Bright Cherry Red Accent */
+    --color-mint-hover: #9A0002;
+    --color-primary: #9A0002;
+    
+    --bg-body: #EFE6DD;               /* Cream Vanilla Body Background */
+    --surface-card: #F8F3ED;          /* Soft Cream Vanilla Card Surface */
+    --surface-topbar: #F8F3ED;        /* Cream Topbar */
+    --surface-sidebar: #E9DFD4;       /* Cream Tinted Sidebar */
+    --surface-table-header: #E3D7C9;  /* Cream Table Header */
+    
+    --border-color: #DBCDBE;          /* Warm Cream Border */
+    --border-color-strong: #CBB9A6;
+    
+    --text-primary: #3B0909;          /* Deep Dark Cherry Text */
+    --text-secondary: #581414;
+    --text-muted: #854040;
+    
+    --sidebar-bg: #E9DFD4;
+    --sidebar-border: #DBCDBE;
+    --sidebar-link-color: #581414;
+    --sidebar-link-hover-bg: #DBCDBE;
+    --sidebar-link-hover-color: #9A0002;
+    --sidebar-link-active-bg: linear-gradient(135deg, #9A0002 0%, #C51115 100%);
+    
+    --shadow-sm: 0 1px 3px rgba(154, 0, 2, 0.08);
+    --shadow-md: 0 4px 20px -2px rgba(154, 0, 2, 0.12);
+    --shadow-lg: 0 12px 32px -4px rgba(154, 0, 2, 0.2);
+}
+
+/* Cherry Vanilla Specific Element Overrides */
+[data-theme="cherry"] body {
+    background-color: var(--bg-body) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="cherry"] .bg-white,
+[data-theme="cherry"] .bg-light {
+    background-color: var(--surface-card) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="cherry"] .app-topbar,
+[data-theme="cherry"] .app-sidebar,
+[data-theme="cherry"] .navbar {
+    background-color: var(--surface-card) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="cherry"] .sidebar-header,
+[data-theme="cherry"] .sidebar-footer {
+    background-color: var(--surface-card) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="cherry"] .navbar-brand span, 
+[data-theme="cherry"] .sidebar-brand span, 
+[data-theme="cherry"] .navbar-brand-text, 
+[data-theme="cherry"] .brand-title {
+    color: #9A0002 !important;
+}
+
+[data-theme="cherry"] .text-dark {
+    color: #3B0909 !important;
+}
+
+[data-theme="cherry"] .text-muted {
+    color: #854040 !important;
+}
+
+[data-theme="cherry"] .text-primary {
+    color: #9A0002 !important;
+}
+
+[data-theme="cherry"] .card,
+[data-theme="cherry"] .bento-card,
+[data-theme="cherry"] .modal-content,
+[data-theme="cherry"] .table-responsive,
+[data-theme="cherry"] .role-switch-card,
+[data-theme="cherry"] .role-tab-container,
+[data-theme="cherry"] .stat-card {
+    background-color: var(--surface-card) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Welcome Card Header Banner in Cherry Mode */
+[data-theme="cherry"] .card-header-primary {
+    background: linear-gradient(135deg, #9A0002 0%, #C51115 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 10px 30px rgba(154, 0, 2, 0.3) !important;
+}
+
+[data-theme="cherry"] .card-header-primary h2, 
+[data-theme="cherry"] .card-header-primary h3, 
+[data-theme="cherry"] .card-header-primary h4,
+[data-theme="cherry"] .card-header-primary p {
+    color: #ffffff !important;
+}
+
+/* Cherry Theme Primary Buttons */
+[data-theme="cherry"] .btn-primary {
+    background: linear-gradient(135deg, #9A0002 0%, #C51115 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(154, 0, 2, 0.3) !important;
+}
+
+[data-theme="cherry"] .btn-primary:hover, 
+[data-theme="cherry"] .btn-primary:focus {
+    background: linear-gradient(135deg, #7A0002 0%, #9A0002 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 20px rgba(154, 0, 2, 0.45) !important;
+    transform: translateY(-2px);
+}
+
+/* Cherry Theme Outline Primary Buttons */
+[data-theme="cherry"] .btn-outline-primary {
+    background: transparent !important;
+    color: #9A0002 !important;
+    border: 2px solid #9A0002 !important;
+    box-shadow: none !important;
+}
+
+[data-theme="cherry"] .btn-outline-primary:hover {
+    background: #9A0002 !important;
+    color: #ffffff !important;
+    border-color: #9A0002 !important;
+    transform: translateY(-2px);
+}
+
+/* Cherry Theme Secondary Buttons */
+[data-theme="cherry"] .btn-secondary {
+    background: #F4ECE3 !important;
+    color: #9A0002 !important;
+    border: 1px solid #DBCDBE !important;
+}
+
+[data-theme="cherry"] .btn-secondary:hover {
+    background: #E8DCCF !important;
+    color: #7A0002 !important;
+    transform: translateY(-2px);
+}
+
+/* Cherry Theme Form Controls */
+[data-theme="cherry"] .form-control,
+[data-theme="cherry"] .form-select,
+[data-theme="cherry"] .input-group {
+    background-color: #F8F3ED !important;
+    border-color: var(--border-color) !important;
+    color: #3B0909 !important;
+}
+
+[data-theme="cherry"] .form-control:focus, 
+[data-theme="cherry"] .form-select:focus,
+[data-theme="cherry"] .input-group:focus-within {
+    border-color: #9A0002 !important;
+    box-shadow: 0 0 0 4px rgba(154, 0, 2, 0.15) !important;
+}
+
+/* Cherry Theme Table Headers */
+[data-theme="cherry"] .table thead th {
+    background-color: #E3D7C9 !important;
+    color: #3B0909 !important;
+    border-bottom-color: #9A0002 !important;
+}
+
+[data-theme="cherry"] .brand-icon {
+    background: linear-gradient(135deg, #9A0002 0%, #C51115 100%) !important;
+}
+
+[data-theme="cherry"] .theme-toggle-btn {
+    background-color: #F8F3ED !important;
+    color: #9A0002 !important;
+    border-color: #DBCDBE !important;
 }
 
 /* Base Reset & Typography */
@@ -533,7 +702,7 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     height: 42px;
     background: linear-gradient(135deg, #064E3B 0%, #10B981 100%);
     color: #ffffff;
-    border-radius: 12px;
+    border-radius: 50% !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -546,7 +715,7 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 50% !important;
 }
 
 .sidebar-nav {
