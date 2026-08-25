@@ -1421,3 +1421,378 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     font-size: 0.95rem;
     margin-top: 0.25rem;
 }
+
+/* ==========================================================================
+   MASCOT CURSOR TRACKER & HERO SECTION DESIGN SYSTEM (matching new_ui.jpeg)
+   ========================================================================== */
+
+.hero-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - 76px);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background-color: var(--bg-body);
+}
+
+/* 1. Bottom-Left Soft Green Organic Wave SVG */
+.hero-bg-wave-container {
+    position: absolute;
+    bottom: -60px;
+    left: -80px;
+    width: 680px;
+    height: 480px;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+}
+
+.hero-bg-wave-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* 2. Bottom-Right Hexagon Chemical Structure SVG */
+.hero-bg-hexagons-container {
+    position: absolute;
+    bottom: -40px;
+    right: -40px;
+    width: 480px;
+    height: 420px;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+}
+
+.hero-bg-hexagons-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* 3. Far-Left Hexagon Chemical Structure SVG */
+.hero-bg-hexagons-left {
+    position: absolute;
+    top: 15%;
+    left: -40px;
+    width: 220px;
+    height: 320px;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+}
+
+/* Theme Variable Overrides for SVG Elements */
+[data-theme="dark"] .hero-bg-hexagons-container g,
+[data-theme="dark"] .hero-bg-hexagons-left g {
+    stroke: #34D399;
+    opacity: 0.16;
+}
+
+[data-theme="dark"] .hero-bg-hexagons-container circle,
+[data-theme="dark"] .hero-bg-hexagons-left circle {
+    fill: #34D399;
+}
+
+[data-theme="cherry"] .hero-bg-hexagons-container g,
+[data-theme="cherry"] .hero-bg-hexagons-left g {
+    stroke: #9A0002;
+    opacity: 0.16;
+}
+
+[data-theme="cherry"] .hero-bg-hexagons-container circle,
+[data-theme="cherry"] .hero-bg-hexagons-left circle {
+    fill: #9A0002;
+}
+
+.hero-container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+/* ISO Certification Pill Badge */
+.hero-pill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1.15rem;
+    background-color: #E6F4ED;
+    color: #064E3B;
+    border-radius: 30px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+    border: 1px solid rgba(6, 78, 59, 0.15);
+    margin-bottom: 1.25rem;
+}
+
+[data-theme="dark"] .hero-pill-badge {
+    background-color: #182A24;
+    color: #34D399;
+    border-color: #27453B;
+}
+
+[data-theme="cherry"] .hero-pill-badge {
+    background-color: #F4ECE3;
+    color: #9A0002;
+    border-color: #DBCDBE;
+}
+
+/* Hero Typography */
+.hero-title {
+    font-family: 'Outfit', 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 2.85rem;
+    line-height: 1.15;
+    letter-spacing: -0.035em;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem;
+}
+
+@media (min-width: 1200px) {
+    .hero-title {
+        font-size: 3.25rem;
+    }
+}
+
+.hero-subtext {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    max-width: 480px;
+}
+
+/* Trust Indicators Row */
+.trust-indicators-row {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.trust-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.trust-item-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.925rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.trust-item-title i {
+    color: #10B981;
+}
+
+[data-theme="cherry"] .trust-item-title i {
+    color: #9A0002;
+}
+
+.trust-item-sub {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* MASCOT TRACKER STACK & PROPORTIONS */
+/* MASCOT TRACKER STACK & PROPORTIONS */
+.hero-mascot-container {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    height: 400px;
+    width: 100%;
+    margin-left: -20px;
+}
+
+@media (max-width: 991px) {
+    .hero-mascot-container {
+        justify-content: center;
+        margin-left: 0;
+    }
+}
+
+.mascot-3d-stage {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    perspective: 1000px;
+    overflow: visible;
+}
+
+.mascot-tracker-wrapper {
+    position: relative;
+    width: 220px;
+    height: 400px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    will-change: transform;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+}
+
+.mascot-frame-img {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+    width: auto;
+    max-height: 400px;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity 120ms ease-out;
+    pointer-events: none;
+    will-change: opacity;
+    filter: drop-shadow(0 15px 25px rgba(6, 78, 59, 0.15));
+}
+
+.mascot-frame-img.active {
+    opacity: 1;
+}
+
+[data-theme="dark"] .mascot-frame-img {
+    filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.5));
+}
+
+[data-theme="cherry"] .mascot-frame-img {
+    filter: drop-shadow(0 15px 25px rgba(154, 0, 2, 0.2));
+}
+
+/* Right Wide Rectangle Lab Bench Photo Card (Old Version Shape) */
+.hero-lab-card {
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px -5px rgba(6, 78, 59, 0.16), 0 5px 15px -3px rgba(15, 23, 42, 0.05);
+    border: 1px solid var(--border-color);
+    background: #ffffff;
+    transition: var(--transition-fast);
+}
+
+[data-theme="dark"] .hero-lab-card {
+    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="cherry"] .hero-lab-card {
+    box-shadow: 0 15px 35px -5px rgba(154, 0, 2, 0.22);
+}
+
+.hero-lab-img {
+    width: 100%;
+    height: 320px;
+    min-height: 290px;
+    max-height: 350px;
+    object-fit: cover;
+    display: block;
+}
+
+/* ==========================================================================
+   CUSTOM CIRCULAR CURSOR MODEL SYSTEM
+   ========================================================================== */
+
+/* Hide default cursor on desktop when custom cursor active */
+@media (pointer: fine) {
+    body {
+        cursor: default;
+    }
+}
+
+.custom-cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    margin-top: -4px;
+    margin-left: -4px;
+    background-color: #10B981;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0ms linear, width 150ms ease, height 150ms ease, background-color 150ms ease;
+    will-change: transform;
+}
+
+.custom-cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 36px;
+    height: 36px;
+    margin-top: -18px;
+    margin-left: -18px;
+    border: 2px solid rgba(16, 185, 129, 0.65);
+    background-color: rgba(16, 185, 129, 0.05);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: width 200ms ease, height 200ms ease, margin 200ms ease, background-color 200ms ease, border-color 200ms ease;
+    will-change: transform;
+}
+
+/* Hover Scaling Effect */
+.custom-cursor-ring.cursor-hover {
+    width: 52px;
+    height: 52px;
+    margin-top: -26px;
+    margin-left: -26px;
+    border-color: #10B981;
+    background-color: rgba(16, 185, 129, 0.15);
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+}
+
+.custom-cursor-dot.cursor-hover {
+    width: 10px;
+    height: 10px;
+    margin-top: -5px;
+    margin-left: -5px;
+    background-color: #064E3B;
+}
+
+/* Dark & Cherry Theme Overrides */
+[data-theme="dark"] .custom-cursor-dot {
+    background-color: #34D399;
+}
+
+[data-theme="dark"] .custom-cursor-ring {
+    border-color: rgba(52, 211, 153, 0.65);
+    background-color: rgba(52, 211, 153, 0.08);
+}
+
+[data-theme="dark"] .custom-cursor-ring.cursor-hover {
+    border-color: #34D399;
+    background-color: rgba(52, 211, 153, 0.2);
+    box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+}
+
+[data-theme="cherry"] .custom-cursor-dot {
+    background-color: #9A0002;
+}
+
+[data-theme="cherry"] .custom-cursor-ring {
+    border-color: rgba(154, 0, 2, 0.65);
+    background-color: rgba(154, 0, 2, 0.08);
+}
+
+[data-theme="cherry"] .custom-cursor-ring.cursor-hover {
+    border-color: #9A0002;
+    background-color: rgba(154, 0, 2, 0.2);
+    box-shadow: 0 0 20px rgba(154, 0, 2, 0.35);
+}

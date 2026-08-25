@@ -16,30 +16,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Theme CSS -->
     <link rel="stylesheet" href="public/css/style.css">
-    <style>
-        /* One-Page Lock for Desktop */
-        @media (min-width: 992px) {
-            html, body {
-                height: 100vh;
-                max-height: 100vh;
-                overflow: hidden;
-            }
-            .hero-section {
-                height: calc(100vh - 76px);
-                display: flex;
-                align-items: center;
-            }
-        }
-        .hero-banner-img {
-            width: 100%;
-            height: 100%;
-            min-height: 280px;
-            max-height: 380px;
-            object-fit: cover;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(6, 78, 59, 0.15);
-        }
-    </style>
 </head>
 
 <body class="bg-white">
@@ -59,14 +35,7 @@
             </button>
 
             <div class="collapse navbar-collapse" id="topNav">
-                <ul class="navbar-nav mx-auto gap-3">
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold active text-primary" href="index.html"></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold text-muted" href="#features"></a>
-                    </li>
-                </ul>
+                <ul class="navbar-nav mx-auto"></ul>
 
                 <div class="d-flex align-items-center gap-2">
                     <button class="theme-toggle-btn me-1" onclick="toggleTheme()" title="Toggle Light/Dark Theme"><i class="fa-solid fa-moon themeIcon"></i></button>
@@ -81,58 +50,139 @@
         </div>
     </nav>
 
-    <!-- Main Viewport Hero Section -->
-    <main class="hero-section py-4">
-        <div class="container">
-            <div class="row g-4 align-items-center">
+    <!-- Rebuilt Hero Section with Decorative SVG Background Elements -->
+    <main class="hero-wrapper">
 
-                <!-- Left Column (Title & Key Features) -->
-                <div class="col-lg-6">
-                    <div class="pe-lg-4">
-                        <div class="badge bg-light text-success border mb-3 px-3 py-2 fs-6 d-inline-flex align-items-center gap-2">
+        <!-- 1. Bottom-Left Soft Green Organic Wave/Blob SVG -->
+        <div class="hero-bg-wave-container" aria-hidden="true">
+            <svg viewBox="0 0 700 500" fill="none" xmlns="http://www.w3.org/2000/svg" class="hero-bg-wave-svg">
+                <defs>
+                    <linearGradient id="waveGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#10B981" stop-opacity="0.22" />
+                        <stop offset="50%" stop-color="#6EE7B7" stop-opacity="0.14" />
+                        <stop offset="100%" stop-color="#D1FAE5" stop-opacity="0.0" />
+                    </linearGradient>
+                    <linearGradient id="waveGrad2" x1="0%" y1="100%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#064E3B" stop-opacity="0.18" />
+                        <stop offset="60%" stop-color="#10B981" stop-opacity="0.10" />
+                        <stop offset="100%" stop-color="#A7F3D0" stop-opacity="0.0" />
+                    </linearGradient>
+                </defs>
+                <path d="M-100,550 C100,420 220,510 380,380 C500,280 420,120 620,180 C720,210 750,550 -100,550 Z" fill="url(#waveGrad1)" />
+                <path d="M-120,550 C50,470 180,430 280,350 C390,260 480,310 580,240 C680,170 720,550 -120,550 Z" fill="url(#waveGrad2)" />
+            </svg>
+        </div>
+
+        <!-- 2. Bottom-Right Molecular Hexagon Lattice Pattern SVG -->
+        <div class="hero-bg-hexagons-container" aria-hidden="true">
+            <svg width="480" height="420" viewBox="0 0 480 420" fill="none" xmlns="http://www.w3.org/2000/svg" class="hero-bg-hexagons-svg">
+                <g stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.18">
+                    <!-- Connected Molecular Hexagon Lattice -->
+                    <polygon points="360,60 410,90 410,150 360,180 310,150 310,90" />
+                    <polygon points="460,120 510,150 510,210 460,240 410,210 410,150" />
+                    <polygon points="260,120 310,150 310,210 260,240 210,210 210,150" />
+                    <polygon points="360,180 410,210 410,270 360,300 310,270 310,210" />
+                    <polygon points="460,240 510,270 510,330 460,360 410,330 410,270" />
+                    <polygon points="260,240 310,270 310,330 260,360 210,330 210,270" />
+                    <polygon points="160,180 210,210 210,270 160,300 110,270 110,210" />
+                    <polygon points="360,300 410,330 410,390 360,420 310,390 310,330" />
+
+                    <!-- Molecular Node Dots -->
+                    <circle cx="360" cy="60" r="3.5" fill="#10B981" />
+                    <circle cx="410" cy="90" r="3.5" fill="#10B981" />
+                    <circle cx="310" cy="90" r="3.5" fill="#10B981" />
+                    <circle cx="360" cy="180" r="3.5" fill="#10B981" />
+                    <circle cx="410" cy="150" r="3.5" fill="#10B981" />
+                    <circle cx="310" cy="150" r="3.5" fill="#10B981" />
+                    <circle cx="260" cy="120" r="3.5" fill="#10B981" />
+                    <circle cx="460" cy="120" r="3.5" fill="#10B981" />
+                    <circle cx="260" cy="240" r="3.5" fill="#10B981" />
+                    <circle cx="360" cy="300" r="3.5" fill="#10B981" />
+                    <circle cx="160" cy="180" r="3.5" fill="#10B981" />
+                </g>
+            </svg>
+        </div>
+
+        <!-- 3. Far-Left Molecular Hexagon Lattice SVG -->
+        <div class="hero-bg-hexagons-left" aria-hidden="true">
+            <svg width="220" height="320" viewBox="0 0 220 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.14">
+                    <polygon points="60,40 110,70 110,130 60,160 10,130 10,70" />
+                    <polygon points="160,100 210,130 210,190 160,220 110,190 110,130" />
+                    <polygon points="60,160 110,190 110,250 60,280 10,250 10,190" />
+                    <circle cx="60" cy="40" r="3" fill="#10B981" />
+                    <circle cx="110" cy="70" r="3" fill="#10B981" />
+                    <circle cx="60" cy="160" r="3" fill="#10B981" />
+                    <circle cx="110" cy="130" r="3" fill="#10B981" />
+                    <circle cx="160" cy="100" r="3" fill="#10B981" />
+                </g>
+            </svg>
+        </div>
+
+        <!-- Hero Content Area -->
+        <div class="container hero-container py-4 py-lg-0">
+            <div class="row align-items-center g-3">
+
+                <!-- Left Text Column (5 Cols) -->
+                <div class="col-lg-5 col-xl-5">
+                    <div class="pe-xl-2">
+                        <div class="hero-pill-badge">
                             <i class="fa-solid fa-shield-halved"></i>
                             <span>ISO 27001 Certified Governance</span>
                         </div>
 
-                        <h1 class="display-title display-5 text-dark mb-3">
+                        <h1 class="hero-title">
                             Industrial Chemical Procurement Portal
                         </h1>
 
-                        <p class="fs-5 text-muted mb-4">
+                        <p class="hero-subtext">
                             Transparent chemical sourcing, laboratory license verification, chemical usage permits, and real-time order tracking.
                         </p>
 
                         <div class="d-flex align-items-center gap-3 mb-4">
-                            <a href="login.html" class="btn btn-primary btn-lg px-4 shadow">
-                                Access Portal <i class="fa-solid fa-arrow-right ms-2"></i>
+                            <a href="login.html" class="btn btn-primary btn-pill px-4 shadow">
+                                Access Portal <i class="fa-solid fa-arrow-right ms-1"></i>
                             </a>
-                            <a href="register.html" class="btn btn-secondary btn-lg px-4">
+                            <a href="register.html" class="btn btn-outline-primary btn-pill px-4">
                                 Create Account
                             </a>
                         </div>
 
-                        <!-- 3 Minimal Feature Bullets -->
-                        <div class="row g-3 pt-3 border-top">
-                            <div class="col-4">
-                                <div class="fw-bold text-dark fs-6"><i class="fa-solid fa-check text-success me-1"></i> Verified Stock</div>
-                                <small class="text-muted">Certified Labs</small>
+                        <!-- Trust Indicators Row -->
+                        <div class="trust-indicators-row">
+                            <div class="trust-item">
+                                <div class="trust-item-title">
+                                    <i class="fa-solid fa-check"></i> Verified Stock
+                                </div>
+                                <span class="trust-item-sub">Certified Labs</span>
                             </div>
-                            <div class="col-4">
-                                <div class="fw-bold text-dark fs-6"><i class="fa-solid fa-check text-success me-1"></i> Permits</div>
-                                <small class="text-muted">Govt Compliance</small>
+                            <div class="trust-item">
+                                <div class="trust-item-title">
+                                    <i class="fa-solid fa-check"></i> Permits
+                                </div>
+                                <span class="trust-item-sub">Govt Compliance</span>
                             </div>
-                            <div class="col-4">
-                                <div class="fw-bold text-dark fs-6"><i class="fa-solid fa-check text-success me-1"></i> Live Tracking</div>
-                                <small class="text-muted">Order Security</small>
+                            <div class="trust-item">
+                                <div class="trust-item-title">
+                                    <i class="fa-solid fa-check"></i> Live Tracking
+                                </div>
+                                <span class="trust-item-sub">Order Security</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column (AI Laboratory Graphic) -->
-                <div class="col-lg-6">
-                    <div class="position-relative">
-                        <img src="public/images/chemical_lab_hero.jpg" alt="Chemical Laboratory" class="hero-banner-img">
+                <!-- Center Mascot Character (Shifted Left, 2 Cols) -->
+                <div class="col-lg-2 col-xl-2 text-center my-3 my-lg-0">
+                    <div class="hero-mascot-container">
+                        <div id="mascotTracker"></div>
+                    </div>
+                </div>
+
+                <!-- Right Wide Rectangle Lab Banner Card (Old Version Shape, 5 Cols) -->
+                <div class="col-lg-5 col-xl-5">
+                    <div class="hero-lab-card">
+                        <img src="public/images/chemical_lab_hero.jpg" alt="Modern Chemical Laboratory Bench" class="hero-lab-img hero-banner-img">
                     </div>
                 </div>
 
@@ -143,6 +193,8 @@
     <!-- Scripts -->
     <script src="public/js/config.js"></script>
     <script src="public/js/common.js"></script>
+    <script src="public/js/mascot-tracker.js"></script>
+    <script src="public/js/custom-cursor.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
