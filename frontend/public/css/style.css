@@ -1612,9 +1612,10 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     display: flex;
     align-items: flex-end;
     justify-content: flex-start;
-    height: 400px;
+    height: 520px;
     width: 100%;
     margin-left: -20px;
+    overflow: visible;
 }
 
 @media (max-width: 991px) {
@@ -1627,7 +1628,7 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
 .mascot-3d-stage {
     position: relative;
     width: 100%;
-    height: 400px;
+    height: 520px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
@@ -1637,24 +1638,25 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
 
 .mascot-tracker-wrapper {
     position: relative;
-    width: 220px;
-    height: 400px;
+    width: 270px;
+    height: 520px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
     will-change: transform;
     transform-style: preserve-3d;
     backface-visibility: hidden;
+    overflow: visible;
 }
 
 .mascot-frame-img {
     position: absolute;
-    bottom: 0;
+    bottom: 70px; /* Shoes rest EXACTLY on the horizontal border line */
     left: 50%;
     transform: translateX(-50%);
-    height: 100%;
+    height: 480px; /* Full tall height so hair extends above top edge of lab photo card */
     width: auto;
-    max-height: 400px;
+    max-height: 480px;
     object-fit: contain;
     opacity: 0;
     transition: opacity 120ms ease-out;
@@ -1684,6 +1686,7 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     border: 1px solid var(--border-color);
     background: #ffffff;
     transition: var(--transition-fast);
+    margin-bottom: 70px; /* Rests bottom edge of lab photo card exactly on horizontal line */
 }
 
 [data-theme="dark"] .hero-lab-card {
