@@ -120,26 +120,25 @@
         </div>
 
         <!-- Hero Content Area -->
-        <div class="container hero-container py-4 py-lg-0">
-            <div class="row align-items-center g-3">
-
-                <!-- Left Text Column (5 Cols) -->
-                <div class="col-lg-5 col-xl-5">
-                    <div class="pe-xl-2">
-                        <div class="hero-pill-badge">
-                            <i class="fa-solid fa-shield-halved"></i>
-                            <span>ISO 27001 Certified Governance</span>
+        <div class="container hero-container position-relative">
+            <div class="hero-content-wrapper">
+                <!-- Top Row: Text, Mascot, and Lab Card aligned at bottom baseline -->
+                <div class="row align-items-end g-4">
+                    <!-- Left Text Content -->
+                    <div class="col-lg-5 col-xl-5">
+                        <div class="hero-pill-badge mb-3">
+                            <span class="badge-icon">🛡️</span> ISO 27001 Certified Governance
                         </div>
 
-                        <h1 class="hero-title">
+                        <h1 class="display-4 fw-bold hero-title mb-3">
                             Industrial Chemical Procurement Portal
                         </h1>
 
-                        <p class="hero-subtext">
+                        <p class="hero-subtext mb-4">
                             Transparent chemical sourcing, laboratory license verification, chemical usage permits, and real-time order tracking.
                         </p>
 
-                        <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="d-flex align-items-center gap-3">
                             <a href="login.html" class="btn btn-primary btn-pill px-4 shadow">
                                 Access Portal <i class="fa-solid fa-arrow-right ms-1"></i>
                             </a>
@@ -147,45 +146,44 @@
                                 Create Account
                             </a>
                         </div>
+                    </div>
 
-                        <!-- Trust Indicators Row -->
-                        <div class="trust-indicators-row">
-                            <div class="trust-item">
-                                <div class="trust-item-title">
-                                    <i class="fa-solid fa-check"></i> Verified Stock
-                                </div>
-                                <span class="trust-item-sub">Certified Labs</span>
-                            </div>
-                            <div class="trust-item">
-                                <div class="trust-item-title">
-                                    <i class="fa-solid fa-check"></i> Permits
-                                </div>
-                                <span class="trust-item-sub">Govt Compliance</span>
-                            </div>
-                            <div class="trust-item">
-                                <div class="trust-item-title">
-                                    <i class="fa-solid fa-check"></i> Live Tracking
-                                </div>
-                                <span class="trust-item-sub">Order Security</span>
-                            </div>
+                    <!-- Center Mascot Character (2 Cols) -->
+                    <div class="col-lg-2 col-xl-2 text-center my-3 my-lg-0">
+                        <div class="hero-mascot-container">
+                            <div id="mascotTracker"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right Wide Rectangle Lab Banner Card (5 Cols) -->
+                    <div class="col-lg-5 col-xl-5">
+                        <div class="hero-lab-card">
+                            <img src="public/images/chemical_lab_hero.jpg" alt="Modern Chemical Laboratory Bench" class="hero-lab-img hero-banner-img">
                         </div>
                     </div>
                 </div>
 
-                <!-- Center Mascot Character (Shifted Left, 2 Cols) -->
-                <div class="col-lg-2 col-xl-2 text-center my-3 my-lg-0">
-                    <div class="hero-mascot-container">
-                        <div id="mascotTracker"></div>
+                <!-- Trust Indicators Row (Full Baseline with Horizontal Line) -->
+                <div class="trust-indicators-row mt-4">
+                    <div class="trust-item">
+                        <div class="trust-item-title">
+                            <i class="fa-solid fa-check"></i> Verified Stock
+                        </div>
+                        <span class="trust-item-sub">Certified Labs</span>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-item-title">
+                            <i class="fa-solid fa-check"></i> Permits
+                        </div>
+                        <span class="trust-item-sub">Govt Compliance</span>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-item-title">
+                            <i class="fa-solid fa-check"></i> Live Tracking
+                        </div>
+                        <span class="trust-item-sub">Order Security</span>
                     </div>
                 </div>
-
-                <!-- Right Wide Rectangle Lab Banner Card (Old Version Shape, 5 Cols) -->
-                <div class="col-lg-5 col-xl-5">
-                    <div class="hero-lab-card">
-                        <img src="public/images/chemical_lab_hero.jpg" alt="Modern Chemical Laboratory Bench" class="hero-lab-img hero-banner-img">
-                    </div>
-                </div>
-
             </div>
         </div>
     </main>
