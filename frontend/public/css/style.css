@@ -1707,6 +1707,90 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
 }
 
 /* ==========================================================================
+   FIXED SINGLE-PAGE VIEWPORT SYSTEM (NO SCROLLING)
+   ========================================================================== */
+
+@media (min-width: 992px) {
+    html:has(body.single-page-body) {
+        overflow: hidden !important;
+        height: 100vh !important;
+    }
+
+    body.single-page-body {
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    body.single-page-body .navbar {
+        flex: 0 0 auto !important;
+        padding-top: 0.85rem !important;
+        padding-bottom: 0.85rem !important;
+    }
+
+    body.single-page-body .hero-wrapper {
+        flex: 1 1 auto !important;
+        height: calc(100vh - 76px) !important;
+        max-height: calc(100vh - 76px) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        overflow: hidden !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    body.single-page-body .hero-container {
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+
+    body.single-page-body .hero-content-wrapper {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        height: 100% !important;
+    }
+
+    body.single-page-body .hero-title {
+        font-size: clamp(2.3rem, 3.2vw, 2.95rem) !important;
+        margin-bottom: 0.85rem !important;
+    }
+
+    body.single-page-body .hero-subtext {
+        font-size: 0.98rem !important;
+        line-height: 1.55 !important;
+        margin-bottom: 1.25rem !important;
+    }
+
+    body.single-page-body .hero-mascot-container,
+    body.single-page-body .mascot-3d-stage,
+    body.single-page-body .mascot-tracker-wrapper {
+        height: clamp(380px, 46vh, 440px) !important;
+    }
+
+    body.single-page-body .mascot-frame-img {
+        height: clamp(380px, 46vh, 440px) !important;
+        max-height: clamp(380px, 46vh, 440px) !important;
+    }
+
+    body.single-page-body .hero-lab-img {
+        height: clamp(250px, 30vh, 290px) !important;
+    }
+
+    body.single-page-body .trust-indicators-row {
+        margin-top: 1rem !important;
+        padding-top: 1rem !important;
+    }
+}
+
+/* ==========================================================================
    CUSTOM CIRCULAR CURSOR MODEL SYSTEM
    ========================================================================== */
 
