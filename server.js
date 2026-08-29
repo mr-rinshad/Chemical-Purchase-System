@@ -125,7 +125,22 @@ app.use((req, res, next) => {
 // Error Handling Middleware
 app.use(errorHandler);
 
+const PurchaseRequest = require("./models/PurchaseRequest");
+
+// Background runner for auto-completing 2-day paid online orders and expiring unpaid reservations
+const runBackgroundOrderProcessing = async () => {
+    try {
+        await PurchaseRequest.autoCompleteOrders();
+        await PurchaseRequest.expireUnpaidReservations();
+    } catch (err) {
+        console.error("Background order processing error:", err.message);
+    }
+};
+
 // Start Server
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
+    // Run immediately on server start and then every 30 seconds
+    runBackgroundOrderProcessing();
+    setInterval(runBackgroundOrderProcessing, 30 * 1000);
 });

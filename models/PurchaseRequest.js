@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const Chemical = require("./Chemical");
 
 class PurchaseRequest {
 
@@ -390,7 +391,7 @@ static async completePurchase(requestId) {
 
 }
 
-// Get Expired Reservations
+// Get Expired Unpaid Reservations (NEVER returns Paid or Completed orders)
 static async getExpiredReservations() {
 
     const [rows] = await db.execute(
@@ -402,6 +403,10 @@ static async getExpiredReservations() {
         WHERE
 
             reservation_status = 'Reserved'
+
+        AND
+
+            request_status NOT IN ('Paid', 'Completed')
 
         AND
 
@@ -426,13 +431,46 @@ static async expireReservation(requestId) {
 
             request_status = 'Expired'
 
-        WHERE request_id = ?`,
+        WHERE request_id = ?
+
+        AND request_status NOT IN ('Paid', 'Completed')`,
 
         [requestId]
 
     );
 
     return result.affectedRows;
+
+}
+
+// Auto-Expire Unpaid Reservations and Return Reserved Stock to Inventory
+static async expireUnpaidReservations() {
+
+    const reservations = await this.getExpiredReservations();
+
+    let expiredCount = 0;
+
+    for (const reservation of reservations) {
+
+        await Chemical.returnReservedStock(
+
+            reservation.chemical_id,
+
+            reservation.quantity
+
+        );
+
+        await this.expireReservation(
+
+            reservation.request_id
+
+        );
+
+        expiredCount++;
+
+    }
+
+    return expiredCount;
 
 }
 
@@ -471,7 +509,24 @@ static async markAsPaid(purchaseCode, userId) {
 
 }
 
-static async completeOnlineOrder(requestId,userId){
+static async completeOnlineOrder(requestId, userId = null) {
+
+    let query = `SELECT * FROM purchase_requests WHERE request_id = ?`;
+    const params = [requestId];
+    if (userId) {
+        query += ` AND user_id = ?`;
+        params.push(userId);
+    }
+
+    const [rows] = await db.execute(query, params);
+    if (!rows || rows.length === 0) return false;
+
+    const request = rows[0];
+
+    // Complete the reserved stock if still active
+    if (request.reservation_status === 'Reserved') {
+        await Chemical.completeReservedStock(request.chemical_id, request.quantity);
+    }
 
     const [result] = await db.execute(
 
@@ -479,69 +534,75 @@ static async completeOnlineOrder(requestId,userId){
 
         SET
 
-            request_status='Completed',
+            request_status = 'Completed',
 
-            completed_at=NOW()
+            reservation_status = 'Released',
+
+            completed_at = NOW()
 
         WHERE
 
-            request_id=?
+            request_id = ?`,
 
-        AND
-
-            user_id=?`,
-
-        [
-
-            requestId,
-
-            userId
-
-        ]
+        [requestId]
 
     );
 
-    return result.affectedRows>0;
+    return result.affectedRows > 0;
 
 }
 
-static async autoCompleteOrders(userId){
+// Auto-complete all online orders where 2 days have passed since payment
+static async autoCompleteOrders(userId = null) {
 
-    const [result] = await db.execute(
-
-        `UPDATE purchase_requests
-
-        SET
-
-            request_status='Completed',
-
-            completed_at=NOW()
-
+    let query = `
+        SELECT request_id, chemical_id, quantity, user_id, reservation_status, purchase_code
+        FROM purchase_requests
         WHERE
+            (
+                (request_status = 'Paid' AND payment_date IS NOT NULL AND payment_date <= DATE_SUB(NOW(), INTERVAL 2 DAY))
+                OR
+                (purchase_mode = 'Online' AND request_status = 'Expired' AND payment_date IS NOT NULL AND payment_date <= DATE_SUB(NOW(), INTERVAL 2 DAY))
+            )
+    `;
 
-            user_id=?
+    const params = [];
+    if (userId) {
+        query += ` AND user_id = ?`;
+        params.push(userId);
+    }
 
-        AND
+    const [eligibleOrders] = await db.execute(query, params);
+    let completedCount = 0;
 
-            request_status='Paid'
+    for (const order of eligibleOrders) {
+        // If still reserved, finalize from reserved stock
+        if (order.reservation_status === 'Reserved') {
+            await Chemical.completeReservedStock(order.chemical_id, order.quantity);
+        } else if (order.reservation_status === 'Expired') {
+            // If it was wrongly marked Expired and returned to total_stock by the previous bug,
+            // re-deduct the quantity from total_stock to balance inventory
+            await db.execute(
+                `UPDATE chemicals
+                SET total_stock = GREATEST(0, total_stock - ?)
+                WHERE chemical_id = ?`,
+                [order.quantity, order.chemical_id]
+            );
+        }
 
-        AND
+        await db.execute(
+            `UPDATE purchase_requests
+            SET
+                request_status = 'Completed',
+                reservation_status = 'Released',
+                completed_at = COALESCE(completed_at, NOW())
+            WHERE request_id = ?`,
+            [order.request_id]
+        );
+        completedCount++;
+    }
 
-            payment_date IS NOT NULL
-
-        AND
-
-            payment_date <= DATE_SUB(NOW(),INTERVAL 2 DAY)`,
-
-        [
-
-            userId
-
-        ]
-
-    );
-
-    return result;
+    return completedCount;
 
 }
 

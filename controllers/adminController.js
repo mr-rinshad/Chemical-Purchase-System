@@ -4,6 +4,7 @@ const Admin = require("../models/Admin");
 const Laboratory = require("../models/Laboratory");
 const User = require("../models/User");
 const ChemicalAuthorization = require("../models/ChemicalAuthorization");
+const PurchaseRequest = require("../models/PurchaseRequest");
 
 const generateToken = require("../utils/generateToken");
 
@@ -1518,6 +1519,9 @@ const dashboard = async (req, res, next) => {
 
     try {
 
+        await PurchaseRequest.autoCompleteOrders();
+        await PurchaseRequest.expireUnpaidReservations();
+
         const statistics = await Admin.getDashboardStatistics();
 
         sendSuccess(
@@ -1543,6 +1547,9 @@ const dashboard = async (req, res, next) => {
 const getPurchaseReport = async (req, res, next) => {
 
     try {
+
+        await PurchaseRequest.autoCompleteOrders();
+        await PurchaseRequest.expireUnpaidReservations();
 
         const report = await Admin.getPurchaseReport();
 
@@ -1835,6 +1842,9 @@ const getApprovedAuthorizationRequests = async (req, res, next) => {
 const getPurchaseMonitor = async (req, res, next) => {
 
     try {
+
+        await PurchaseRequest.autoCompleteOrders();
+        await PurchaseRequest.expireUnpaidReservations();
 
         const purchases = await Admin.getPurchaseReport();
 

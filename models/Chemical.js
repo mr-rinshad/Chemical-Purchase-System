@@ -229,12 +229,18 @@ static async search(labId, keyword) {
         (
             chemical_name LIKE ?
             OR chemical_code LIKE ?
+            OR formula LIKE ?
+            OR category LIKE ?
         )
         ORDER BY chemical_name ASC`,
 
         [
 
             labId,
+
+            `%${keyword}%`,
+
+            `%${keyword}%`,
 
             `%${keyword}%`,
 

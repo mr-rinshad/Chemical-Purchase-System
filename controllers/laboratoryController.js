@@ -1341,6 +1341,10 @@ const getPurchaseRequests = async (req, res, next) => {
 
     try {
 
+        // Auto-complete online orders past 2 days and expire unpaid reservations
+        await PurchaseRequest.autoCompleteOrders();
+        await PurchaseRequest.expireUnpaidReservations();
+
         const requests = await PurchaseRequest.getLaboratoryRequests(
 
             req.user.id
@@ -1756,35 +1760,16 @@ const expireReservations = async (req, res, next) => {
 
     try {
 
-        const reservations = await PurchaseRequest.getExpiredReservations();
+        // Auto-complete online orders past 2 days first
+        await PurchaseRequest.autoCompleteOrders();
 
-        let expiredCount = 0;
-
-        for (const reservation of reservations) {
-
-            await Chemical.returnReservedStock(
-
-                reservation.chemical_id,
-
-                reservation.quantity
-
-            );
-
-            await PurchaseRequest.expireReservation(
-
-                reservation.request_id
-
-            );
-
-            expiredCount++;
-
-        }
+        const expiredCount = await PurchaseRequest.expireUnpaidReservations();
 
         sendSuccess(
 
             res,
 
-            `${expiredCount} reservation(s) expired successfully`
+            `${expiredCount} unpaid reservation(s) expired successfully`
 
         );
 
@@ -1801,6 +1786,9 @@ const expireReservations = async (req, res, next) => {
 const dashboard = async (req, res, next) => {
 
     try {
+
+        await PurchaseRequest.autoCompleteOrders();
+        await PurchaseRequest.expireUnpaidReservations();
 
         const statistics = await Laboratory.getDashboardStatistics(
 
@@ -1831,6 +1819,9 @@ const dashboard = async (req, res, next) => {
 const getPurchaseReport = async (req, res, next) => {
 
     try {
+
+        await PurchaseRequest.autoCompleteOrders();
+        await PurchaseRequest.expireUnpaidReservations();
 
         const report = await Laboratory.getPurchaseReport(
 

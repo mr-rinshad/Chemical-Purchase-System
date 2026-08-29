@@ -782,6 +782,8 @@ async function loadPurchaseRequests() {
 }
 async function loadPurchaseHistory() {
 
+    await autoCompleteOrders();
+
     const token = getToken();
 
     try {

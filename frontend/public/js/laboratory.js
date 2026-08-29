@@ -957,6 +957,18 @@ function displayPurchaseRequests(requests) {
 
         }
 
+        else if (request.request_status === "Paid") {
+
+            action = `
+                <span class="badge bg-info text-dark">
+
+                    Paid (In Transit)
+
+                </span>
+            `;
+
+        }
+
         else if (request.request_status === "Completed") {
 
             action = `
@@ -1742,13 +1754,13 @@ function displayChemicals(chemicals) {
 
                 <td>${chemical.chemical_name}</td>
 
+                <td>${chemical.formula || "-"}</td>
+
                 <td>${chemical.category}</td>
 
                 <td>${chemical.total_stock}</td>
 
                 <td>${chemical.reserved_stock}</td>
-
-                <td>${chemical.available_stock}</td>
 
                 <td>${chemical.status}</td>
 

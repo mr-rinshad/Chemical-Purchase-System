@@ -1200,6 +1200,8 @@ const getMyPurchaseRequests = async (req, res, next) => {
 
     try {
 
+        await PurchaseRequest.autoCompleteOrders();
+
         const requests = await PurchaseRequest.getUserRequests(
 
             req.user.id
@@ -1295,6 +1297,8 @@ const dashboard = async (req, res, next) => {
 
     try {
 
+        await PurchaseRequest.autoCompleteOrders();
+
         const statistics = await User.getDashboardStatistics(
 
             req.user.id
@@ -1323,6 +1327,8 @@ const dashboard = async (req, res, next) => {
 const getPurchaseHistory = async (req, res, next) => {
 
     try {
+
+        await PurchaseRequest.autoCompleteOrders();
 
         const history = await User.getPurchaseHistory(
 
