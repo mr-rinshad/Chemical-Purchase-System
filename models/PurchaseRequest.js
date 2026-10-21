@@ -606,6 +606,42 @@ static async autoCompleteOrders(userId = null) {
 
 }
 
+// Get Monthly Purchase Usage for User (Limit: 15 units/month)
+static async getMonthlyUsage(userId) {
+
+    const limit = 15;
+
+    const [rows] = await db.execute(
+
+        `SELECT COALESCE(SUM(quantity), 0) AS used_quantity
+         FROM purchase_requests
+         WHERE user_id = ?
+           AND YEAR(request_date) = YEAR(CURDATE())
+           AND MONTH(request_date) = MONTH(CURDATE())
+           AND request_status NOT IN ('Rejected', 'Expired')`,
+
+        [userId]
+
+    );
+
+    const used = parseFloat(Number(rows[0]?.used_quantity || 0).toFixed(2));
+    const remaining = Math.max(0, parseFloat((limit - used).toFixed(2)));
+    const isLimitReached = used >= limit;
+
+    return {
+
+        limit,
+
+        used,
+
+        remaining,
+
+        isLimitReached
+
+    };
+
+}
+
 }
 
 module.exports = PurchaseRequest;

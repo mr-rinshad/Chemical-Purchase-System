@@ -34,6 +34,7 @@ if (user) {
 }
 
 const authorizationForm = document.getElementById("authorizationForm");
+let authorizationMonthlyQuota = null;
 
 if (authorizationForm) {
 
@@ -43,6 +44,73 @@ if (authorizationForm) {
     );
 
     loadAuthorizationRequests();
+    checkAuthorizationMonthlyLimit();
+
+}
+
+async function checkAuthorizationMonthlyLimit() {
+
+    const token = getToken();
+
+    try {
+
+        const response = await fetch(
+            API_BASE_URL + "/auth/monthly-limit",
+            {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (data.success && data.data) {
+
+            authorizationMonthlyQuota = data.data;
+
+            const limitAlert = document.getElementById("authorizationLimitAlert");
+
+            if (authorizationMonthlyQuota.isLimitReached) {
+
+                if (limitAlert) {
+
+                    limitAlert.innerHTML = `
+                        <div class="alert alert-danger d-flex align-items-center gap-2 mb-3">
+                            <i class="fa-solid fa-ban fs-5 flex-shrink-0"></i>
+                            <div>
+                                <strong>Monthly Limit Reached:</strong> You have reached your monthly chemical purchase limit (${authorizationMonthlyQuota.used}/${authorizationMonthlyQuota.limit} units used). You cannot request new authorization permits this month.
+                            </div>
+                        </div>
+                    `;
+
+                }
+
+                const purposeInput = document.getElementById("purpose");
+                const proofInput = document.getElementById("proof_document");
+                const submitBtn = authorizationForm.querySelector("button[type='submit']");
+
+                if (purposeInput) purposeInput.disabled = true;
+                if (proofInput) proofInput.disabled = true;
+
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-lock me-1"></i> Request Restricted (Monthly Limit Reached)';
+                    submitBtn.classList.remove("btn-amber");
+                    submitBtn.classList.add("btn-secondary");
+                }
+
+            }
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error("Error checking authorization monthly limit:", error);
+
+    }
 
 }
 
@@ -83,6 +151,17 @@ function formatDateTime(date) {
 async function submitAuthorization(event) {
 
     event.preventDefault();
+
+    if (authorizationMonthlyQuota && authorizationMonthlyQuota.isLimitReached) {
+
+        showMessage(
+            `Monthly chemical purchase limit reached (${authorizationMonthlyQuota.used}/${authorizationMonthlyQuota.limit} units used). You cannot request new authorization permits this month.`,
+            "danger"
+        );
+
+        return;
+
+    }
 
     const purpose = document
         .getElementById("purpose")
@@ -468,22 +547,137 @@ async function loadApprovedAuthorizations() {
 // Register Purchase Form
 
 const purchaseForm = document.getElementById("purchaseForm");
+let purchaseMonthlyQuota = null;
 
 if (purchaseForm) {
 
     purchaseForm.addEventListener(
-
         "submit",
-
         submitPurchaseRequest
-
     );
+
+    checkPurchaseMonthlyLimit();
+
+}
+
+async function checkPurchaseMonthlyLimit() {
+
+    const token = getToken();
+
+    try {
+
+        const response = await fetch(
+            API_BASE_URL + "/auth/monthly-limit",
+            {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (data.success && data.data) {
+
+            purchaseMonthlyQuota = data.data;
+
+            const quotaSummary = document.getElementById("monthlyQuotaSummary");
+            const remainingBadge = document.getElementById("monthlyRemainingBadge");
+            const quantityInput = document.getElementById("quantity");
+            const quantityLimitHelper = document.getElementById("quantityLimitHelper");
+            const submitBtn = purchaseForm ? purchaseForm.querySelector("button[type='submit']") : null;
+
+            if (quotaSummary) {
+                quotaSummary.innerHTML = `<strong>${purchaseMonthlyQuota.used}</strong> of <strong>${purchaseMonthlyQuota.limit} units</strong> used this month.`;
+            }
+
+            if (remainingBadge) {
+                if (purchaseMonthlyQuota.isLimitReached) {
+                    remainingBadge.className = "badge bg-danger fs-6";
+                    remainingBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation me-1"></i> Limit Reached (0 units left)`;
+                } else {
+                    remainingBadge.className = "badge bg-success fs-6";
+                    remainingBadge.innerHTML = `<i class="fa-solid fa-check me-1"></i> ${purchaseMonthlyQuota.remaining} unit(s) remaining`;
+                }
+            }
+
+            if (quantityLimitHelper) {
+                if (purchaseMonthlyQuota.isLimitReached) {
+                    quantityLimitHelper.className = "text-danger d-block mt-1 fw-bold";
+                    quantityLimitHelper.innerText = "Monthly limit reached (15/15 units). You cannot order chemicals this month.";
+                } else {
+                    quantityLimitHelper.className = "text-muted d-block mt-1";
+                    quantityLimitHelper.innerText = `Monthly Limit: 15 units. You can order up to ${purchaseMonthlyQuota.remaining} unit(s) more this month.`;
+                }
+            }
+
+            if (quantityInput) {
+                if (purchaseMonthlyQuota.isLimitReached) {
+                    quantityInput.disabled = true;
+                    quantityInput.placeholder = "Monthly limit reached";
+                } else {
+                    quantityInput.disabled = false;
+                    quantityInput.max = purchaseMonthlyQuota.remaining;
+                }
+            }
+
+            if (submitBtn) {
+                if (purchaseMonthlyQuota.isLimitReached) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-lock me-2"></i> Monthly Purchase Limit Reached (15/15 units)';
+                    submitBtn.classList.remove("btn-amber");
+                    submitBtn.classList.add("btn-secondary");
+                } else {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane me-2"></i> Submit Purchase Order Request';
+                    submitBtn.classList.remove("btn-secondary");
+                    submitBtn.classList.add("btn-amber");
+                }
+            }
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error("Error checking purchase monthly limit:", error);
+
+    }
 
 }
 
 async function submitPurchaseRequest(event) {
 
     event.preventDefault();
+
+    if (purchaseMonthlyQuota) {
+
+        if (purchaseMonthlyQuota.isLimitReached) {
+
+            showMessage(
+                `Monthly chemical purchase limit of ${purchaseMonthlyQuota.limit} units has already been reached for this month. You cannot submit further purchase requests.`,
+                "danger"
+            );
+
+            return;
+
+        }
+
+        const requestedQty = Number(document.getElementById("quantity").value);
+
+        if (purchaseMonthlyQuota.used + requestedQty > purchaseMonthlyQuota.limit) {
+
+            showMessage(
+                `Monthly purchase limit exceeded. You have already requested/purchased ${purchaseMonthlyQuota.used} of your ${purchaseMonthlyQuota.limit} monthly unit limit. Remaining allowance: ${purchaseMonthlyQuota.remaining} unit(s).`,
+                "danger"
+            );
+
+            return;
+
+        }
+
+    }
 
     const token = getToken();
 
@@ -554,6 +748,8 @@ async function submitPurchaseRequest(event) {
         document.getElementById("chemical").innerHTML =
 
             `<option value="">Select Chemical</option>`;
+
+        await checkPurchaseMonthlyLimit();
 
     }
 
@@ -949,6 +1145,78 @@ async function loadProfile() {
 
         document.getElementById("address").value =
             data.data.address || "";
+
+        if (data.data.monthly_quota) {
+
+            const quota = data.data.monthly_quota;
+            const quotaLimit = document.getElementById("quotaLimit");
+            const quotaUsed = document.getElementById("quotaUsed");
+            const quotaRemaining = document.getElementById("quotaRemaining");
+            const quotaPercentText = document.getElementById("quotaPercentText");
+            const quotaProgressBar = document.getElementById("quotaProgressBar");
+            const quotaAlertContainer = document.getElementById("quotaAlertContainer");
+            const quotaStatusText = document.getElementById("quotaStatusText");
+            const currentMonthBadge = document.getElementById("currentMonthBadge");
+
+            if (currentMonthBadge) {
+                const monthName = new Date().toLocaleString("en-US", { month: "long", year: "numeric" });
+                currentMonthBadge.innerHTML = `<i class="fa-solid fa-calendar-days me-1"></i> ${monthName}`;
+            }
+
+            if (quotaLimit) quotaLimit.innerText = quota.limit;
+            if (quotaUsed) quotaUsed.innerText = quota.used;
+            if (quotaRemaining) quotaRemaining.innerText = quota.remaining;
+
+            const percent = Math.min(100, Math.round((quota.used / quota.limit) * 100));
+
+            if (quotaPercentText) {
+                quotaPercentText.innerText = `${percent}% Used (${quota.used}/${quota.limit} units)`;
+            }
+
+            if (quotaProgressBar) {
+                quotaProgressBar.style.width = percent + "%";
+                quotaProgressBar.setAttribute("aria-valuenow", percent);
+                quotaProgressBar.className = "progress-bar";
+                if (quota.isLimitReached) {
+                    quotaProgressBar.classList.add("bg-danger");
+                } else if (percent > 65) {
+                    quotaProgressBar.classList.add("bg-warning");
+                } else {
+                    quotaProgressBar.classList.add("bg-success");
+                }
+            }
+
+            if (quotaStatusText) {
+                if (quota.isLimitReached) {
+                    quotaStatusText.innerHTML = '<span class="text-danger fw-semibold">Limit reached</span>';
+                } else {
+                    quotaStatusText.innerHTML = 'Available to purchase';
+                }
+            }
+
+            if (quotaAlertContainer) {
+                if (quota.isLimitReached) {
+                    quotaAlertContainer.innerHTML = `
+                        <div class="alert alert-danger d-flex align-items-center gap-2 mb-0">
+                            <i class="fa-solid fa-triangle-exclamation fs-5 flex-shrink-0"></i>
+                            <div>
+                                <strong>Monthly Limit Reached:</strong> You have consumed all <strong>${quota.limit} units</strong> of your monthly chemical allowance. You cannot request new authorization permits or submit purchase orders until next month.
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    quotaAlertContainer.innerHTML = `
+                        <div class="alert alert-info d-flex align-items-center gap-2 mb-0">
+                            <i class="fa-solid fa-circle-info fs-5 flex-shrink-0"></i>
+                            <div>
+                                You have <strong>${quota.remaining} unit(s)</strong> remaining in your monthly purchasing allowance out of <strong>${quota.limit} units</strong>.
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+        }
 
     }
 

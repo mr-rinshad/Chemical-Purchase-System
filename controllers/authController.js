@@ -296,6 +296,12 @@ const profile = async (req, res, next) => {
 
         }
 
+        const monthlyQuota = await PurchaseRequest.getMonthlyUsage(
+            req.user.id
+        );
+
+        user.monthly_quota = monthlyQuota;
+
         sendSuccess(
 
             res,
@@ -303,6 +309,34 @@ const profile = async (req, res, next) => {
             "Profile fetched successfully",
 
             user
+
+        );
+
+    }
+
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+const getMonthlyLimit = async (req, res, next) => {
+
+    try {
+
+        const quota = await PurchaseRequest.getMonthlyUsage(
+            req.user.id
+        );
+
+        sendSuccess(
+
+            res,
+
+            "Monthly purchase limit retrieved successfully",
+
+            quota
 
         );
 
@@ -864,6 +898,26 @@ const requestAuthorization = async (req, res, next) => {
 
         }
 
+        const monthlyQuota = await PurchaseRequest.getMonthlyUsage(
+            req.user.id
+        );
+
+        if (monthlyQuota.isLimitReached) {
+
+            return sendError(
+
+                res,
+
+                `Monthly chemical purchase limit reached (${monthlyQuota.used}/${monthlyQuota.limit} units used). You cannot request new authorization permits this month.`,
+
+                [],
+
+                400
+
+            );
+
+        }
+
         const authorization_code = generateAuthorizationCode();
 
         await ChemicalAuthorization.create({
@@ -1059,6 +1113,44 @@ const submitPurchaseRequest = async (req, res, next) => {
                 res,
 
                 "All fields are required",
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        const reqQuantity = Number(quantity);
+
+        const monthlyQuota = await PurchaseRequest.getMonthlyUsage(
+            req.user.id
+        );
+
+        if (monthlyQuota.isLimitReached) {
+
+            return sendError(
+
+                res,
+
+                `Monthly chemical purchase limit of ${monthlyQuota.limit} units has already been reached for this month. You cannot submit further purchase requests until next month.`,
+
+                [],
+
+                400
+
+            );
+
+        }
+
+        if (monthlyQuota.used + reqQuantity > monthlyQuota.limit) {
+
+            return sendError(
+
+                res,
+
+                `Monthly purchase limit exceeded. You have already requested/purchased ${monthlyQuota.used} of your ${monthlyQuota.limit} monthly unit limit. Remaining allowance: ${monthlyQuota.remaining} unit(s).`,
 
                 [],
 
@@ -1562,6 +1654,8 @@ module.exports = {
 
     completeOnlineOrder,
 
-    autoCompleteOrders
+    autoCompleteOrders,
+
+    getMonthlyLimit
 
 };

@@ -44,7 +44,9 @@ const {
 
     completeOnlineOrder,
 
-    autoCompleteOrders
+    autoCompleteOrders,
+
+    getMonthlyLimit
 
 } = require("../controllers/authController");
 
@@ -93,6 +95,18 @@ router.get(
     authMiddleware,
 
     profile
+
+);
+
+router.get(
+
+    "/monthly-limit",
+
+    authMiddleware,
+
+    authorize("user"),
+
+    getMonthlyLimit
 
 );
 
