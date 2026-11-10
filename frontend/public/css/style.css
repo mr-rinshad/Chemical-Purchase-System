@@ -440,7 +440,15 @@
     border-color: #DBCDBE !important;
 }
 
-/* Base Reset & Typography */
+/* Base Reset & Universal Mobile Scaling Engine */
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -452,6 +460,8 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
     line-height: 1.6;
 }
 
@@ -655,8 +665,10 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
 .app-layout {
     display: flex;
     min-height: 100vh;
-    width: 100vw;
+    width: 100%;
+    max-width: 100%;
     overflow-x: hidden;
+    position: relative;
 }
 
 /* Sidebar Styles */
@@ -792,8 +804,10 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     display: flex;
     flex-direction: column;
     min-width: 0;
+    max-width: 100%;
     min-height: 100vh;
     transition: var(--transition-fast);
+    overflow-x: hidden;
 }
 
 .app-topbar {
@@ -808,12 +822,16 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     top: 0;
     z-index: 1030;
     box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    width: 100%;
+    max-width: 100%;
 }
 
 .topbar-left {
     display: flex;
     align-items: center;
     gap: 1rem;
+    min-width: 0;
+    flex: 1 1 auto;
 }
 
 .sidebar-toggle-btn {
@@ -829,6 +847,7 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     align-items: center;
     justify-content: center;
     transition: var(--transition-fast);
+    flex-shrink: 0;
 }
 
 .sidebar-toggle-btn:hover {
@@ -841,22 +860,30 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     font-weight: 700;
     margin: 0;
     color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .topbar-right {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.85rem;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
 }
 
 .user-badge {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.4rem 0.95rem;
+    padding: 0.35rem 0.95rem;
     background: #f8fafc;
     border-radius: 30px;
     border: 1px solid var(--border-color);
+    flex-shrink: 0;
+    max-width: 100%;
+    transition: var(--transition-fast);
 }
 
 .user-avatar {
@@ -870,23 +897,29 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     justify-content: center;
     font-weight: 800;
     font-size: 0.85rem;
+    flex-shrink: 0;
 }
 
 .user-info-name {
     font-size: 0.875rem;
     font-weight: 700;
     color: var(--text-primary);
+    line-height: 1.2;
 }
 
 .user-info-role {
     font-size: 0.75rem;
     color: var(--text-muted);
+    line-height: 1.2;
 }
 
 .app-content {
-    padding: 2.25rem;
+    padding: 2rem 2rem 2.5rem 2rem;
     flex: 1;
     background-color: var(--bg-body);
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 /* Sidebar Backdrop Mobile Overlay */
@@ -916,6 +949,8 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
 
     .app-main {
         margin-left: 0;
+        width: 100%;
+        max-width: 100%;
     }
 
     .sidebar-toggle-btn {
@@ -927,8 +962,206 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
         opacity: 1;
     }
     
+    /* Topbar on Tablets/Medium Screens */
+    .app-topbar {
+        height: 64px;
+        padding: 0 1.25rem;
+    }
+
+    .topbar-left {
+        gap: 0.75rem;
+    }
+
+    .topbar-title {
+        font-size: 1.1rem;
+        max-width: calc(100vw - 230px);
+    }
+
+    .topbar-right {
+        gap: 0.65rem;
+    }
+
+    .user-badge {
+        padding: 0.3rem 0.65rem;
+        gap: 0.5rem;
+    }
+
+    .user-info-role {
+        display: none !important; /* Hide secondary role line to prevent horizontal crowding */
+    }
+
+    .user-info-name {
+        font-size: 0.8rem;
+        max-width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .app-content {
         padding: 1.25rem;
+    }
+}
+
+/* Mobile Phone Responsive Optimization (<= 576px) */
+@media (max-width: 576px) {
+    .app-topbar {
+        height: 58px;
+        padding: 0 0.85rem;
+    }
+
+    .topbar-left {
+        gap: 0.5rem;
+    }
+
+    .sidebar-toggle-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.95rem;
+        border-radius: 10px;
+        flex-shrink: 0;
+    }
+
+    .topbar-title {
+        font-size: 0.925rem;
+        font-weight: 700;
+        max-width: calc(100vw - 145px);
+    }
+
+    .topbar-right {
+        gap: 0.45rem;
+    }
+
+    .theme-toggle-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.95rem;
+        flex-shrink: 0;
+    }
+
+    /* User Profile Badge: Fits 100% inside header without clipping */
+    .user-badge {
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .user-badge > div:not(.user-avatar) {
+        display: none !important; /* Conceal text labels on mobile to avoid overflow */
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 0.85rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        flex-shrink: 0;
+    }
+
+    /* Content Area: Consistent breathing room & alignment */
+    .app-content {
+        padding: 0.95rem 0.85rem 1.75rem 0.85rem;
+    }
+
+    .page-header {
+        margin-bottom: 1.15rem;
+    }
+
+    .page-title {
+        font-size: 1.2rem;
+        line-height: 1.3;
+    }
+
+    .page-subtitle {
+        font-size: 0.8rem;
+        margin-top: 0.2rem;
+    }
+
+    /* Welcome Hero Banner Card on Mobile */
+    .card-header-primary.p-4,
+    .card-header-primary.p-md-5,
+    .card.card-header-primary {
+        padding: 1.15rem 1rem !important;
+        border-radius: 16px;
+        margin-bottom: 1rem;
+    }
+
+    .card-header-primary .display-title,
+    .card-header-primary h2 {
+        font-size: 1.25rem !important;
+        margin-bottom: 0.35rem !important;
+        line-height: 1.25 !important;
+    }
+
+    .card-header-primary p,
+    .card-header-primary .fs-6 {
+        font-size: 0.825rem !important;
+        line-height: 1.45 !important;
+    }
+
+    .card-header-primary .btn {
+        width: 100%;
+        margin-top: 0.75rem;
+        padding: 0.5rem 1rem !important;
+        font-size: 0.875rem !important;
+        justify-content: center;
+    }
+
+    /* Bento Cards & Stat Cards on Mobile */
+    .bento-card, .card {
+        padding: 1.15rem 1rem;
+        margin-bottom: 0.85rem;
+        border-radius: 16px;
+    }
+
+    .bento-card .stat-icon,
+    .stat-card .stat-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 1.15rem;
+        margin-bottom: 0.65rem !important;
+        border-radius: 12px;
+    }
+
+    .bento-card h4,
+    .stat-card h4 {
+        font-size: 1.05rem;
+    }
+
+    .bento-card span.fs-6,
+    .stat-title {
+        font-size: 0.725rem !important;
+        letter-spacing: 0.04em;
+    }
+
+    .bento-card p.fs-6,
+    .stat-card p.fs-6 {
+        font-size: 0.8rem !important;
+        line-height: 1.4 !important;
+    }
+
+    .stat-value {
+        font-size: 1.65rem;
+    }
+
+    /* Tighten grid spacing on mobile */
+    .row.g-4 {
+        --bs-gutter-x: 0.75rem;
+        --bs-gutter-y: 0.75rem;
+    }
+
+    .row.mb-4 {
+        margin-bottom: 0.85rem !important;
+    }
+
+    /* Prevent iOS Safari input auto-zoom */
+    .form-control,
+    .form-select,
+    input,
+    textarea,
+    select {
+        font-size: 16px !important;
     }
 }
 
@@ -1790,6 +2023,135 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     }
 }
 
+/* Hero Section Mobile Polish (<= 991.98px) */
+@media (max-width: 991.98px) {
+    body.single-page-body {
+        height: auto !important;
+        min-height: 100vh !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        display: block !important;
+    }
+
+    body.single-page-body .navbar {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 1020 !important;
+    }
+
+    body.single-page-body .hero-wrapper {
+        min-height: auto !important;
+        height: auto !important;
+        padding-top: 1.75rem !important; /* Elegant breathing space below navbar line */
+        padding-bottom: 2.75rem !important;
+        display: block !important;
+        overflow: hidden !important;
+    }
+
+    body.single-page-body .hero-container {
+        height: auto !important;
+        display: block !important;
+        padding-top: 0.25rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+
+    body.single-page-body .hero-content-wrapper {
+        height: auto !important;
+        display: block !important;
+    }
+
+    .hero-pill-badge {
+        font-size: 0.8rem;
+        padding: 0.35rem 0.95rem;
+        margin-bottom: 1rem;
+    }
+
+    .hero-title,
+    body.single-page-body .hero-title,
+    h1.display-4.hero-title {
+        font-size: clamp(1.85rem, 6vw, 2.35rem) !important;
+        line-height: 1.2 !important;
+        margin-bottom: 0.75rem !important;
+        letter-spacing: -0.025em !important;
+    }
+
+    .hero-subtext,
+    body.single-page-body .hero-subtext {
+        font-size: 0.925rem !important;
+        line-height: 1.55 !important;
+        margin-bottom: 1.25rem !important;
+        max-width: 100% !important;
+    }
+
+    /* Mascot scaling on mobile */
+    .hero-mascot-container,
+    .mascot-3d-stage,
+    .mascot-tracker-wrapper,
+    body.single-page-body .hero-mascot-container,
+    body.single-page-body .mascot-3d-stage,
+    body.single-page-body .mascot-tracker-wrapper {
+        height: 280px !important;
+        max-height: 280px !important;
+        margin-left: 0 !important;
+    }
+
+    .mascot-frame-img,
+    body.single-page-body .mascot-frame-img {
+        height: 280px !important;
+        max-height: 280px !important;
+    }
+
+    /* Lab photo card */
+    .hero-lab-card {
+        margin-top: 0.75rem;
+        border-radius: 16px;
+    }
+
+    .hero-lab-img,
+    body.single-page-body .hero-lab-img {
+        height: 200px !important;
+        min-height: unset !important;
+    }
+
+    /* Trust indicators row */
+    .trust-indicators-row,
+    body.single-page-body .trust-indicators-row {
+        gap: 1rem 1.25rem !important;
+        padding-top: 1.25rem !important;
+        margin-top: 1.5rem !important;
+        flex-wrap: wrap !important;
+    }
+
+    .trust-item-title {
+        font-size: 0.85rem;
+    }
+
+    .trust-item-sub {
+        font-size: 0.75rem;
+    }
+
+    /* Background SVGs scaled down to prevent mobile blowout */
+    .hero-bg-wave-container {
+        width: 380px;
+        height: 280px;
+        bottom: -30px;
+        left: -40px;
+    }
+
+    .hero-bg-hexagons-container {
+        width: 280px;
+        height: 240px;
+        bottom: -20px;
+        right: -20px;
+    }
+
+    .hero-bg-hexagons-left {
+        display: none !important;
+    }
+}
+
 /* ==========================================================================
    CUSTOM CIRCULAR CURSOR MODEL SYSTEM
    ========================================================================== */
@@ -1882,4 +2244,12 @@ h1, h2, h3, h4, h5, h6, .brand-title, .bento-title {
     border-color: #9A0002;
     background-color: rgba(154, 0, 2, 0.2);
     box-shadow: 0 0 20px rgba(154, 0, 2, 0.35);
+}
+
+/* Touch Device Cursor Clean-Up */
+@media (hover: none) and (pointer: coarse) {
+    .custom-cursor-dot,
+    .custom-cursor-ring {
+        display: none !important;
+    }
 }
