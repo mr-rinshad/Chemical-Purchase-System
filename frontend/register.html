@@ -17,13 +17,37 @@
     <!-- Theme CSS -->
     <link rel="stylesheet" href="public/css/style.css">
     <style>
-        .role-pill-btn {
-            border-radius: 30px;
-            padding: 0.6rem 1.5rem;
-            font-weight: 700;
-            font-size: 0.925rem;
-            transition: var(--transition-fast);
-            border: 1px solid var(--border-color);
+        .role-tab-container {
+            max-width: 100%;
+        }
+        @media (max-width: 576px) {
+            .role-tab-container {
+                display: flex !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 4px !important;
+                box-sizing: border-box !important;
+            }
+            .role-tab-btn {
+                flex: 1 1 0 !important;
+                min-width: 0 !important;
+                padding: 0.6rem 0.35rem !important;
+                font-size: 0.8rem !important;
+                justify-content: center !important;
+                text-align: center !important;
+                white-space: nowrap !important;
+                gap: 0.3rem !important;
+            }
+        }
+        @media (max-width: 390px) {
+            .role-tab-btn {
+                font-size: 0.74rem !important;
+                padding: 0.55rem 0.2rem !important;
+                gap: 0.2rem !important;
+            }
+            .role-tab-btn i {
+                font-size: 0.75rem !important;
+            }
         }
     </style>
 </head>
