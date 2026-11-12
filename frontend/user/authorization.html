@@ -167,6 +167,46 @@
 
     </div>
 
+    <!-- Authorization Rejection Reason Modal -->
+    <div class="modal fade" id="rejectionReasonModal" tabindex="-1" aria-labelledby="rejectionReasonModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title text-white" id="rejectionReasonModalLabel">
+                        <i class="fa-solid fa-circle-xmark me-2"></i> Authorization Rejected
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="p-3 bg-light rounded-3 border mb-3">
+                        <div class="mb-2">
+                            <small class="text-muted fw-bold text-uppercase d-block">Authorization Code</small>
+                            <span id="rejectedAuthCode" class="fw-bold text-primary font-monospace">-</span>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted fw-bold text-uppercase d-block">Requested Purpose</small>
+                            <span id="rejectedAuthPurpose" class="fw-semibold text-dark d-block text-break">-</span>
+                        </div>
+                        <div>
+                            <small class="text-muted fw-bold text-uppercase d-block">Submitted On</small>
+                            <span id="rejectedAuthDate" class="text-muted small">-</span>
+                        </div>
+                    </div>
+
+                    <div class="rejection-reason-box p-3 rounded-3 border">
+                        <small class="text-danger fw-bold text-uppercase d-block mb-1">
+                            <i class="fa-solid fa-comment-dots me-1"></i> Admin Rejection Reason
+                        </small>
+                        <p id="rejectedAuthReason" class="mb-0 fw-medium text-dark text-break" style="white-space: pre-wrap;">-</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="../public/js/config.js"></script>
     <script src="../public/js/common.js"></script>

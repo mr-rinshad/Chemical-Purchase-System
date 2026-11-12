@@ -274,6 +274,76 @@ async function submitAuthorization(event) {
 
 }
 
+let authorizationRequestsList = [];
+
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+function getAuthorizationStatusCell(request) {
+    const status = request.status || "Pending";
+
+    if (status === "Rejected") {
+        return `
+            <div class="d-flex flex-column align-items-start gap-1">
+                <span class="badge bg-danger">Rejected</span>
+                <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger text-nowrap view-rejection-btn"
+                    onclick="viewRejectionReason(${Number(request.authorization_id)})">
+                    <i class="fa-solid fa-circle-info me-1"></i> View Reason
+                </button>
+            </div>
+        `;
+    }
+
+    if (status === "Approved") {
+        return `<span class="badge bg-success">Approved</span>`;
+    }
+
+    if (status === "Pending") {
+        return `<span class="badge bg-warning">Pending</span>`;
+    }
+
+    return `<span class="badge bg-secondary">${escapeHtml(status)}</span>`;
+}
+
+function viewRejectionReason(authorizationId) {
+    const request = authorizationRequestsList.find(
+        item => item.authorization_id == authorizationId
+    );
+
+    if (!request) {
+        return;
+    }
+
+    const codeEl = document.getElementById("rejectedAuthCode");
+    const purposeEl = document.getElementById("rejectedAuthPurpose");
+    const dateEl = document.getElementById("rejectedAuthDate");
+    const reasonEl = document.getElementById("rejectedAuthReason");
+
+    if (codeEl) codeEl.textContent = request.authorization_code || "-";
+    if (purposeEl) purposeEl.textContent = request.purpose || "-";
+    if (dateEl) dateEl.textContent = formatDateTime(request.created_at);
+    if (reasonEl) {
+        const reason = request.rejection_reason
+            ? String(request.rejection_reason).trim()
+            : "";
+        reasonEl.textContent =
+            reason || "No rejection reason was provided by the administrator.";
+    }
+
+    const modalEl = document.getElementById("rejectionReasonModal");
+    if (modalEl) {
+        bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
+}
+
 async function loadAuthorizationRequests() {
 
     const token = getToken();
@@ -304,6 +374,8 @@ async function loadAuthorizationRequests() {
 
         if (!data.success || data.data.length === 0) {
 
+            authorizationRequestsList = [];
+
             table.innerHTML = `
 
                 <tr>
@@ -322,6 +394,7 @@ async function loadAuthorizationRequests() {
 
         }
 
+        authorizationRequestsList = data.data;
         table.innerHTML = "";
 
         data.data.forEach(request => {
@@ -330,11 +403,11 @@ async function loadAuthorizationRequests() {
 
                 <tr>
 
-                    <td>${request.authorization_code ?? "-"}</td>
+                    <td>${escapeHtml(request.authorization_code ?? "-")}</td>
 
-                    <td>${request.purpose}</td>
+                    <td>${escapeHtml(request.purpose)}</td>
 
-                    <td>${request.status}</td>
+                    <td>${getAuthorizationStatusCell(request)}</td>
 
                     <td>${formatDateTime(request.expiry_date)}</td>
 
