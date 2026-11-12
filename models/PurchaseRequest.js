@@ -243,9 +243,14 @@ static async reserve(
 
     purchaseCode,
 
-    reservationDays
+    reservationDays = 2
 
 ) {
+
+    const parsedDays = Number(reservationDays);
+    const validDays = Number.isFinite(parsedDays) && parsedDays > 0
+        ? Math.floor(parsedDays)
+        : 2;
 
     const [result] = await db.execute(
 
@@ -277,7 +282,7 @@ static async reserve(
 
             purchaseCode,
 
-            reservationDays,
+            validDays,
 
             requestId
 

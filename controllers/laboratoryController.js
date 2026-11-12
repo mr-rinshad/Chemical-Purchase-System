@@ -835,7 +835,7 @@ const addChemical = async (req, res, next) => {
 
             chemical_name,
 
-            formula,
+            formula: formula ?? null,
 
             category,
 
@@ -1019,19 +1019,19 @@ const updateChemical = async (req, res, next) => {
 
             {
 
-                chemical_name,
+                chemical_name: chemical_name ?? chemical.chemical_name,
 
-                formula,
+                formula: formula ?? chemical.formula ?? null,
 
-                category,
+                category: category ?? chemical.category,
 
-                unit,
+                unit: unit ?? chemical.unit,
 
-                price_per_unit,
+                price_per_unit: price_per_unit ?? chemical.price_per_unit,
 
-                total_stock,
+                total_stock: total_stock ?? chemical.total_stock,
 
-                status
+                status: status ?? chemical.status
 
             }
 
@@ -1577,7 +1577,10 @@ const reservePurchaseRequest = async (req, res, next) => {
 
         }
 
-        await Chemical.reserveStock(
+        const parsedDays = Number(process.env.RESERVATION_VALID_DAYS);
+        const reservationDays = Number.isFinite(parsedDays) && parsedDays > 0 ? Math.floor(parsedDays) : 2;
+
+        const stockReserved = await Chemical.reserveStock(
 
             request.chemical_id,
 
@@ -1585,17 +1588,30 @@ const reservePurchaseRequest = async (req, res, next) => {
 
         );
 
+        if (!stockReserved) {
+            return sendError(
+                res,
+                "Insufficient stock",
+                [],
+                400
+            );
+        }
+
         const purchaseCode = generatePurchaseCode();
 
-        await PurchaseRequest.reserve(
-
-            request.request_id,
-
-            purchaseCode,
-
-            process.env.RESERVATION_VALID_DAYS
-
-        );
+        try {
+            await PurchaseRequest.reserve(
+                request.request_id,
+                purchaseCode,
+                reservationDays
+            );
+        } catch (reserveError) {
+            await Chemical.returnReservedStock(
+                request.chemical_id,
+                request.quantity
+            );
+            throw reserveError;
+        }
 
         sendSuccess(
 
@@ -1609,7 +1625,7 @@ const reservePurchaseRequest = async (req, res, next) => {
 
                 reservation_days:
 
-                    process.env.RESERVATION_VALID_DAYS
+                    reservationDays
 
             }
 
